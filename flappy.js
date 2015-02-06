@@ -74,7 +74,7 @@ function enter_frame() {
 	context.font = "bold 14px sans-serif";
 	context.fillStyle = 'black';
 	context.textBaseline = 'top';	
-	context.fillText('' + fps, 0, 0);
+	context.fillText('0' + fps, 0, 0);
 
 	requestAnimationFrame(enter_frame);
 }
