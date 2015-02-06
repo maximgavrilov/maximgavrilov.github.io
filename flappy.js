@@ -10,7 +10,7 @@ var requestAnimationFrame = window.requestAnimationFrame ||
 var canvas, context;
 var frame = 0, lastTime, frameTime;
 var fpsCounter = 0, fpsTime = 0, fps = 0;
-var bird;
+var bird, birds;
 
 function init() {	
 	canvas = document.getElementById('gameCanvas');
@@ -23,6 +23,18 @@ function init() {
  	var lbird = new Image();
 	lbird.onload = function (argument) {
 		bird = lbird;
+
+		var b1 = document.createElement('canvas');
+		b1.width = 92; b1.height = 64;
+		b1.getContext('2d').drawImage(bird, 0, 0, 92, 64, 0, 0, 92, 64);
+		var b2 = document.createElement('canvas');
+		b2.width = 92; b2.height = 64;
+		b2.getContext('2d').drawImage(bird, 92, 0, 92, 64, 0, 0, 92, 64);
+		var b3 = document.createElement('canvas');
+		b3.width = 92; b3.height = 64;
+		b3.getContext('2d').drawImage(bird, 2 * 92, 0, 92, 64, 0, 0, 92, 64);
+		birds = [b1, b2, b3, b2];
+
 		start();
 	}
 	lbird.src = 'http://www.appcycle.me/flappy/img/bird.png';
@@ -68,7 +80,8 @@ function enter_frame() {
 
 	for (var i = 0; i < 500; i += 64) {
 		for (var j = 0; j < 400; j += 92) {
-			context.drawImage(bird, 92 * bframe, 0, 92, 64, j, i, 92, 64);	
+			// context.drawImage(bird, 92 * bframe, 0, 92, 64, j, i, 92, 64);	
+			context.drawImage(birds[bframe], j, i);
 		}
 	}
 
