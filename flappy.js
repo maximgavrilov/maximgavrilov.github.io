@@ -71,7 +71,7 @@ function enter_frame() {
 	context.drawImage(bird, 92 * bframe, 0, 92, 64, 30, 50, 92, 64);	
 	context.drawImage(bird, 92 * bframe, 0, 92, 64, 30, 80, 92, 64);	
 
-	context.font = "bold 12px sans-serif";
+	context.font = "bold 14px sans-serif";
 	context.fillStyle = 'black';
 	context.textBaseline = 'top';	
 	context.fillText(fps, 0, 0);
