@@ -47,7 +47,7 @@ function enter_frame() {
 	fpsCounter += 1;
 	fpsTime += dt;
 	if (fpsTime > 500) {
-		fps = (1000 / (fpsTime / fpsCounter)) | 0;
+		fps = (0.5 + 1000 * fpsCounter / fpsTime) | 0;
 		fpsTime = 0;
 		fpsCounter = 0;
 	}
