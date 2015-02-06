@@ -8,7 +8,8 @@ var requestAnimationFrame = window.requestAnimationFrame ||
 	};
 
 var canvas, context;
-var frame = 0;
+var frame = 0, lastTime, frameTime;
+var fpsCounter = 0, fpsTime = 0, fps = 0;
 var bird;
 
 function init() {	
@@ -40,13 +41,36 @@ function start() {
 	context.strokeStyle = 'red';
 	context.stroke();
 
+	lastTime = (new Date()).getTime();
 	requestAnimationFrame(enter_frame);
 }
 
 function enter_frame() {
 	frame += 1;	
+	
+	var prevTime = lastTime;
+	lastTime = (new Date()).getTime();
+	
+	var dt = lastTime - prevTime;
+	frameTime += dt;
+
+	fpsCounter += 1;
+	fpsTime += dt;
+	if (fpsTime > 500) {
+		fps = (1000 / (fpsTime / fpsCounter)) | 0;
+		fpsTime = 0;
+		fpsCounter = 0;
+	}
+
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	var bframe = (frame / 8 | 0) % 3;
+	var bframe = ((frame / 10) | 0) % 4;
+	if (bframe == 3) bframe = 1;
 	context.drawImage(bird, 92 * bframe, 0, 92, 64, 30, 30, 92, 64);	
+
+	context.font = "bold 12px sans-serif";
+	context.fillStyle = 'black';
+	context.textBaseline = 'top';	
+	context.fillText(fps, 0, 0);
+
 	requestAnimationFrame(enter_frame);
 }
