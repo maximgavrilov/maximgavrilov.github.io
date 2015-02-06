@@ -30,17 +30,7 @@ function init() {
 
 function start() {
 	if (!bird) return;
-
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	context.fillStyle = 'green';
-	context.fillRect(0, 0, canvas.width, canvas.height);
 	
-	context.beginPath();
-	context.moveTo(10, 10.5);
-	context.lineTo(40, 10.5);
-	context.strokeStyle = 'red';
-	context.stroke();
-
 	lastTime = (new Date()).getTime();
 	requestAnimationFrame(enter_frame);
 }
@@ -63,6 +53,16 @@ function enter_frame() {
 	}
 
 	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	context.fillStyle = 'green';
+	context.fillRect(0, 0, canvas.width, canvas.height);
+	
+	context.beginPath();
+	context.moveTo(10, 10.5);
+	context.lineTo(40, 10.5);
+	context.strokeStyle = 'red';
+	context.stroke();
+
 	var bframe = ((frame / 10) | 0) % 4;
 	if (bframe == 3) bframe = 1;
 	context.drawImage(bird, 92 * bframe, 0, 92, 64, 30, 0, 92, 64);	
