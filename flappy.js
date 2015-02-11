@@ -88,6 +88,6 @@ function enter_frame() {
 		}
 	}
 
-	fpsSpan.htmlText = '0' + fps;
+	fpsSpan.innerHTML = '' + fps;
 	requestAnimationFrame(enter_frame);
 }
