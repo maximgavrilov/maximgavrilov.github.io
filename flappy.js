@@ -11,6 +11,7 @@ var canvas, context;
 var frame = 0, lastTime, frameTime;
 var fpsCounter = 0, fpsTime = 0, fps = 0;
 var bird, birds;
+var fpsSpan;
 
 function init() {	
 	canvas = document.getElementById('gameCanvas');
@@ -19,6 +20,8 @@ function init() {
 	context.webkitImageSmoothingEnabled = false;
 	context.msImageSmoothingEnabled = false;
 	context.imageSmoothingEnabled = false;
+
+	fpsSpan = document.getElementById('fps');
 
  	var lbird = new Image();
 	lbird.onload = function (argument) {
@@ -85,10 +88,6 @@ function enter_frame() {
 		}
 	}
 
-	context.font = "14px sans-serif";
-	context.fillStyle = 'black';
-	context.textBaseline = 'top';	
-	context.fillText('0' + fps, 0, 0);
-
+	fpsSpan.htmlText = '0' + fps;
 	requestAnimationFrame(enter_frame);
 }
