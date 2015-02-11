@@ -78,8 +78,8 @@ function enter_frame() {
 	var bframe = ((frame / 10) | 0) % 4;
 	if (bframe == 3) bframe = 1;
 
-	for (var i = 0; i < 500; i += 64) {
-		for (var j = 0; j < 400; j += 92) {
+	for (var i = 0; i < 150; i += 64) {
+		for (var j = 0; j < 200; j += 92) {
 			// context.drawImage(bird, 92 * bframe, 0, 92, 64, j, i, 92, 64);	
 			context.drawImage(birds[bframe], j, i);
 		}
