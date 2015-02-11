@@ -15,7 +15,6 @@
     image-rendering: optimize-contrast;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
-    border: 5px solid #ddd;
     width: 750px;
     height: 1000px;
 }
