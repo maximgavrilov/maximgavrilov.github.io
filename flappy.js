@@ -1,11 +1,12 @@
 var game;
 
 var fpsCounter = 0, fpsTime = 0, fps = 0;
-var fpsSpan;
+var fpsSpan, gameDiv;
 
 function init() {	
 	game = new Phaser.Game(150, 200, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
 	fpsSpan = document.getElementById('fps');
+	gameDiv = document.getElementById('game');
 
 	// canvas = document.getElementById('gameCanvas');
 	// context = canvas.getContext('2d');
@@ -81,7 +82,7 @@ function on_resize(scale, parentBounds) {
 }
 
 function render() {
-	fpsSpan.innerHTML = '' + game.time.fps + ' ' + game.width + 'x' + game.height + ' ' + game.canvas.width + 'x' + game.canvas.height;
+	fpsSpan.innerHTML = '' + game.time.fps + ' ' + game.width + 'x' + game.height + ' ' + game.canvas.width + 'x' + game.canvas.height + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight;
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
 
