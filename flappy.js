@@ -7,11 +7,11 @@ var fpsSpan, gameDiv;
 function init() {	
 	var w = 150, h = 200;
 	hdpi = 1;
-	if (window.devicePixelRatio) {
-		hdpi = window.devicePixelRatio;
-		w = w * hdpi;
-		h = h * hdpi;
-	}
+	// if (window.devicePixelRatio) {
+	// 	hdpi = window.devicePixelRatio;
+	// 	w = w * hdpi;
+	// 	h = h * hdpi;
+	// }
 	game = new Phaser.Game(w, h, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
 
 	fpsSpan = document.getElementById('fps');
@@ -90,7 +90,7 @@ function on_resize(scale, parentBounds) {
 function render() {
 	var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 	if (fpsSpan) {
-		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' 2';
+		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' 3';
 	}
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
