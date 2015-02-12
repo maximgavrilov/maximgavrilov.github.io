@@ -48,13 +48,13 @@ function init() {
 function preload() {
 	var birdData = {
 		'frames' : [
-		{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 92 * hdpi, 'h' : 64 * hdpi} },
-		{ 'frame' : { 'x' : 92 * hdpi, 'y' : 0, 'w' : 92 * hdpi, 'h' : 64 * hdpi} },
-		{ 'frame' : { 'x' : 2 * 92 * hdpi, 'y' : 0, 'w' : 92 * hdpi, 'h' : 64 * hdpi}}
+		{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 92, 'h' : 64} },
+		{ 'frame' : { 'x' : 92, 'y' : 0, 'w' : 92, 'h' : 64} },
+		{ 'frame' : { 'x' : 2 * 92, 'y' : 0, 'w' : 92, 'h' : 64}}
 		]
 	};
 
-	game.load.atlas('bird', (hdpi == 2) ? 'bird@2.png' : 'bird.png', null, birdData);
+	game.load.atlas('bird', 'bird.png', null, birdData);
 }
 
 function create() {
@@ -77,6 +77,7 @@ function create() {
 			bird.animations.add('fly', [0, 1, 2, 1], 6, true);
 			bird.animations.play('fly');
 			bird.smoothed = false;
+			bird.scale = new PIXI.Point(hdpi, hdpi);
 		}
 	}
 }
