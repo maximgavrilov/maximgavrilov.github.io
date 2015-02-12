@@ -65,7 +65,7 @@ function create() {
 	game.scale.maxWidth = 1500;
 	game.scale.maxHeight = 2000;
 	game.scale.pageAlignHorizontally = true;
-	game.scale.setUserScale(6, 6);
+	game.scale.setResizeCallback(on_resize);
 	game.scale.refresh();
 
 
@@ -76,7 +76,8 @@ function create() {
 }
 
 function on_resize(scale, parentBounds) {
-	game.scale.setUserScale(scale, scale);
+	var s = Math.min(parentBounds.width / 150, parentBounds.height / 200);
+	scale.setUserScale(s, s);
 }
 
 function render() {
