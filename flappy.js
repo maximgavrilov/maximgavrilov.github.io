@@ -1,10 +1,18 @@
 var game;
+var hdpi;
 
 var fpsCounter = 0, fpsTime = 0, fps = 0;
 var fpsSpan, gameDiv;
 
 function init() {	
-	game = new Phaser.Game(150, 200, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
+	var w = 150, h = 200;
+	hdpi = 1;
+	if (window.devicePixelRatio) {
+		hdpi = window.devicePixelRatio;
+		w = w * hdpi;
+		h = h * hdpi;
+	}
+	game = new Phaser.Game(w, h, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
 	fpsSpan = document.getElementById('fps');
 	gameDiv = document.getElementById('game');
 
@@ -39,15 +47,9 @@ function init() {
 function preload() {
 	var birdData = {
 		'frames' : [
-		{
-			'frame' : { 'x' : 0, 'y' : 0, 'w' : 92, 'h' : 64}
-		},
-		{
-			'frame' : { 'x' : 92, 'y' : 0, 'w' : 92, 'h' : 64}
-		},
-		{
-			'frame' : { 'x' : 2 * 92, 'y' : 0, 'w' : 92, 'h' : 64}
-		}
+		{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 92, 'h' : 64} },
+		{ 'frame' : { 'x' : 92, 'y' : 0, 'w' : 92, 'h' : 64} },
+		{ 'frame' : { 'x' : 2 * 92, 'y' : 0, 'w' : 92, 'h' : 64}}
 		]
 	};
 
@@ -71,8 +73,8 @@ function create() {
 		for (var j = 0; j < 200; j += 64) {
 
 			var bird = game.add.sprite(i, j, 'bird');
-			bird.animations.add('run');
-			bird.animations.play('run', 5, true);
+			bird.animations.add('fly', [0, 1, 2, 1], 6, true);
+			bird.animations.play('fly');
 			bird.smoothed = false;
 		}
 	}
@@ -80,12 +82,14 @@ function create() {
 
 function on_resize(scale, parentBounds) {
 	var s = Math.min(parentBounds.width / 150, parentBounds.height / 200);
-	scale.setUserScale(s, s);
+	scale.setUserScale(s / hdpi, s / hdpi);
 }
 
 function render() {
 	var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
-	fpsSpan.innerHTML = '' + game.time.fps + ' ' + r + ' ' + game.width + 'x' + game.height + ' ' + game.canvas.width + 'x' + game.canvas.height + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight;
+	if (fpsSpan) {
+		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r;
+	}
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
 
