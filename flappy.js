@@ -90,7 +90,7 @@ function on_resize(scale, parentBounds) {
 function render() {
 	var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 	if (fpsSpan) {
-		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r;
+		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + '1';
 	}
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
