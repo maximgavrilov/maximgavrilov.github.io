@@ -84,7 +84,8 @@ function on_resize(scale, parentBounds) {
 }
 
 function render() {
-	fpsSpan.innerHTML = '' + game.time.fps + ' ' + game.width + 'x' + game.height + ' ' + game.canvas.width + 'x' + game.canvas.height + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight;
+	var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
+	fpsSpan.innerHTML = '' + game.time.fps + ' ' + r + ' ' + game.width + 'x' + game.height + ' ' + game.canvas.width + 'x' + game.canvas.height + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight;
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
 
