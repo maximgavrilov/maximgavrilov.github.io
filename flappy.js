@@ -13,7 +13,6 @@ function init() {
 		h = h * hdpi;
 	}
 	game = new Phaser.Game(w, h, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
-	game.canvas.getContext("2d").scale(hdpi, hdpi);
 
 	fpsSpan = document.getElementById('fps');
 	gameDiv = document.getElementById('game');
