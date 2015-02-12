@@ -67,11 +67,15 @@ function create() {
 	game.scale.setResizeCallback(on_resize);
 	game.scale.refresh();
 
+	for (var i = 0; i < 150; i += 92) {
+		for (var j = 0; j < 200; j += 64) {
 
-	var bird = game.add.sprite(0, 0, 'bird');
-	bird.animations.add('run');
-	bird.animations.play('run', 5, true);
-	bird.smoothed = false;
+			var bird = game.add.sprite(i, j, 'bird');
+			bird.animations.add('run');
+			bird.animations.play('run', 5, true);
+			bird.smoothed = false;
+		}
+	}
 }
 
 function on_resize(scale, parentBounds) {
