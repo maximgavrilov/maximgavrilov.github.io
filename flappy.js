@@ -4,7 +4,8 @@ var fpsCounter = 0, fpsTime = 0, fps = 0;
 var fpsSpan;
 
 function init() {	
-	game = new Phaser.Game(150, 200, Phaser.AUTO, 'game', { preload : preload, create : create }, false, false, null);
+	game = new Phaser.Game(150, 200, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
+	fpsSpan = document.getElementById('fps');
 
 	// canvas = document.getElementById('gameCanvas');
 	// context = canvas.getContext('2d');
@@ -13,7 +14,6 @@ function init() {
 	// context.msImageSmoothingEnabled = false;
 	// context.imageSmoothingEnabled = false;
 
-	// fpsSpan = document.getElementById('fps');
 
  // 	var lbird = new Image();
 	// lbird.onload = function (argument) {
@@ -56,10 +56,18 @@ function preload() {
 function create() {
 	game.stage.backgroundColor = '#00dd00';
 	game.stage.disableVisibilityChange = true;
+	game.time.advancedTiming = true;
+	game.time.fpsMin = 60;
+	game.time.fpsMax = 60;
 
 	var bird = game.add.sprite(0, 0, 'bird');
 	bird.animations.add('run');
 	bird.animations.play('run', 5, true);
+}
+
+function render() {
+	fpsSpan.innerHTML = '' + game.time.fps;
+	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
 
 function start() {
