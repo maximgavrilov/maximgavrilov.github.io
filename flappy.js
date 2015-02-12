@@ -60,11 +60,9 @@ function create() {
 	game.stage.smoothed = false;
 
 	game.time.advancedTiming = true;
+
 	game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-	game.scale.minWidth = 150;
-	game.scale.minHeight = 200;
-	game.scale.maxWidth = 1500;
-	game.scale.maxHeight = 2000;
+	game.scale.setMinMax(150, 200, 1500, 2000);
 	game.scale.pageAlignHorizontally = true;
 	game.scale.setResizeCallback(on_resize);
 	game.scale.refresh();
