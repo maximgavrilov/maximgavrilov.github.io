@@ -7,12 +7,14 @@ var fpsSpan, gameDiv;
 function init() {	
 	var w = 150, h = 200;
 	hdpi = 1;
-	if (window.devicePixelRatio) {
+	if (window.devicePixelRatio && window.devicePixelRatio == 2) {
 		hdpi = window.devicePixelRatio;
 		w = w * hdpi;
 		h = h * hdpi;
 	}
 	game = new Phaser.Game(w, h, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
+	game.canvas.getContext("2d").scale(hdpi, hdpi);
+
 	fpsSpan = document.getElementById('fps');
 	gameDiv = document.getElementById('game');
 
@@ -47,13 +49,13 @@ function init() {
 function preload() {
 	var birdData = {
 		'frames' : [
-		{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 92, 'h' : 64} },
-		{ 'frame' : { 'x' : 92, 'y' : 0, 'w' : 92, 'h' : 64} },
-		{ 'frame' : { 'x' : 2 * 92, 'y' : 0, 'w' : 92, 'h' : 64}}
+		{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 92 * hdpi, 'h' : 64 * hdpi} },
+		{ 'frame' : { 'x' : 92 * hdpi, 'y' : 0, 'w' : 92 * hdpi, 'h' : 64 * hdpi} },
+		{ 'frame' : { 'x' : 2 * 92 * hdpi, 'y' : 0, 'w' : 92 * hdpi, 'h' : 64 * hdpi}}
 		]
 	};
 
-	game.load.atlas('bird', 'bird.png', null, birdData);
+	game.load.atlas('bird', (hdpi == 2) ? 'bird@2.png' : 'bird.png', null, birdData);
 }
 
 function create() {
@@ -69,8 +71,8 @@ function create() {
 	game.scale.setResizeCallback(on_resize);
 	game.scale.refresh();
 
-	for (var i = 0; i < 150; i += 92) {
-		for (var j = 0; j < 200; j += 64) {
+	for (var i = 0; i < 150 * hdpi; i += 92 * hdpi) {
+		for (var j = 0; j < 200 * hdpi; j += 64 * hdpi) {
 
 			var bird = game.add.sprite(i, j, 'bird');
 			bird.animations.add('fly', [0, 1, 2, 1], 6, true);
