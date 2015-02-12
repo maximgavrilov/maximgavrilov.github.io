@@ -7,7 +7,7 @@ var fpsSpan, gameDiv;
 function init() {	
 	var w = 150, h = 200;
 	hdpi = 1;
-	if (window.devicePixelRatio && window.devicePixelRatio == 2) {
+	if (window.devicePixelRatio) {
 		hdpi = window.devicePixelRatio;
 		w = w * hdpi;
 		h = h * hdpi;
@@ -90,7 +90,7 @@ function on_resize(scale, parentBounds) {
 function render() {
 	var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 	if (fpsSpan) {
-		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + '1';
+		fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' 2';
 	}
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
