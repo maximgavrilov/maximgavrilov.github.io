@@ -1,46 +1,65 @@
-var requestAnimationFrame = window.requestAnimationFrame ||
-	window.webkitRequestAnimationFrame ||
-	window.mozRequestAnimationFrame ||
-	window.oRequestAnimationFrame ||
-	window.msRequestAnimationFrame ||
-	function(callback,element) {
-		window.setTimeout(callback, 1000 / 60);
-	};
+var game;
 
-var canvas, context;
-var frame = 0, lastTime, frameTime;
 var fpsCounter = 0, fpsTime = 0, fps = 0;
-var bird, birds;
 var fpsSpan;
 
 function init() {	
-	canvas = document.getElementById('gameCanvas');
-	context = canvas.getContext('2d');
-	context.mozImageSmoothingEnabled = false;
-	context.webkitImageSmoothingEnabled = false;
-	context.msImageSmoothingEnabled = false;
-	context.imageSmoothingEnabled = false;
+	game = new Phaser.Game(150, 200, Phaser.AUTO, 'game', { preload : preload, create : create }, false, false, null);
 
-	fpsSpan = document.getElementById('fps');
+	// canvas = document.getElementById('gameCanvas');
+	// context = canvas.getContext('2d');
+	// context.mozImageSmoothingEnabled = false;
+	// context.webkitImageSmoothingEnabled = false;
+	// context.msImageSmoothingEnabled = false;
+	// context.imageSmoothingEnabled = false;
 
- 	var lbird = new Image();
-	lbird.onload = function (argument) {
-		bird = lbird;
+	// fpsSpan = document.getElementById('fps');
 
-		var b1 = document.createElement('canvas');
-		b1.width = 92; b1.height = 64;
-		b1.getContext('2d').drawImage(bird, 0, 0, 92, 64, 0, 0, 92, 64);
-		var b2 = document.createElement('canvas');
-		b2.width = 92; b2.height = 64;
-		b2.getContext('2d').drawImage(bird, 92, 0, 92, 64, 0, 0, 92, 64);
-		var b3 = document.createElement('canvas');
-		b3.width = 92; b3.height = 64;
-		b3.getContext('2d').drawImage(bird, 2 * 92, 0, 92, 64, 0, 0, 92, 64);
-		birds = [b1, b2, b3, b2];
+ // 	var lbird = new Image();
+	// lbird.onload = function (argument) {
+	// 	bird = lbird;
 
-		start();
-	}
-	lbird.src = 'http://www.appcycle.me/flappy/img/bird.png';
+	// 	var b1 = document.createElement('canvas');
+	// 	b1.width = 92; b1.height = 64;
+	// 	b1.getContext('2d').drawImage(bird, 0, 0, 92, 64, 0, 0, 92, 64);
+	// 	var b2 = document.createElement('canvas');
+	// 	b2.width = 92; b2.height = 64;
+	// 	b2.getContext('2d').drawImage(bird, 92, 0, 92, 64, 0, 0, 92, 64);
+	// 	var b3 = document.createElement('canvas');
+	// 	b3.width = 92; b3.height = 64;
+	// 	b3.getContext('2d').drawImage(bird, 2 * 92, 0, 92, 64, 0, 0, 92, 64);
+	// 	birds = [b1, b2, b3, b2];
+
+	// 	start();
+	// }
+	// lbird.src = 'http://www.appcycle.me/flappy/img/bird.png';
+}
+
+function preload() {
+	var birdData = {
+		'frames' : [
+		{
+			'frame' : { 'x' : 0, 'y' : 0, 'w' : 92, 'h' : 64}
+		},
+		{
+			'frame' : { 'x' : 92, 'y' : 0, 'w' : 92, 'h' : 64}
+		},
+		{
+			'frame' : { 'x' : 2 * 92, 'y' : 0, 'w' : 92, 'h' : 64}
+		}
+		]
+	};
+
+	game.load.atlas('bird', 'bird.png', null, birdData);
+}
+
+function create() {
+	game.stage.backgroundColor = '#00dd00';
+	game.stage.disableVisibilityChange = true;
+
+	var bird = game.add.sprite(0, 0, 'bird');
+	bird.animations.add('run');
+	bird.animations.play('run', 5, true);
 }
 
 function start() {
