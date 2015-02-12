@@ -56,17 +56,31 @@ function preload() {
 function create() {
 	game.stage.backgroundColor = '#00dd00';
 	game.stage.disableVisibilityChange = true;
+	game.stage.smoothed = false;
+
 	game.time.advancedTiming = true;
-	game.time.fpsMin = 60;
-	game.time.fpsMax = 60;
+	game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+	game.scale.minWidth = 150;
+	game.scale.minHeight = 200;
+	game.scale.maxWidth = 1500;
+	game.scale.maxHeight = 2000;
+	game.scale.pageAlignHorizontally = true;
+	game.scale.setUserScale(6, 6);
+	game.scale.refresh();
+
 
 	var bird = game.add.sprite(0, 0, 'bird');
 	bird.animations.add('run');
 	bird.animations.play('run', 5, true);
+	bird.smoothed = false;
+}
+
+function on_resize(scale, parentBounds) {
+	game.scale.setUserScale(scale, scale);
 }
 
 function render() {
-	fpsSpan.innerHTML = '' + game.time.fps;
+	fpsSpan.innerHTML = '' + game.time.fps + ' ' + game.width + 'x' + game.height + ' ' + game.canvas.width + 'x' + game.canvas.height;
 	// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
 
