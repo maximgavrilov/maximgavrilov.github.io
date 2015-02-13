@@ -40,15 +40,21 @@ function init() {
 			bg.scale = new PIXI.Point(hdpi, hdpi);
 			bg.smoothed = false;
 
-			for (var i = 0; i < WIDTH; i += 17 * hdpi) {
-				for (var j = 0; j < HEIGHT - GR - 12 * hdpi; j += 12 * hdpi) {
-					var bird = game.add.sprite(i, j, 'bird');
-					bird.animations.add('fly', [0, 1, 2, 1], 6, true);
-					bird.animations.play('fly');
-					bird.smoothed = false;
-					bird.scale = new PIXI.Point(hdpi, hdpi);
-				}
-			}
+			var bird = game.add.sprite(100, 100, 'bird');
+			bird.animations.add('fly', [0, 1, 2, 1], 6, true);
+			bird.animations.play('fly');
+			bird.smoothed = false;
+			bird.scale = new PIXI.Point(hdpi, hdpi);
+
+			// for (var i = 0; i < WIDTH; i += 17 * hdpi) {
+			// 	for (var j = 0; j < HEIGHT - GR - 12 * hdpi; j += 12 * hdpi) {
+			// 		var bird = game.add.sprite(i, j, 'bird');
+			// 		bird.animations.add('fly', [0, 1, 2, 1], 6, true);
+			// 		bird.animations.play('fly');
+			// 		bird.smoothed = false;
+			// 		bird.scale = new PIXI.Point(hdpi, hdpi);
+			// 	}
+			// }
 		}
 	}
 
