@@ -4,24 +4,31 @@ function init() {
 	var hdpi = window.devicePixelRatio || 1;
 	var VERSION = 6;
 	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
-	var SPEED = 100;
+	var SPEED = 60;
 
 	function create_back(game) {
+		var back = game.add.group();
+
 		var GR = 24 * hdpi;
 
 		var ground = game.add.graphics(0, HEIGHT - GR);
 		ground.beginFill(0xf5dab5);
 		ground.drawRect(0, 0, WIDTH, GR);
 		ground.endFill();
+		back.add(ground);
 
 		var down = game.add.tileSprite(0, HEIGHT - GR, 300, 26, 'down');
 		down.scale = new PIXI.Point(hdpi, hdpi);
 		down.autoScroll(-SPEED, 0);
 		down.smoothed = false;
+		back.add(down);
 
 		var bg = game.add.image(0, HEIGHT - GR - 200 * hdpi, 'bg');
 		bg.scale = new PIXI.Point(hdpi, hdpi);
 		bg.smoothed = false;
+		back.add(bg);
+
+		return back;
 	}
 
 	function create_bird(game) {
@@ -30,6 +37,7 @@ function init() {
 		bird.animations.play('fly');
 		bird.smoothed = false;
 		bird.scale = new PIXI.Point(hdpi, hdpi);
+		return bird;
 	}
 
 	function PreloadState(game) {
@@ -72,7 +80,10 @@ function init() {
 	function GameState(game) {
 		this.create = function () {
 			create_back(game);
+			game.physics.startSystem(Phaser.Physics.ARCADE);
+    		game.physics.arcade.gravity.y = 500;
 		}
+
 	}
 
 	function FPSPlugin(game) {
