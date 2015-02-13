@@ -22,13 +22,9 @@ function init() {
 		this.create = function () {
 			var GR = 24 * hdpi;
 
-			var ground = game.add.graphics(0, 0);
-			ground.beginFill(0x93d4c3);
-			ground.drawRect(0, 0, WIDTH, HEIGHT - GR);
-			ground.endFill();
-
+			var ground = game.add.graphics(0, HEIGHT - GR);
 			ground.beginFill(0xf5dab5);
-			ground.drawRect(0, HEIGHT - GR, WIDTH, GR);
+			ground.drawRect(0, 0, WIDTH, GR);
 			ground.endFill();
 
 			var down = game.add.tileSprite(0, HEIGHT - GR, 300, 26, 'down');
@@ -73,18 +69,18 @@ function init() {
 	(function () {
 		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
 		game.device.whenReady(function () {		
-			game.stage.backgroundColor = '#00dd00';
+			game.stage.backgroundColor = '#93d4c3';
 			game.stage.disableVisibilityChange = true;
 			game.stage.smoothed = false;
 
 			game.time.advancedTiming = true;
 
 			game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-			game.scale.setMinMax(150, 200, 1500, 2000);
+			game.scale.setMinMax(WIDTH, HEIGHT, 10 * WIDTH, 10 * HEIGHT);
 			game.scale.pageAlignHorizontally = true;
 			game.scale.setResizeCallback(function (scale, parentBounds) {
-				var s = Math.min(parentBounds.width / 150, parentBounds.height / 200);
-				scale.setUserScale(s / hdpi, s / hdpi);
+				var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
+				scale.setUserScale(s, s);
 			});		
 			game.scale.refresh();
 
