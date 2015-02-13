@@ -1,64 +1,67 @@
 function init() {	
-	var game;
-	var hdpi;
+	var hdpi = window.devicePixelRatio || 1;
+	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
 
-	var fpsCounter = 0, fpsTime = 0, fps = 0;
-	var fpsSpan, gameDiv;
+	function TestState(game) {
+		this.preload = function () {
+			var birdData = {
+				'frames' : [
+				{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 17, 'h' : 12} },
+				{ 'frame' : { 'x' : 17, 'y' : 0, 'w' : 17, 'h' : 12} },
+				{ 'frame' : { 'x' : 2 * 17, 'y' : 0, 'w' : 17, 'h' : 12}}
+				]
+			};
 
-	function preload() {
-		var birdData = {
-			'frames' : [
-			{ 'frame' : { 'x' : 0, 'y' : 0, 'w' : 17, 'h' : 12} },
-			{ 'frame' : { 'x' : 17, 'y' : 0, 'w' : 17, 'h' : 12} },
-			{ 'frame' : { 'x' : 2 * 17, 'y' : 0, 'w' : 17, 'h' : 12}}
-			]
-		};
+			game.load.atlas('bird', 'birds.png', null, birdData);
+		},
 
-		game.load.atlas('bird', 'birds.png', null, birdData);
-	}
+		this.create = function () {
+			for (var i = 0; i < 150 * hdpi; i += 17 * hdpi) {
+				for (var j = 0; j < 200 * hdpi; j += 12 * hdpi) {
 
-	function create() {
-		game.stage.backgroundColor = '#00dd00';
-		game.stage.disableVisibilityChange = true;
-		game.stage.smoothed = false;
-
-		game.time.advancedTiming = true;
-
-		game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-		game.scale.setMinMax(150, 200, 1500, 2000);
-		game.scale.pageAlignHorizontally = true;
-		game.scale.setResizeCallback(on_resize);
-		game.scale.refresh();
-
-		for (var i = 0; i < 150 * hdpi; i += 17 * hdpi) {
-			for (var j = 0; j < 200 * hdpi; j += 12 * hdpi) {
-
-				var bird = game.add.sprite(i, j, 'bird');
-				bird.animations.add('fly', [0, 1, 2, 1], 6, true);
-				bird.animations.play('fly');
-				bird.smoothed = false;
-				bird.scale = new PIXI.Point(hdpi, hdpi);
+					var bird = game.add.sprite(i, j, 'bird');
+					bird.animations.add('fly', [0, 1, 2, 1], 6, true);
+					bird.animations.play('fly');
+					bird.smoothed = false;
+					bird.scale = new PIXI.Point(hdpi, hdpi);
+				}
 			}
 		}
 	}
 
-	function on_resize(scale, parentBounds) {
-		var s = Math.min(parentBounds.width / 150, parentBounds.height / 200);
-		scale.setUserScale(s / hdpi, s / hdpi);
-	}
+	function FPSPlugin(game) {
+		var fpsSpan = document.getElementById('fps');
+		var gameDiv = document.getElementById('game');
 
-	function render() {
-		var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
-		if (fpsSpan) {
-			fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' 3';
+		this.render = function () {
+			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
+			if (fpsSpan) {
+				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' 4';
+			}
 		}
-		// game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 	}
+	
+	(function () {
+		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
+		game.device.whenReady(function () {		
+			game.stage.backgroundColor = '#00dd00';
+			game.stage.disableVisibilityChange = true;
+			game.stage.smoothed = false;
 
-	var w = 150, h = 200;
-	hdpi = 1;
-	game = new Phaser.Game(w, h, Phaser.AUTO, 'game', { preload : preload, create : create, render : render }, false, false, null);
+			game.time.advancedTiming = true;
 
-	fpsSpan = document.getElementById('fps');
-	gameDiv = document.getElementById('game');
+			game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+			game.scale.setMinMax(150, 200, 1500, 2000);
+			game.scale.pageAlignHorizontally = true;
+			game.scale.setResizeCallback(function (scale, parentBounds) {
+				var s = Math.min(parentBounds.width / 150, parentBounds.height / 200);
+				scale.setUserScale(s / hdpi, s / hdpi);
+			});		
+			game.scale.refresh();
+
+			game.plugins.add(FPSPlugin);
+		});
+
+		game.state.add('test', TestState, true);
+	})()
 }
