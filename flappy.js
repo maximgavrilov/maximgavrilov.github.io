@@ -1,6 +1,7 @@
 function init() {	
 	var hdpi = window.devicePixelRatio || 1;
 	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
+	var SPEED = 100;
 
 	function TestState(game) {
 		this.preload = function () {
@@ -12,13 +13,35 @@ function init() {
 				]
 			};
 
-			game.load.atlas('bird', 'birds.png', null, birdData);
+			game.load.atlas('bird', 'f_bird.png', null, birdData);
+			game.load.image('down', 'f_down.png');
+			game.load.image('bg', 'f_bg.png');
+			game.load.image('wall', 'f_wall.png');
 		},
 
 		this.create = function () {
-			for (var i = 0; i < 150 * hdpi; i += 17 * hdpi) {
-				for (var j = 0; j < 200 * hdpi; j += 12 * hdpi) {
+			var GR = 24 * hdpi;
 
+			var ground = game.add.graphics(0, 0);
+			ground.beginFill(0x93d4c3);
+			ground.drawRect(0, 0, WIDTH, HEIGHT - GR);
+			ground.endFill();
+
+			ground.beginFill(0xf5dab5);
+			ground.drawRect(0, HEIGHT - GR, WIDTH, GR);
+			ground.endFill();
+
+			var down = game.add.tileSprite(0, HEIGHT - GR, 300, 26, 'down');
+			down.scale = new PIXI.Point(hdpi, hdpi);
+			down.autoScroll(-SPEED, 0);
+			down.smoothed = false;
+
+			var bg = game.add.image(0, HEIGHT - GR - 200 * hdpi, 'bg');
+			bg.scale = new PIXI.Point(hdpi, hdpi);
+			bg.smoothed = false;
+
+			for (var i = 0; i < WIDTH; i += 17 * hdpi) {
+				for (var j = 0; j < HEIGHT - GR - 12 * hdpi; j += 12 * hdpi) {
 					var bird = game.add.sprite(i, j, 'bird');
 					bird.animations.add('fly', [0, 1, 2, 1], 6, true);
 					bird.animations.play('fly');
