@@ -117,13 +117,12 @@ function init() {
 
 	var Wall = function (game) {
 		Phaser.Group.call(this, game);
-		var top = new Phaser.Sprite(game, 0, -150, 'wall');
+		var top = new Phaser.Sprite(game, 0, -150, 'wall_u');
 		game.physics.arcade.enableBody(top);
 		top.body.velocity.x = -SPEED;  
 		top.body.allowGravity = false;
 		this.add(top);
-		var bottom = new Phaser.Sprite(game, 0, 50, 'wall');
-		bottom.scale.y = -1;
+		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_d');
 		game.physics.arcade.enableBody(bottom);
 		bottom.body.velocity.x = -SPEED;  
 		bottom.body.allowGravity = false;
@@ -135,8 +134,7 @@ function init() {
 		this.reset = function (x, y) {
 			top.reset(0, -150);
 			top.body.velocity.x = -SPEED;  
-			bottom.reset(0, 150);
-			bottom.scale.y = -1;
+			bottom.reset(0, 100);
 			bottom.body.velocity.x = -SPEED;  
 			this.x = x;
 			this.y = y;
@@ -146,7 +144,6 @@ function init() {
 		this.update = function () {
 			if (this.exists && !top.inWorld) {
 				this.exists = false;
-				console.warn('unexis');
 			}
 		}
 	}
@@ -190,7 +187,8 @@ function init() {
 			game.load.spritesheet('bird', 'n_bird.png', 17, 12, 3);
 			game.load.image('down', 'f_down.png');
 			game.load.image('bg', 'f_bg.png');
-			game.load.image('wall', 'f_wall.png');
+			game.load.image('wall_u', 'f_wall_u.png');
+			game.load.image('wall_d', 'f_wall_d.png');
 			game.load.image('btn_play','btn_play.png');
 		}
 
@@ -223,7 +221,6 @@ function init() {
  			if (!wall) {
  				wall = new Wall(game);
  				walls.add(wall);
- 				console.warn('emit');
  			}
  			wall.reset(game.width - 1, 0)
 		}
