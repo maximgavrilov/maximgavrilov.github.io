@@ -216,13 +216,13 @@ function init() {
 		var wallsTimer;
 
 		function emitWall() {
-			var wallY = game.rnd.integerInRange(-100, 100);
+			var wallY = game.rnd.integerInRange(-50, 50);
  			var wall = walls.getFirstExists(false);
  			if (!wall) {
  				wall = new Wall(game);
  				walls.add(wall);
  			}
- 			wall.reset(game.width - 1, 0)
+ 			wall.reset(game.width - 1, wallY)
 		}
 
 		this.create = function () {
