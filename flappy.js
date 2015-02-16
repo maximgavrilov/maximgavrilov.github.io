@@ -227,9 +227,9 @@ function init() {
 
 		this.create = function () {
 			this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
-			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
 			bird = this.game.add.existing(new Bird(game, 75, 50));
 			walls = this.game.add.group();
+			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
 			bird.hatch();
 
 			game.physics.startSystem(Phaser.Physics.ARCADE);
