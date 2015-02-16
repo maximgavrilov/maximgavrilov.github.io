@@ -1,7 +1,7 @@
 'use strict'
 
 function init() {	
-	var hdpi = 1; //window.devicePixelRatio || 1;
+	var hdpi = window.devicePixelRatio || 1;
 	var VERSION = 7;
 	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
 	var SPEED = 60;
