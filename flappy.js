@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 12;
+var VERSION = 13;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -262,6 +262,7 @@ function init() {
 	
 	(function () {
 		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
+		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
 			game.stage.backgroundColor = '#ff0000';
 			game.stage.disableVisibilityChange = true;
