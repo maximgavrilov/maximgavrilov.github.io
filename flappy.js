@@ -278,7 +278,7 @@ function init() {
 			});		
 			game.scale.refresh();
 
-			game.plugins.add(FPSPlugin);
+			// game.plugins.add(FPSPlugin);
 		});
 
 		game.state.add('preload', PreloadState, true);
