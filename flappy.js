@@ -1,7 +1,76 @@
 'use strict'
 
+var hdpi = 1;//window.devicePixelRatio || 1;
+
+// hdpi hook
+Phaser.Game.prototype.setUpRenderer = function () {
+    if (this.config['canvasID'])
+    {
+        this.canvas = Phaser.Canvas.create(this.width, this.height, this.config['canvasID']);
+    }
+    else
+    {
+        this.canvas = Phaser.Canvas.create(this.width, this.height);
+    }
+
+    if (this.config['canvasStyle'])
+    {
+        this.canvas.style = this.config['canvasStyle'];
+    }
+    else
+    {
+        this.canvas.style['-webkit-full-screen'] = 'width: 100%; height: 100%';
+    }
+
+    if (this.device.cocoonJS)
+    {
+        if (this.renderType === Phaser.CANVAS)
+        {
+            this.canvas.screencanvas = true;
+        }
+        else
+        {
+            // Some issue related to scaling arise with Cocoon using screencanvas and webgl renderer.
+            this.canvas.screencanvas = false;
+        }
+    }
+
+    if (this.renderType === Phaser.HEADLESS || this.renderType === Phaser.CANVAS || (this.renderType === Phaser.AUTO && this.device.webGL === false))
+    {
+        if (this.device.canvas)
+        {
+            if (this.renderType === Phaser.AUTO)
+            {
+                this.renderType = Phaser.CANVAS;
+            }
+
+            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": 2, "clearBeforeRender": true });
+            this.context = this.renderer.context;
+        }
+        else
+        {
+            throw new Error('Phaser.Game - cannot create Canvas or WebGL context, aborting.');
+        }
+    }
+    else
+    {
+        //  They requested WebGL and their browser supports it
+        this.renderType = Phaser.WEBGL;
+
+        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": 2, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer });
+        this.context = null;
+    }
+
+    if (this.renderType !== Phaser.HEADLESS)
+    {
+        this.stage.smoothed = this.antialias;
+        
+        Phaser.Canvas.addToDOM(this.canvas, this.parent, false);
+        Phaser.Canvas.setTouchAction(this.canvas);
+    }
+}
+
 function init() {	
-	var hdpi = window.devicePixelRatio || 1;
 	var VERSION = 7;
 	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
 	var SPEED = 60;
