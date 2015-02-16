@@ -1,10 +1,10 @@
 'use strict'
-var VERSION = 8;
-
-var hdpi = 1;//window.devicePixelRatio || 1;
+var VERSION = 9;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
+	var hdpi = window.devicePixelRatio || 1;
+
     if (this.config['canvasID'])
     {
         this.canvas = Phaser.Canvas.create(this.width, this.height, this.config['canvasID']);
@@ -45,7 +45,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
                 this.renderType = Phaser.CANVAS;
             }
 
-            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": 2, "clearBeforeRender": true });
+            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "clearBeforeRender": true });
             this.context = this.renderer.context;
         }
         else
@@ -58,7 +58,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
         //  They requested WebGL and their browser supports it
         this.renderType = Phaser.WEBGL;
 
-        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": 2, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer });
+        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer });
         this.context = null;
     }
 
@@ -72,7 +72,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
 }
 
 function init() {	
-	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
+	var WIDTH = 150, HEIGHT = 200;
 	var SPEED = 60;
 
 	function disable_smooting(ctx) {
@@ -83,7 +83,7 @@ function init() {
 	}
 
 	function create_back(game, width, height) {
-		var GR = 24 * hdpi;
+		var GR = 24;
 		var back = game.add.bitmapData(width, height);
 		var ctx = back.context;
 
@@ -93,10 +93,9 @@ function init() {
 		ctx.fillRect(0, height - GR, width, GR);
 
 		var town = game.cache.getImage('bg');
-		ctx.drawImage(town, 0, height - GR - town.height * hdpi, width, town.height * hdpi);
+		ctx.drawImage(town, 0, height - GR - town.height, width, town.height);
 
 		var roll = game.add.tileSprite(0, HEIGHT - GR, 300, 26, 'down');
-		roll.scale = new PIXI.Point(hdpi, hdpi);
 		roll.autoScroll(-SPEED, 0);
 		roll.smoothed = false;
 
@@ -108,11 +107,10 @@ function init() {
 	}
 
 	function create_bird(game) {
-		var bird = game.add.sprite(75 * hdpi, 50 * hdpi, 'bird');
+		var bird = game.add.sprite(75, 50, 'bird');
 		bird.animations.add('fly', [0, 1, 2, 1], 6, true);
 		bird.animations.play('fly');
 		bird.smoothed = false;
-		bird.scale = new PIXI.Point(hdpi, hdpi);
 		return bird;
 	}
 
@@ -134,11 +132,10 @@ function init() {
 			create_back(game, WIDTH, HEIGHT);
 			create_bird(game);
 
-			var play = game.add.button(game.world.centerX - 58 * hdpi /2, 75 * hdpi, 'btn_play', function () {				
+			var play = game.add.button(game.world.centerX - 58 /2, 75, 'btn_play', function () {				
 				game.state.start('game');
 			});
 			play.smoothed = false;
-			play.scale = new PIXI.Point(hdpi, hdpi);
 
 
 			// for (var i = 0; i < WIDTH; i += 17 * hdpi) {
