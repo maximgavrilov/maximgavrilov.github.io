@@ -1,38 +1,45 @@
 'use strict'
 
 function init() {	
-	var hdpi = window.devicePixelRatio || 1;
-	var VERSION = 6;
+	var hdpi = 1; //window.devicePixelRatio || 1;
+	var VERSION = 7;
 	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
 	var SPEED = 60;
 
-	function create_back(game) {
-		var back = game.add.group();
+	function disable_smooting(ctx) {
+		ctx.imageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+		ctx.oImageSmoothingEnabled = false;
+		ctx.webkitImageSmoothingEnabled = false;		
+	}
 
+	function create_back(game, width, height) {
 		var GR = 24 * hdpi;
+		var back = game.add.bitmapData(width, height);
+		var ctx = back.context;
 
-		var ground = game.add.graphics(0, HEIGHT - GR);
-		ground.beginFill(0xf5dab5);
-		ground.drawRect(0, 0, WIDTH, GR);
-		ground.endFill();
-		back.add(ground);
+		disable_smooting(ctx);
 
-		var down = game.add.tileSprite(0, HEIGHT - GR, 300, 26, 'down');
-		down.scale = new PIXI.Point(hdpi, hdpi);
-		down.autoScroll(-SPEED, 0);
-		down.smoothed = false;
-		back.add(down);
+		ctx.fillStyle = '#f5dab5';
+		ctx.fillRect(0, height - GR, width, GR);
 
-		var bg = game.add.image(0, HEIGHT - GR - 200 * hdpi, 'bg');
-		bg.scale = new PIXI.Point(hdpi, hdpi);
-		bg.smoothed = false;
-		back.add(bg);
+		var town = game.cache.getImage('bg');
+		ctx.drawImage(town, 0, height - GR - town.height * hdpi, width, town.height * hdpi);
 
-		return back;
+		var roll = game.add.tileSprite(0, HEIGHT - GR, 300, 26, 'down');
+		roll.scale = new PIXI.Point(hdpi, hdpi);
+		roll.autoScroll(-SPEED, 0);
+		roll.smoothed = false;
+
+		var g = game.add.group();
+		g.add(game.add.sprite(0, 0, back));
+		g.add(roll);
+
+		return g;
 	}
 
 	function create_bird(game) {
-		var bird = game.add.sprite(100, 100, 'bird');
+		var bird = game.add.sprite(75 * hdpi, 50 * hdpi, 'bird');
 		bird.animations.add('fly', [0, 1, 2, 1], 6, true);
 		bird.animations.play('fly');
 		bird.smoothed = false;
@@ -55,10 +62,10 @@ function init() {
 
 	function MenuState(game) {
 		this.create = function () {
-			create_back(game);
+			create_back(game, WIDTH, HEIGHT);
 			create_bird(game);
 
-			var play = game.add.button(game.world.centerX - 58 * hdpi /2, 150, 'btn_play', function () {				
+			var play = game.add.button(game.world.centerX - 58 * hdpi /2, 75 * hdpi, 'btn_play', function () {				
 				game.state.start('game');
 			});
 			play.smoothed = false;
@@ -79,7 +86,7 @@ function init() {
 
 	function GameState(game) {
 		this.create = function () {
-			create_back(game);
+			create_back(game, WIDTH, HEIGHT);
 			game.physics.startSystem(Phaser.Physics.ARCADE);
     		game.physics.arcade.gravity.y = 500;
 		}
