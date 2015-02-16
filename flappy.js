@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 13;
+var VERSION = 14;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -45,7 +45,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
                 this.renderType = Phaser.CANVAS;
             }
 
-            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "clearBeforeRender": true });
+            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "clearBeforeRender": false });
             this.context = this.renderer.context;
         }
         else
@@ -58,7 +58,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
         //  They requested WebGL and their browser supports it
         this.renderType = Phaser.WEBGL;
 
-        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer });
+        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : false });
         this.context = null;
     }
 
@@ -279,7 +279,7 @@ function init() {
 			});		
 			game.scale.refresh();
 
-			// game.plugins.add(FPSPlugin);
+			game.plugins.add(FPSPlugin);
 		});
 
 		game.state.add('preload', PreloadState, true);
