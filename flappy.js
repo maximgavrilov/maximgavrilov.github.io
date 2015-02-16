@@ -1,4 +1,5 @@
 'use strict'
+var VERSION = 8;
 
 var hdpi = 1;//window.devicePixelRatio || 1;
 
@@ -71,7 +72,6 @@ Phaser.Game.prototype.setUpRenderer = function () {
 }
 
 function init() {	
-	var VERSION = 7;
 	var WIDTH = 150 * hdpi, HEIGHT = 200 * hdpi;
 	var SPEED = 60;
 
