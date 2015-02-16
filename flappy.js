@@ -74,7 +74,8 @@ Phaser.Game.prototype.setUpRenderer = function () {
 function init() {	
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
-	var SPEED = 60, GRAVITY = 500, FLAP_ACCEL = 200;
+	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 200;
+	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 
 	function disable_smooting(ctx) {
 		ctx.imageSmoothingEnabled = false;
@@ -114,6 +115,44 @@ function init() {
 	Ground.prototype = Object.create(Phaser.TileSprite.prototype);
 	Ground.prototype.constructor = Ground;
 
+	var Wall = function (game) {
+		Phaser.Group.call(this, game);
+		var top = new Phaser.Sprite(game, 0, -150, 'wall');
+		game.physics.arcade.enableBody(top);
+		top.body.velocity.x = -SPEED;  
+		top.body.allowGravity = false;
+		this.add(top);
+		var bottom = new Phaser.Sprite(game, 0, 50, 'wall');
+		bottom.scale.y = -1;
+		game.physics.arcade.enableBody(bottom);
+		bottom.body.velocity.x = -SPEED;  
+		bottom.body.allowGravity = false;
+		this.add(bottom);
+
+		this.checkWorldBounds = true;
+  		this.outOfBoundsKill = true;
+
+		this.reset = function (x, y) {
+			top.reset(0, -150);
+			top.body.velocity.x = -SPEED;  
+			bottom.reset(0, 150);
+			bottom.scale.y = -1;
+			bottom.body.velocity.x = -SPEED;  
+			this.x = x;
+			this.y = y;
+			this.exists = true;
+		}
+
+		this.update = function () {
+			if (this.exists && !top.inWorld) {
+				this.exists = false;
+				console.warn('unexis');
+			}
+		}
+	}
+	Wall.prototype = Object.create(Phaser.Group.prototype);
+	Wall.prototype.constructor = Wall;
+
 	var Bird = function (game, x, y) {
 		Phaser.Sprite.call(this, game, x, y, 'bird');
 		this.anchor.setTo(0.5, 0.5);
@@ -121,13 +160,30 @@ function init() {
 		this.animations.play('fly');
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
-	}	
+		this.alive = false;
+		this.body.allowGravity = false;
+
+		this.update = function () {
+			if(this.alive) {
+				var v = this.body.velocity.y;
+				if (v <= 0) {
+					this.angle = FLAP_ANGLE * Math.min(1.0, -v / 200);
+				} else {
+					this.angle = 90 * Math.min(1.0, v / 200);
+				}
+			}		
+		}
+
+		this.hatch = function () {
+			this.alive = true;		
+			this.body.allowGravity = true;
+		}
+		this.flap = function () {
+			this.body.velocity.y = -FLAP_VEL;		
+		}
+	}
 	Bird.prototype = Object.create(Phaser.Sprite.prototype);
 	Bird.prototype.constructor = Bird;
-
-	Bird.prototype.flap = function () {
-		this.body.velocity.y = -FLAP_ACCEL;		
-	}
 
 	function PreloadState(game) {
 		this.preload = function () {
@@ -137,6 +193,7 @@ function init() {
 			game.load.image('wall', 'f_wall.png');
 			game.load.image('btn_play','btn_play.png');
 		}
+
 		this.create = function () {
 			game.state.start('menu');
 		}
@@ -148,22 +205,40 @@ function init() {
 			this.game.add.existing(new Ground(game, HEIGHT - GR));
 			this.game.add.existing(new Bird(game, 75, 50));
 
-			var play = game.add.button(game.world.centerX - 58 /2, 75, 'btn_play', function () {				
+			var play = game.add.button(game.world.centerX, 105, 'btn_play', function () {				
 				game.state.start('game');
 			});
+			play.anchor.setTo(0.5, 0.5);
 			play.smoothed = false;
 		}
 	}
 
 	function GameState(game) {
-		var bird, ground;
+		var bird, ground, walls;
+		var wallsTimer;
+
+		function emitWall() {
+			var wallY = game.rnd.integerInRange(-100, 100);
+ 			var wall = walls.getFirstExists(false);
+ 			if (!wall) {
+ 				wall = new Wall(game);
+ 				walls.add(wall);
+ 				console.warn('emit');
+ 			}
+ 			wall.reset(game.width - 1, 0)
+		}
+
 		this.create = function () {
 			this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
 			bird = this.game.add.existing(new Bird(game, 75, 50));
-			
+			walls = this.game.add.group();
+			bird.hatch();
+
 			game.physics.startSystem(Phaser.Physics.ARCADE);
     		game.physics.arcade.gravity.y = GRAVITY;
+
+    		game.time.events.loop(Phaser.Timer.SECOND * 1.25, emitWall);
 
     		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
     		var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
