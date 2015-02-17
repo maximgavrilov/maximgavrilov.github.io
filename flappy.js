@@ -341,12 +341,12 @@ function init() {
 		this.create = function () {
 			this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
 			walls = this.game.add.group();
-			bird = this.game.add.existing(new Bird(game, 75, 50));
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
+			bird = this.game.add.existing(new Bird(game, 75, 50));
 
 			score = game.add.existing(new Score(game));
 			score.x = 75;
-			score.y = 20;
+			score.y = 10;
 			score.setValue(sc);
 
 			bird.hatch();
