@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 21;
+var VERSION = 22;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -126,11 +126,13 @@ function init() {
 	var Wall = function (game) {
 		Phaser.Group.call(this, game);
 		var top = new Phaser.Sprite(game, 0, -150, 'wall_u');
+		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		game.physics.arcade.enableBody(top);
 		top.body.velocity.x = -SPEED;  
 		top.body.allowGravity = false;
 		this.add(top);
-		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_u');
+		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_d');
+		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		game.physics.arcade.enableBody(bottom);
 		bottom.body.velocity.x = -SPEED;  
 		bottom.body.allowGravity = false;
@@ -139,20 +141,27 @@ function init() {
 		this.checkWorldBounds = true;
   		this.outOfBoundsKill = true;
 
-		this.reset = function (x, y) {
-			top.reset(0, -150);
+		this.reset = function (wallY) {
+			top.reset(0, 0);
 			top.body.velocity.x = -SPEED;  
-			bottom.reset(0, 100 + 200);
-			bottom.scale.y = -1;
+			top.cropRect.y = 200 - wallY - 50;
+			top.cropRect.height = wallY + 50;
+			top.updateCrop();
+
+			bottom.reset(0, wallY + 50 + 50);
 			bottom.body.velocity.x = -SPEED;  
-			this.x = x;
-			this.y = y;
+			bottom.cropRect.y = 0;
+			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
+			bottom.updateCrop();
+
+			this.x = game.width - 1;
+			this.y = 0;
 			this.exists = true;
 			this.visible = true;
 		}
 
 		this.update = function () {
-			if (this.exists && !top.inWorld) {
+			if (this.exists && !bottom.inWorld) {
 				this.exists = false;
 				this.visible = false;
 			}
@@ -233,7 +242,7 @@ function init() {
  				wall = new Wall(game);
  				walls.add(wall);
  			}
- 			wall.reset(game.width - 1, wallY)
+ 			wall.reset(wallY)
 		}
 
 		this.create = function () {
