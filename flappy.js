@@ -139,11 +139,13 @@ function init() {
 			this.x = x;
 			this.y = y;
 			this.exists = true;
+			this.visible = true;
 		}
 
 		this.update = function () {
 			if (this.exists && !top.inWorld) {
 				this.exists = false;
+				this.visible = false;
 			}
 		}
 	}
