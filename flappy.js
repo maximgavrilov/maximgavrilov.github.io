@@ -105,22 +105,22 @@ function init() {
 	Background.prototype.constructor = Background;
 
 	var Ground = function (game, y) {
-		Phaser.Sprite.call(this, game, 0, y, 'down');
-		// Phaser.TileSprite.call(this, game, 0, y, 300, 24, 'down');
-		// this.autoScroll(-SPEED, 0);
+		// Phaser.Sprite.call(this, game, 0, y, 'down');
+		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'down');
+		this.autoScroll(-SPEED, 0);
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.body.immovable = true;  
 		this.body.allowGravity = false;
 
-		this.preUpdate = function () {
-			this.x += -SPEED * this.game.time.physicsElapsed;
-			while (this.x <= -15) {
-				this.x += 15;
-			}
-		}
+		// this.preUpdate = function () {
+		// 	this.x += -SPEED * this.game.time.physicsElapsed;
+		// 	while (this.x <= -150) {
+		// 		this.x += 150;
+		// 	}
+		// }
 	}	
-	Ground.prototype = Object.create(Phaser.Sprite.prototype);
+	Ground.prototype = Object.create(Phaser.TileSprite.prototype);
 	Ground.prototype.constructor = Ground;
 
 	var Wall = function (game) {
@@ -195,7 +195,7 @@ function init() {
 	function PreloadState(game) {
 		this.preload = function () {
 			game.load.spritesheet('bird', 'n_bird.png', 17, 12, 3);
-			game.load.image('down', 'f_down.png');
+			game.load.image('down', 'f_down_2.png');
 			game.load.image('bg', 'f_bg.png');
 			game.load.image('wall_u', 'f_wall_u.png');
 			game.load.image('wall_d', 'f_wall_d.png');
