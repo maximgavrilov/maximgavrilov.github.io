@@ -238,7 +238,7 @@ function init() {
 			this.animations.stop();
 			this.animations.play('fly');
 			this.body.velocity.x = 0;
-			this.angle = 0;
+			this.angle = 90;
 			this.alive = false;
 		}
 	}
