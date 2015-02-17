@@ -182,7 +182,6 @@ function init() {
 		}
 
 		this.isScored = function (bird) {
-			console.warn(bird.x + ' ' + this.x);
 			return this.exists && bird.body.position.x >= top.body.position.x;
 		}
 	}
@@ -238,7 +237,7 @@ function init() {
 			this.animations.stop();
 			this.animations.play('fly');
 			this.body.velocity.x = 0;
-			this.angle = 90;
+			game.add.tween(this).to({ angle : 90 }, 0.15 * Phaser.Timer.SECOND).start();
 			this.alive = false;
 		}
 	}
