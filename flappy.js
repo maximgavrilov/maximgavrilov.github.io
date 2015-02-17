@@ -105,21 +105,22 @@ function init() {
 	Background.prototype.constructor = Background;
 
 	var Ground = function (game, y) {
-		Phaser.TileSprite.call(this, game, 0, y, 300, 24, 'down');
-		this.autoScroll(-SPEED, 0);
+		Phaser.Sprite.call(this, game, 0, y, 'down');
+		// Phaser.TileSprite.call(this, game, 0, y, 300, 24, 'down');
+		// this.autoScroll(-SPEED, 0);
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.body.immovable = true;  
 		this.body.allowGravity = false;
 
-		// this.preUpdate = function () {
-		// 	this.x += -SPEED * this.game.time.physicsElapsed;
-		// 	while (this.x <= -15) {
-		// 		this.x += 15;
-		// 	}
-		// }
+		this.preUpdate = function () {
+			this.x += -SPEED * this.game.time.physicsElapsed;
+			while (this.x <= -15) {
+				this.x += 15;
+			}
+		}
 	}	
-	Ground.prototype = Object.create(Phaser.TileSprite.prototype);
+	Ground.prototype = Object.create(Phaser.Sprite.prototype);
 	Ground.prototype.constructor = Ground;
 
 	var Wall = function (game) {
