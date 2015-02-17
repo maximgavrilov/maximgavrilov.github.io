@@ -153,13 +153,13 @@ function init() {
 			top.cropRect.height = wallY + 50;
 			top.updateCrop();
 			top.body.velocity.x = -SPEED;  
-			top.body.setSize(top.cropRect.width, top.cropRect.height);
+			top.body.setSize(top.cropRect.width, top.cropRect.height, 1);
 
 			bottom.reset(0, wallY + 50 + 50);
 			bottom.cropRect.y = 0;
 			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
 			bottom.updateCrop();
-			bottom.body.setSize(bottom.cropRect.width, bottom.cropRect.height);
+			bottom.body.setSize(bottom.cropRect.width, bottom.cropRect.height, 1);
 			bottom.body.velocity.x = -SPEED;  			
 
 			this.x = game.width - 1;
@@ -238,7 +238,7 @@ function init() {
 			this.animations.stop();
 			this.animations.play('fly');
 			this.body.velocity.x = 0;
-			this.angle = 90;
+			this.angle = 0;
 			this.alive = false;
 		}
 	}
