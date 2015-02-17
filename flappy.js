@@ -74,7 +74,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
 function init() {	
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
-	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 150;
+	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 
 	function disable_smooting(ctx) {
@@ -337,7 +337,7 @@ function init() {
 	
 	(function () {
 		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
-		// game.config.enableDebug = false;
+		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
 			game.stage.backgroundColor = '#ff0000';
 			game.stage.disableVisibilityChange = true;
