@@ -106,7 +106,7 @@ function init() {
 
 	var Ground = function (game, y) {
 		Phaser.TileSprite.call(this, game, 0, y, 300, 26, 'down');
-		this.autoScroll(-SPEED, 0);
+		// this.autoScroll(-SPEED, 0);
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.body.immovable = true;  
