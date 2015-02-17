@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 14;
+var VERSION = 18;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
