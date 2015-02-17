@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 22;
+var VERSION = 23;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -138,6 +138,9 @@ function init() {
 		bottom.body.allowGravity = false;
 		this.add(bottom);
 
+		this.exists = false;
+		this.visible = false;
+
 		this.checkWorldBounds = true;
   		this.outOfBoundsKill = true;
 
@@ -161,7 +164,7 @@ function init() {
 		}
 
 		this.update = function () {
-			if (this.exists && !bottom.inWorld) {
+			if (this.exists && !top.inWorld) {
 				this.exists = false;
 				this.visible = false;
 			}
@@ -252,6 +255,10 @@ function init() {
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
 			bird.hatch();
 
+			for (var i = 0; i < 3; i++) {				
+				walls.add(new Wall(game));
+			}
+
 			game.physics.startSystem(Phaser.Physics.ARCADE);
     		game.physics.arcade.gravity.y = GRAVITY;
 
@@ -281,7 +288,7 @@ function init() {
 	}
 	
 	(function () {
-		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
+		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'game', null, false, false, null);
 		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
 			game.stage.backgroundColor = '#ff0000';
