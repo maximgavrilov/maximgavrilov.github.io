@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 18;
+var VERSION = 19;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -195,7 +195,7 @@ function init() {
 	function PreloadState(game) {
 		this.preload = function () {
 			game.load.spritesheet('bird', 'n_bird.png', 17, 12, 3);
-			game.load.image('down', 'f_down_2.png');
+			game.load.image('down', 'f_down_3.png');
 			game.load.image('bg', 'f_bg.png');
 			game.load.image('wall_u', 'f_wall_u.png');
 			game.load.image('wall_d', 'f_wall_d.png');
