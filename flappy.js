@@ -201,7 +201,7 @@ function init() {
 				if (v <= 0) {
 					this.angle = FLAP_ANGLE * Math.min(1.0, -v / 200);
 				} else {
-					this.angle = 90 * Math.min(1.0, v / 100);
+					this.angle = 90 * Math.min(1.0, v / 200);
 				}
 			}		
 		}
