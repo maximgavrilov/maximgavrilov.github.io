@@ -74,7 +74,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
 function init() {	
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
-	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 200;
+	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 150;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 
 	function disable_smooting(ctx) {
@@ -84,58 +84,59 @@ function init() {
 		ctx.webkitImageSmoothingEnabled = false;		
 	}
 
+	var bgBitmap;
 	var Background = function (game, x, y, width, height) {
-		var back = new Phaser.BitmapData(game, null, width, height);
-		var ctx = back.context;
+		var back = bgBitmap;
+		if (!back) {
+			back = new Phaser.BitmapData(game, null, width, height);
+			var ctx = back.context;
 
-		disable_smooting(ctx);
+			disable_smooting(ctx);
 
-		ctx.fillStyle = '#93d4c3';
-		ctx.fillRect(0, 0, width, height - GR);
+			ctx.fillStyle = '#93d4c3';
+			ctx.fillRect(0, 0, width, height - GR);
 
-		ctx.fillStyle = '#f5dab5';
-		ctx.fillRect(0, height - GR, width, GR);
+			ctx.fillStyle = '#f5dab5';
+			ctx.fillRect(0, height - GR, width, GR);
 
-		var town = game.cache.getImage('bg');
-		ctx.drawImage(town, 0, height - GR - town.height, width, town.height);
+			var town = game.cache.getImage('bg');
+			ctx.drawImage(town, 0, height - GR - town.height, width, town.height);
 
+			bgBitmap = back;
+		}
 		Phaser.Image.call(this, game, x, y, back);
 	}
 	Background.prototype = Object.create(Phaser.Image.prototype);  
 	Background.prototype.constructor = Background;
 
 	var Ground = function (game, y) {
-		// Phaser.Sprite.call(this, game, 0, y, 'down');
 		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'down');
 		this.autoScroll(-SPEED, 0);
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.body.immovable = true;  
 		this.body.allowGravity = false;
-
-		// this.preUpdate = function () {
-		// 	this.x += -SPEED * this.game.time.physicsElapsed;
-		// 	while (this.x <= -150) {
-		// 		this.x += 150;
-		// 	}
-		// }
 	}	
 	Ground.prototype = Object.create(Phaser.TileSprite.prototype);
 	Ground.prototype.constructor = Ground;
 
 	var Wall = function (game) {
 		Phaser.Group.call(this, game);
+
 		var top = new Phaser.Sprite(game, 0, -150, 'wall_u');
-		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		game.physics.arcade.enableBody(top);
-		top.body.velocity.x = -SPEED;  
 		top.body.allowGravity = false;
+		top.body.immovable = true;  
+		top.smoothed = false;
+		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(top);
+
 		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_d');
-		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		game.physics.arcade.enableBody(bottom);
-		bottom.body.velocity.x = -SPEED;  
 		bottom.body.allowGravity = false;
+		bottom.body.immovable = true;  
+		bottom.smoothed = false;
+		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(bottom);
 
 		this.exists = false;
@@ -146,21 +147,24 @@ function init() {
 
 		this.reset = function (wallY) {
 			top.reset(0, 0);
-			top.body.velocity.x = -SPEED;  
 			top.cropRect.y = 200 - wallY - 50;
 			top.cropRect.height = wallY + 50;
 			top.updateCrop();
+			top.body.velocity.x = -SPEED;  
+			top.body.setSize(top.cropRect.width, top.cropRect.height);
 
 			bottom.reset(0, wallY + 50 + 50);
-			bottom.body.velocity.x = -SPEED;  
 			bottom.cropRect.y = 0;
 			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
 			bottom.updateCrop();
+			bottom.body.setSize(bottom.cropRect.width, bottom.cropRect.height);
+			bottom.body.velocity.x = -SPEED;  			
 
 			this.x = game.width - 1;
 			this.y = 0;
 			this.exists = true;
 			this.visible = true;
+
 		}
 
 		this.update = function () {
@@ -169,6 +173,11 @@ function init() {
 				this.visible = false;
 			}
 		}
+
+		this.stop = function () {
+			top.body.velocity.x = 0;
+			bottom.body.velocity.x = 0;
+		}
 	}
 	Wall.prototype = Object.create(Phaser.Group.prototype);
 	Wall.prototype.constructor = Wall;
@@ -176,8 +185,11 @@ function init() {
 	var Bird = function (game, x, y) {
 		Phaser.Sprite.call(this, game, x, y, 'bird');
 		this.anchor.setTo(0.5, 0.5);
-		this.animations.add('fly', [0, 1, 2, 1], 6, true);
-		this.animations.play('fly');
+		this.animations.add('demo', [0, 1, 2, 1], 6, true);
+		this.animations.add('flap', [0, 1, 2, 1], 6);
+		this.animations.add('fly', [1], 6, true);
+		this.animations.play('demo');
+
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.alive = false;
@@ -189,7 +201,7 @@ function init() {
 				if (v <= 0) {
 					this.angle = FLAP_ANGLE * Math.min(1.0, -v / 200);
 				} else {
-					this.angle = 90 * Math.min(1.0, v / 200);
+					this.angle = 90 * Math.min(1.0, v / 100);
 				}
 			}		
 		}
@@ -197,9 +209,30 @@ function init() {
 		this.hatch = function () {
 			this.alive = true;		
 			this.body.allowGravity = true;
+			this.animations.stop();
+			this.animations.play('fly');
 		}
+
 		this.flap = function () {
+			if (!this.alive) {
+				return;
+			}
 			this.body.velocity.y = -FLAP_VEL;		
+			this.animations.stop();
+			this.animations.play('flap').onComplete.addOnce(function () {
+				this.animations.play('fly');
+			}, this);
+		}
+
+		this.die = function () {
+			if (!this.alive) {
+				return;
+			}
+			this.animations.stop();
+			this.animations.play('fly');
+			this.body.velocity.x = 0;
+			this.angle = 90;
+			this.alive = false;
 		}
 	}
 	Bird.prototype = Object.create(Phaser.Sprite.prototype);
@@ -236,7 +269,6 @@ function init() {
 
 	function GameState(game) {
 		var bird, ground, walls;
-		var wallsTimer;
 
 		function emitWall() {
 			var wallY = game.rnd.integerInRange(-50, 50);
@@ -248,10 +280,17 @@ function init() {
  			wall.reset(wallY)
 		}
 
+		function death() {
+			bird.die();
+			walls.callAll('stop');
+			ground.stopScroll();
+			game.time.events.stop();
+		}
+
 		this.create = function () {
 			this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
-			bird = this.game.add.existing(new Bird(game, 75, 50));
 			walls = this.game.add.group();
+			bird = this.game.add.existing(new Bird(game, 75, 50));
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
 			bird.hatch();
 
@@ -271,7 +310,16 @@ function init() {
 		}
 
 		this.update = function () {
-			game.physics.arcade.collide(bird, ground);
+			game.physics.arcade.collide(bird, ground, death);
+			if (bird.alive) {
+				walls.forEach(function (wall) {
+					game.physics.arcade.collide(bird, wall, death);
+				}, this, true);				
+			}
+		}
+
+		this.shutdown = function() {  
+  			game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 		}
 	}
 
@@ -289,7 +337,7 @@ function init() {
 	
 	(function () {
 		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
-		game.config.enableDebug = false;
+		// game.config.enableDebug = false;
 		game.device.whenReady(function () {		
 			game.stage.backgroundColor = '#ff0000';
 			game.stage.disableVisibilityChange = true;
