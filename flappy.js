@@ -130,7 +130,7 @@ function init() {
 		top.body.velocity.x = -SPEED;  
 		top.body.allowGravity = false;
 		this.add(top);
-		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_d');
+		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_u');
 		game.physics.arcade.enableBody(bottom);
 		bottom.body.velocity.x = -SPEED;  
 		bottom.body.allowGravity = false;
@@ -142,7 +142,8 @@ function init() {
 		this.reset = function (x, y) {
 			top.reset(0, -150);
 			top.body.velocity.x = -SPEED;  
-			bottom.reset(0, 100);
+			bottom.reset(0, 100 + 200);
+			bottom.scale.y = -1;
 			bottom.body.velocity.x = -SPEED;  
 			this.x = x;
 			this.y = y;
