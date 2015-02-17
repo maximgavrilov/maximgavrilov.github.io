@@ -139,6 +139,8 @@ function init() {
 		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(bottom);
 
+		this.scored = false;
+
 		this.exists = false;
 		this.visible = false;
 
@@ -164,7 +166,7 @@ function init() {
 			this.y = 0;
 			this.exists = true;
 			this.visible = true;
-
+			this.scored = false;
 		}
 
 		this.update = function () {
@@ -177,6 +179,11 @@ function init() {
 		this.stop = function () {
 			top.body.velocity.x = 0;
 			bottom.body.velocity.x = 0;
+		}
+
+		this.isScored = function (bird) {
+			console.warn(bird.x + ' ' + this.x);
+			return this.exists && bird.body.position.x >= top.body.position.x;
 		}
 	}
 	Wall.prototype = Object.create(Phaser.Group.prototype);
@@ -238,6 +245,48 @@ function init() {
 	Bird.prototype = Object.create(Phaser.Sprite.prototype);
 	Bird.prototype.constructor = Bird;
 
+	var Score = function (game) {
+		Phaser.Group.call(this, game);
+
+		this.setValue = function (value) {
+			var a;
+			if (value == 0) {
+				a = ['0'];
+			} else {
+				a = [];
+				while (value > 0) {
+					a.push('' + (value % 10));
+					value = Math.floor(value / 10);
+				}
+			}
+			while (this.children.length < a.length) {
+				this.add(new Phaser.Sprite(game, 0, 0, 'digits'));
+			}
+			while (this.children.length > a.length) {
+				this.remove(this.children[0]);
+			}
+			var x = 0;
+			for (var i = a.length - 1; i >= 0; i--) {
+				var d = this.children[i];
+				d.reset(x, 0);
+				d.frameName = a[i];
+				var w = 10;
+				if (a[i] == '1') {
+					w = 7;
+				} else if (a[i] == '7') {
+					w = 8;
+				}
+				x += w + 1;
+			}
+			x = Math.floor(x / 2);
+			for (var i = a.length - 1; i >= 0; i--) {
+				this.children[i].x -= x;
+			}
+		}
+	}
+	Score.prototype = Object.create(Phaser.Group.prototype);
+	Score.prototype.constructor = Score;
+
 	function PreloadState(game) {
 		this.preload = function () {
 			game.load.spritesheet('bird', 'n_bird.png', 17, 12, 3);
@@ -246,6 +295,7 @@ function init() {
 			game.load.image('wall_u', 'f_wall_u.png');
 			game.load.image('wall_d', 'f_wall_d.png');
 			game.load.image('btn_play','btn_play.png');
+			game.load.atlasJSONHash('digits', 'digits.png', 'digits.json');
 		}
 
 		this.create = function () {
@@ -255,9 +305,9 @@ function init() {
 
 	function MenuState(game) {
 		this.create = function () {
-			this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
-			this.game.add.existing(new Ground(game, HEIGHT - GR));
-			this.game.add.existing(new Bird(game, 75, 50));
+			game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
+			game.add.existing(new Ground(game, HEIGHT - GR));
+			game.add.existing(new Bird(game, 75, 50));
 
 			var play = game.add.button(game.world.centerX, 105, 'btn_play', function () {				
 				game.state.start('game');
@@ -268,7 +318,8 @@ function init() {
 	}
 
 	function GameState(game) {
-		var bird, ground, walls;
+		var bird, ground, walls, score;
+		var sc = 0;
 
 		function emitWall() {
 			var wallY = game.rnd.integerInRange(-50, 50);
@@ -292,8 +343,13 @@ function init() {
 			walls = this.game.add.group();
 			bird = this.game.add.existing(new Bird(game, 75, 50));
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
-			bird.hatch();
 
+			score = game.add.existing(new Score(game));
+			score.x = 75;
+			score.y = 20;
+			score.setValue(sc);
+
+			bird.hatch();
 			for (var i = 0; i < 3; i++) {				
 				walls.add(new Wall(game));
 			}
@@ -313,6 +369,11 @@ function init() {
 			game.physics.arcade.collide(bird, ground, death);
 			if (bird.alive) {
 				walls.forEach(function (wall) {
+					if (!wall.scored && wall.isScored(bird)) {
+						wall.scored = true;
+						sc += 1;
+						score.setValue(sc);
+					}
 					game.physics.arcade.collide(bird, wall, death);
 				}, this, true);				
 			}
