@@ -351,7 +351,7 @@ function init() {
 
 	function GameState(game) {
 		var bird, bg, ground, walls, score, gameOver;
-		var sc = 0;
+		var sc;
 
 		function emitWall() {
 			var wallY = game.rnd.integerInRange(-50, 50);
@@ -360,7 +360,8 @@ function init() {
  				wall = new Wall(game);
  				walls.add(wall);
  			}
- 			wall.reset(wallY)
+ 			wall.reset(wallY);
+ 			console.warn('emit');
 		}
 
 		function death() {
@@ -379,6 +380,7 @@ function init() {
 		}
 
 		this.create = function () {
+			sc = 0;
 			bg = this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
 			walls = this.game.add.group();
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
@@ -398,7 +400,8 @@ function init() {
     		game.physics.arcade.gravity.y = GRAVITY;
 
     		game.time.events.loop(1.25 * Phaser.Timer.SECOND, emitWall);
-
+			game.time.events.start();
+			
     		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
     		var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     		flapKey.onDown.add(bird.flap, bird);
