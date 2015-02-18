@@ -110,8 +110,20 @@ function init() {
 			ctx.fillStyle = '#f5dab5';
 			ctx.fillRect(0, height - GR, width, GR);
 
-			var town = game.cache.getImage('bg');
-			ctx.drawImage(town, 0, height - GR - town.height, width, town.height);
+			var frame = game.cache.getFrameByName('gui', 'bg.png');
+			var texture = PIXI.TextureCache[frame.uuid];
+			ctx.drawImage(texture.baseTexture.source,
+                               texture.frame.x,
+                               texture.frame.y,
+                               texture.frame.width,
+                               texture.frame.height,
+                               0,
+                               height - GR - texture.frame.height,
+                               texture.frame.width,
+                               texture.frame.height);
+
+			// var town = game.cache.getImage('bg');
+			// ctx.drawImage(town, 0, height - GR - town.height, width, town.height);
 
 			bgBitmap = back;
 		}
@@ -324,7 +336,6 @@ function init() {
 
 	function PreloadState(game) {
 		this.preload = function () {
-			game.load.image('bg', 'f_bg.png');
 			game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
 		}
 
@@ -401,7 +412,7 @@ function init() {
 
     		game.time.events.loop(1.25 * Phaser.Timer.SECOND, emitWall);
 			game.time.events.start();
-			
+
     		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
     		var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     		flapKey.onDown.add(bird.flap, bird);
