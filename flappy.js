@@ -431,7 +431,7 @@ function init() {
     		}
 			isStarted = true;
 
-    		help.destory();
+    		help.destroy();
     		help = null;
 
 			bird.hatch();
@@ -464,6 +464,7 @@ function init() {
 		this.shutdown = function() {  
 			if (help) {
 				help.destroy();
+				help = null;				
 			}
 			bg.destroy();
 			walls.destroy();
