@@ -293,8 +293,9 @@ function init() {
 			game.load.image('bg', 'f_bg.png');
 			game.load.image('wall_u', 'f_wall_u.png');
 			game.load.image('wall_d', 'f_wall_d.png');
-			game.load.image('btn_play','btn_play.png');
+			// game.load.image('btn_play','btn_play.png');
 			game.load.atlasJSONHash('digits', 'digits.png', 'digits.json');
+			game.load.atlasJSONHash('buttons', 'buttons.png', 'buttons.json');
 		}
 
 		this.create = function () {
@@ -308,9 +309,9 @@ function init() {
 			game.add.existing(new Ground(game, HEIGHT - GR));
 			game.add.existing(new Bird(game, 75, 50));
 
-			var play = game.add.button(game.world.centerX, 105, 'btn_play', function () {				
+			var play = game.add.button(game.world.centerX, 105, 'buttons', function () {				
 				game.state.start('game');
-			});
+			}, this, 'btn_play_over.png', 'btn_play_up.png', 'btn_play_down.png');
 			play.anchor.setTo(0.5, 0.5);
 			play.smoothed = false;
 		}
