@@ -309,8 +309,10 @@ function init() {
 			game.add.existing(new Ground(game, HEIGHT - GR));
 			game.add.existing(new Bird(game, 75, 50));
 
-			var play = game.add.button(game.world.centerX, 105, 'buttons', function () {				
-				game.state.start('game');
+			var play = game.add.button(game.world.centerX, 105, 'buttons', function (game, pointer, isOver) {				
+				if (isOver) {
+					game.state.start('game');
+				}
 			}, this, 'btn_play_over.png', 'btn_play_up.png', 'btn_play_down.png');
 			play.anchor.setTo(0.5, 0.5);
 			play.smoothed = false;
