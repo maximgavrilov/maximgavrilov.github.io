@@ -322,8 +322,11 @@ function init() {
 
 	var GameOver = function (game) {
 		Phaser.Group.call(this, game);
-		this.add(game.add.image(37, 13, 'gui', 'game_over.png'));
+		this.add(game.add.image(37, 13, 'gui', 'txt_game_over.png'));
 		this.add(game.add.image(19, 29, 'gui', 'result_bg.png'));
+		this.add(add_button(game, 31, 96, 'btn_share', function () {
+			// game.state.start('menu');
+		}));
 		this.add(add_button(game, 38, 137, 'btn_continue', function () {
 			// game.state.start('menu');
 		}));
@@ -361,7 +364,9 @@ function init() {
 	}
 
 	function GameState(game) {
-		var bird, bg, ground, walls, score, gameOver;
+		var isStarted;
+		var help, bird, bg, ground, walls, score, gameOver;
+		var flapKey;
 		var sc;
 
 		function emitWall() {
@@ -391,30 +396,51 @@ function init() {
 		}
 
 		this.create = function () {
+    		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+    		flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+			isStarted = false;
+
 			sc = 0;
 			bg = this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
 			walls = this.game.add.group();
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
-			bird = this.game.add.existing(new Bird(game, 75, 50));
+			bird = this.game.add.existing(new Bird(game, 45, 127));
+
+			help = this.game.add.group();
+			help.add(this.game.add.image(24, 53, 'gui', 'txt_ready.png'));
+			help.add(this.game.add.image(75, 114, 'gui', 'gray_bird.png')).anchor.setTo(0.5, 0.5);
+			help.add(this.game.add.image(75, 126, 'gui', 'txt_taptap.png')).anchor.setTo(0.5, 0);
+
+			for (var i = 0; i < 3; i++) {				
+				walls.add(new Wall(game));
+			}
 
 			score = game.add.existing(new Score(game));
 			score.x = 75;
 			score.y = 10;
 			score.setValue(sc);
 
+    		flapKey.onDown.addOnce(start, this);
+    		this.input.onDown.addOnce(start, this);
+    	}
+
+    	function start() {
+    		if (isStarted) {
+    			return;
+    		}
+
+    		help.visible = false;
+
 			bird.hatch();
-			for (var i = 0; i < 3; i++) {				
-				walls.add(new Wall(game));
-			}
+			bird.flap();
 
 			game.physics.startSystem(Phaser.Physics.ARCADE);
     		game.physics.arcade.gravity.y = GRAVITY;
 
     		game.time.events.loop(1.25 * Phaser.Timer.SECOND, emitWall);
 			game.time.events.start();
-
-    		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
-    		var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    		
     		flapKey.onDown.add(bird.flap, bird);
     		this.input.onDown.add(bird.flap, bird);
 		}

@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>phaser-json-hash</string>
         <key>textureFileName</key>
-        <filename></filename>
+        <filename>gui.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -145,7 +145,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename></filename>
+                <filename>gui.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -191,6 +191,38 @@
             <filename>gui/btn_play_down.png</filename>
             <filename>gui/btn_play_out.png</filename>
             <filename>gui/btn_play_over.png</filename>
+            <filename>gui/btn_top_down.png</filename>
+            <filename>gui/btn_top_out.png</filename>
+            <filename>gui/btn_top_over.png</filename>
+            <filename>gui/logo.png</filename>
+            <filename>gui/btn_continue_down.png</filename>
+            <filename>gui/btn_continue_out.png</filename>
+            <filename>gui/btn_continue_over.png</filename>
+            <filename>gui/btn_menu_down.png</filename>
+            <filename>gui/btn_menu_out.png</filename>
+            <filename>gui/btn_menu_over.png</filename>
+            <filename>gui/game_over.png</filename>
+            <filename>gui/result_bg.png</filename>
+            <filename>gui/0.png</filename>
+            <filename>gui/1.png</filename>
+            <filename>gui/2.png</filename>
+            <filename>gui/3.png</filename>
+            <filename>gui/4.png</filename>
+            <filename>gui/5.png</filename>
+            <filename>gui/6.png</filename>
+            <filename>gui/7.png</filename>
+            <filename>gui/8.png</filename>
+            <filename>gui/9.png</filename>
+            <filename>gui/bird1.png</filename>
+            <filename>gui/bird2.png</filename>
+            <filename>gui/bird3.png</filename>
+            <filename>gui/wall_d.png</filename>
+            <filename>gui/wall_u.png</filename>
+            <filename>gui/ground.png</filename>
+            <filename>gui/bg.png</filename>
+            <filename>gui/btn_share_down.png</filename>
+            <filename>gui/btn_share_out.png</filename>
+            <filename>gui/btn_share_over.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
