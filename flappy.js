@@ -75,6 +75,7 @@ function init() {
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
 	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
+	var WALL_DIST = 75;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 
 	function disable_smooting(ctx) {
@@ -181,22 +182,22 @@ function init() {
 		this.checkWorldBounds = true;
   		this.outOfBoundsKill = true;
 
-		this.reset = function (wallY) {
-			top.reset(0, 0);
+		this.reset = function (x, wallY) {
+			top.reset(x, 0);
 			top.cropRect.y = 200 - wallY - 50;
 			top.cropRect.height = wallY + 50;
 			top.updateCrop();
 			top.body.velocity.x = -SPEED;  
 			top.body.setSize(top.cropRect.width - 2, top.cropRect.height - 1, 1, 0);
 
-			bottom.reset(0, wallY + 50 + 50);
+			bottom.reset(x, wallY + 50 + 50);
 			bottom.cropRect.y = 0;
 			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
 			bottom.updateCrop();
 			bottom.body.setSize(bottom.cropRect.width - 2, bottom.cropRect.height - 1, 1, 1);
 			bottom.body.velocity.x = -SPEED;  			
 
-			this.x = game.width - 1;
+			this.x = 0;
 			this.y = 0;
 			this.exists = true;
 			this.visible = true;
@@ -204,7 +205,7 @@ function init() {
 		}
 
 		this.update = function () {
-			if (this.exists && !top.inWorld) {
+			if (this.exists && top.position.x < -26) {
 				this.exists = false;
 				this.visible = false;
 			}
@@ -217,6 +218,10 @@ function init() {
 
 		this.isScored = function (bird) {
 			return this.exists && bird.body.position.x >= top.body.position.x;
+		}
+
+		this.getX = function () { 
+			return top.position.x;
 		}
 	}
 	Wall.prototype = Object.create(Phaser.Group.prototype);
@@ -364,30 +369,46 @@ function init() {
 	}
 
 	function GameState(game) {
-		var isStarted;
+		var isStarted, isWallStarted;
 		var help, bird, bg, ground, walls, score, gameOver;
 		var flapKey;
 		var sc;
 
 		function emitWall() {
-			var wallY = game.rnd.integerInRange(-50, 50);
- 			var wall = walls.getFirstExists(false);
- 			if (!wall) {
- 				wall = new Wall(game);
- 				walls.add(wall);
- 			}
- 			wall.reset(wallY);
- 			console.warn('emit');
+			if (!isWallStarted) {
+				return;
+			}
+
+			var maxX = -1;
+			walls.forEachExists(function (w) {
+				if (w.getX() > maxX) {
+					maxX = w.getX();
+				}
+			});
+
+			if (maxX == -1) {
+				maxX = WIDTH - WALL_DIST;
+			}
+
+			if (maxX + WALL_DIST <= WIDTH) {
+				var wallY = game.rnd.integerInRange(-50, 50);
+	 			var wall = walls.getFirstExists(false);
+	 			if (!wall) {
+	 				wall = new Wall(game);
+	 				walls.add(wall);
+	 			}
+	 			wall.reset(maxX + WALL_DIST, wallY);
+			}
 		}
 
 		function death() {
 			if (bird.alive) {
+				isWallStarted = false;
 				score.visible = false;
 
 				bird.die();
 				walls.callAll('stop');
 				ground.stopScroll();
-				game.time.events.stop();
 
 				gameOver = new GameOver(game);
 				game.add.existing(gameOver);
@@ -400,6 +421,7 @@ function init() {
     		flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 			isStarted = false;
+			isWallStarted = false;
 
 			sc = 0;
 			bg = this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
@@ -440,14 +462,17 @@ function init() {
 			game.physics.startSystem(Phaser.Physics.ARCADE);
     		game.physics.arcade.gravity.y = GRAVITY;
 
-    		game.time.events.loop(1.25 * Phaser.Timer.SECOND, emitWall);
-			game.time.events.start();
-    		
     		flapKey.onDown.add(bird.flap, bird);
     		this.input.onDown.add(bird.flap, bird);
+
+    		game.time.events.add(1.25 * Phaser.Timer.SECOND, function () {
+    			isWallStarted = true;
+    			emitWall();
+    		});
 		}
 
 		this.update = function () {
+			emitWall();
 			game.physics.arcade.collide(bird, ground, death);
 			if (bird.alive) {
 				walls.forEach(function (wall) {
