@@ -45,7 +45,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
                 this.renderType = Phaser.CANVAS;
             }
 
-            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "clearBeforeRender": false });
+            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "clearBeforeRender": true });
             this.context = this.renderer.context;
         }
         else
@@ -58,7 +58,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
         //  They requested WebGL and their browser supports it
         this.renderType = Phaser.WEBGL;
 
-        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : false });
+        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : true });
         this.context = null;
     }
 
@@ -82,6 +82,17 @@ function init() {
 		ctx.mozImageSmoothingEnabled = false;
 		ctx.oImageSmoothingEnabled = false;
 		ctx.webkitImageSmoothingEnabled = false;		
+	}
+
+	function add_button(game, x, y, name, cb) {
+		var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {				
+			if (isOver) {
+				cb();
+			}
+		}, null, name + '_over.png', name + '_out.png', name + '_down.png');
+		btn.anchor.setTo(0, 0);
+		btn.smoothed = false;
+		return btn;
 	}
 
 	var bgBitmap;
@@ -110,12 +121,21 @@ function init() {
 	Background.prototype.constructor = Background;
 
 	var Ground = function (game, y) {
-		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'down');
+		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'gui', 'ground.png');
 		this.autoScroll(-SPEED, 0);
 		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.body.immovable = true;  
 		this.body.allowGravity = false;
+
+		// workaround for Phaser 2.2.2 bug
+		this.destroy = function () {
+			Phaser.TileSprite.prototype.destroy.call(this);
+			if (this.tilingTexture) {
+				this.tilingTexture.destroy(true);
+				this.tilingTexture = null;								
+			}
+		}
 	}	
 	Ground.prototype = Object.create(Phaser.TileSprite.prototype);
 	Ground.prototype.constructor = Ground;
@@ -123,7 +143,8 @@ function init() {
 	var Wall = function (game) {
 		Phaser.Group.call(this, game);
 
-		var top = new Phaser.Sprite(game, 0, -150, 'wall_u');
+		var top = new Phaser.Sprite(game, 0, -150, 'gui');
+		top.frameName = 'wall_u.png';
 		game.physics.arcade.enableBody(top);
 		top.body.allowGravity = false;
 		top.body.immovable = true;  
@@ -131,7 +152,8 @@ function init() {
 		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(top);
 
-		var bottom = new Phaser.Sprite(game, 0, 100, 'wall_d');
+		var bottom = new Phaser.Sprite(game, 0, 100, 'gui');
+		bottom.frameName = 'wall_d.png';
 		game.physics.arcade.enableBody(bottom);
 		bottom.body.allowGravity = false;
 		bottom.body.immovable = true;  
@@ -189,11 +211,11 @@ function init() {
 	Wall.prototype.constructor = Wall;
 
 	var Bird = function (game, x, y) {
-		Phaser.Sprite.call(this, game, x, y, 'bird');
+		Phaser.Sprite.call(this, game, x, y, 'gui');
 		this.anchor.setTo(0.5, 0.5);
-		this.animations.add('demo', [0, 1, 2, 1], 6, true);
-		this.animations.add('flap', [0, 1, 2, 1], 6);
-		this.animations.add('fly', [1], 6, true);
+		this.animations.add('demo', ['bird1.png', 'bird2.png', 'bird3.png', 'bird2.png'], 6, true);
+		this.animations.add('flap', ['bird1.png', 'bird2.png', 'bird3.png', 'bird2.png'], 6);
+		this.animations.add('fly', ['bird2.png'], 6, true);
 		this.animations.play('demo');
 
 		this.smoothed = false;
@@ -259,7 +281,7 @@ function init() {
 				}
 			}
 			while (this.children.length < a.length) {
-				this.add(new Phaser.Sprite(game, 0, 0, 'digits'));
+				this.add(new Phaser.Sprite(game, 0, 0, 'gui'));
 			}
 			while (this.children.length > a.length) {
 				this.remove(this.children[0]);
@@ -268,7 +290,7 @@ function init() {
 			for (var i = a.length - 1; i >= 0; i--) {
 				var d = this.children[i];
 				d.reset(x, 0);
-				d.frameName = a[i];
+				d.frameName = a[i] + '.png';
 				var w = 10;
 				if (a[i] == '1') {
 					w = 7;
@@ -286,16 +308,24 @@ function init() {
 	Score.prototype = Object.create(Phaser.Group.prototype);
 	Score.prototype.constructor = Score;
 
+	var GameOver = function (game) {
+		Phaser.Group.call(this, game);
+		this.add(game.add.image(37, 13, 'gui', 'game_over.png'));
+		this.add(game.add.image(19, 29, 'gui', 'result_bg.png'));
+		this.add(add_button(game, 38, 137, 'btn_continue', function () {
+			// game.state.start('menu');
+		}));
+		this.add(add_button(game, 38, 174, 'btn_menu', function () {
+			game.state.start('menu');
+		}));
+	}
+	GameOver.prototype = Object.create(Phaser.Group.prototype);
+	GameOver.prototype.constructor = GameOver;
+
 	function PreloadState(game) {
 		this.preload = function () {
-			game.load.spritesheet('bird', 'n_bird.png', 17, 12, 3);
-			game.load.image('down', 'f_down_2.png');
 			game.load.image('bg', 'f_bg.png');
-			game.load.image('wall_u', 'f_wall_u.png');
-			game.load.image('wall_d', 'f_wall_d.png');
-			// game.load.image('btn_play','btn_play.png');
-			game.load.atlasJSONHash('digits', 'digits.png', 'digits.json');
-			game.load.atlasJSONHash('buttons', 'buttons.png', 'buttons.json');
+			game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
 		}
 
 		this.create = function () {
@@ -305,22 +335,22 @@ function init() {
 
 	function MenuState(game) {
 		this.create = function () {
-			game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
-			game.add.existing(new Ground(game, HEIGHT - GR));
-			game.add.existing(new Bird(game, 75, 50));
+			// game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
+			// game.add.existing(new Ground(game, HEIGHT - GR));
+			game.add.image(22, 37, 'gui', 'logo.png');
+			game.add.existing(new Bird(game, 75, 100));
 
-			var play = game.add.button(game.world.centerX, 105, 'buttons', function (_, pointer, isOver) {				
-				if (isOver) {
-					game.state.start('game');
-				}
-			}, this, 'btn_play_over', 'btn_play_out', 'btn_play_down');
-			play.anchor.setTo(0.5, 0.5);
-			play.smoothed = false;
+			add_button(game, 38, 137, 'btn_play', function () {
+				game.state.start('game');
+			});
+			add_button(game, 38, 174, 'btn_top', function () {
+				game.state.start('top');
+			});
 		}
 	}
 
 	function GameState(game) {
-		var bird, ground, walls, score;
+		var bird, bg, ground, walls, score, gameOver;
 		var sc = 0;
 
 		function emitWall() {
@@ -334,14 +364,22 @@ function init() {
 		}
 
 		function death() {
-			bird.die();
-			walls.callAll('stop');
-			ground.stopScroll();
-			game.time.events.stop();
+			if (bird.alive) {
+				score.visible = false;
+
+				bird.die();
+				walls.callAll('stop');
+				ground.stopScroll();
+				game.time.events.stop();
+
+				gameOver = new GameOver(game);
+				game.add.existing(gameOver);
+				game.add.tween(gameOver).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, Phaser.Easing.Quadratic.In, true, 0.8 * Phaser.Timer.SECOND);
+			}
 		}
 
 		this.create = function () {
-			this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
+			bg = this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
 			walls = this.game.add.group();
 			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
 			bird = this.game.add.existing(new Bird(game, 75, 50));
@@ -359,7 +397,7 @@ function init() {
 			game.physics.startSystem(Phaser.Physics.ARCADE);
     		game.physics.arcade.gravity.y = GRAVITY;
 
-    		game.time.events.loop(Phaser.Timer.SECOND * 1.25, emitWall);
+    		game.time.events.loop(1.25 * Phaser.Timer.SECOND, emitWall);
 
     		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
     		var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -382,6 +420,14 @@ function init() {
 		}
 
 		this.shutdown = function() {  
+			bg.destroy();
+			walls.destroy();
+			ground.destroy();
+			bird.destroy();
+			score.destroy();
+			if (gameOver) {
+				gameOver.destroy();
+			}
   			game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 		}
 	}
@@ -402,7 +448,7 @@ function init() {
 		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
 		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
-			game.stage.backgroundColor = '#ff0000';
+			game.stage.backgroundColor = '#95d5c4';
 			game.stage.disableVisibilityChange = true;
 			game.stage.smoothed = false;
 
