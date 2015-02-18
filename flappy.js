@@ -429,6 +429,7 @@ function init() {
     		if (isStarted) {
     			return;
     		}
+			isStarted = true;
 
     		help.visible = false;
 
