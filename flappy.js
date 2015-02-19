@@ -363,10 +363,9 @@ function init() {
 		}));
 		this.add(buttons);
 
-		var DEALAY = 0.5 * Phaser.Timer.SECOND;
-		game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * Phaser.Timer.SECOND, undefined, true, DEALAY);
-		game.add.tween(result).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, undefined, true, DEALAY + 0.2 * Phaser.Timer.SECOND);
-		game.add.tween(buttons).from({ alpha : 0 }, 0.2 * Phaser.Timer.SECOND, undefined, true, DEALAY + 0.6 * Phaser.Timer.SECOND);
+		game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0.5 * Phaser.Timer.SECOND);
+		game.add.tween(result).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, undefined, true, 0.8 * Phaser.Timer.SECOND);
+		game.add.tween(buttons).from({ alpha : 0 }, 0.2 * Phaser.Timer.SECOND, undefined, true, 1.5 * Phaser.Timer.SECOND);
 	}
 	GameOver.prototype = Object.create(Phaser.Group.prototype);
 	GameOver.prototype.constructor = GameOver;
