@@ -459,7 +459,7 @@ function init() {
 				blink.alpha = 0;
 
 				bird.body.enable = false;
-				game.add.tween(blink).to({alpha : 0.6}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0, 0, true).onComplete.addOnce(function () {
+				game.add.tween(blink).to({alpha : 0.9}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0, 0, true).onComplete.addOnce(function () {
 					score.visible = false;
 					bird.body.enable = true;
 					bird.die();
