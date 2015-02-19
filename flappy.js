@@ -466,8 +466,7 @@ function init() {
 			ground = game.add.existing(new Ground(game, HEIGHT - GR));
 			bird = game.add.existing(new Bird(game, 45, 125));
 
-			demoTween = game.add.tween(bird).to({ y : 125 + 5}, 0.6 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
-
+			demoTween = game.add.tween(bird).to({ y : 125 + 5}, 0.5 * Phaser.Timer.SECOND, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
 
 			help = game.add.group();
 			help.add(game.add.image(24, 53, 'gui', 'txt_ready.png'));
