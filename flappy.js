@@ -370,6 +370,7 @@ function init() {
 
 	function GameState(game) {
 		var isStarted, isWallStarted;
+		var demoTween;
 		var help, bird, bg, ground, walls, score, gameOver;
 		var flapKey;
 		var sc;
@@ -424,15 +425,18 @@ function init() {
 			isWallStarted = false;
 
 			sc = 0;
-			bg = this.game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
-			walls = this.game.add.group();
-			ground = this.game.add.existing(new Ground(game, HEIGHT - GR));
-			bird = this.game.add.existing(new Bird(game, 45, 127));
+			bg = game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
+			walls = game.add.group();
+			ground = game.add.existing(new Ground(game, HEIGHT - GR));
+			bird = game.add.existing(new Bird(game, 45, 125));
 
-			help = this.game.add.group();
-			help.add(this.game.add.image(24, 53, 'gui', 'txt_ready.png'));
-			help.add(this.game.add.image(75, 114, 'gui', 'gray_bird.png')).anchor.setTo(0.5, 0.5);
-			help.add(this.game.add.image(75, 126, 'gui', 'txt_taptap.png')).anchor.setTo(0.5, 0);
+			demoTween = game.add.tween(bird).to({ y : 125 + 5}, 0.6 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
+
+
+			help = game.add.group();
+			help.add(game.add.image(24, 53, 'gui', 'txt_ready.png'));
+			help.add(game.add.image(75, 114, 'gui', 'gray_bird.png')).anchor.setTo(0.5, 0.5);
+			help.add(game.add.image(75, 126, 'gui', 'txt_taptap.png')).anchor.setTo(0.5, 0);
 
 			for (var i = 0; i < 3; i++) {				
 				walls.add(new Wall(game));
@@ -452,6 +456,9 @@ function init() {
     			return;
     		}
 			isStarted = true;
+
+			demoTween.stop();
+			demoTween = null;
 
 			game.add.tween(help)
 				.to({ alpha : 0}, 0.3 * Phaser.Timer.SECOND)
