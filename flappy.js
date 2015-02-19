@@ -453,8 +453,13 @@ function init() {
     		}
 			isStarted = true;
 
-    		help.destroy();
-    		help = null;
+			game.add.tween(help)
+				.to({ alpha : 0}, 0.3 * Phaser.Timer.SECOND)
+				.start()
+				.onComplete.addOnce(function () {
+		    		help.destroy();
+		    		help = null;
+	    		});
 
 			bird.hatch();
 			bird.flap();
