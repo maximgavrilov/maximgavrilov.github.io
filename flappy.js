@@ -345,17 +345,28 @@ function init() {
 
 	var GameOver = function (game) {
 		Phaser.Group.call(this, game);
-		this.add(game.add.image(37, 13, 'gui', 'txt_game_over.png'));
-		this.add(game.add.image(19, 29, 'gui', 'result_bg.png'));
-		this.add(add_button(game, 31, 96, 'btn_share', function () {
+		var title = this.add(game.add.image(37, 13, 'gui', 'txt_game_over.png'));
+
+		var result = game.add.group();
+		result.add(game.add.image(19, 29, 'gui', 'result_bg.png'));
+		result.add(add_button(game, 31, 96, 'btn_share', function () {
 			// game.state.start('menu');
 		}));
-		this.add(add_button(game, 38, 137, 'btn_continue', function () {
+		this.add(result);
+
+		var buttons = game.add.group();
+		buttons.add(add_button(game, 38, 137, 'btn_continue', function () {
 			// game.state.start('menu');
 		}));
-		this.add(add_button(game, 38, 174, 'btn_menu', function () {
+		buttons.add(add_button(game, 38, 174, 'btn_menu', function () {
 			game.state.start('menu');
 		}));
+		this.add(buttons);
+
+		var DEALAY = 0.5 * Phaser.Timer.SECOND;
+		game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * Phaser.Timer.SECOND, undefined, true, DEALAY);
+		game.add.tween(result).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, undefined, true, DEALAY + 0.2 * Phaser.Timer.SECOND);
+		game.add.tween(buttons).from({ alpha : 0 }, 0.2 * Phaser.Timer.SECOND, undefined, true, DEALAY + 0.6 * Phaser.Timer.SECOND);
 	}
 	GameOver.prototype = Object.create(Phaser.Group.prototype);
 	GameOver.prototype.constructor = GameOver;
@@ -449,7 +460,6 @@ function init() {
 
 				gameOver = new GameOver(game);
 				game.add.existing(gameOver);
-				game.add.tween(gameOver).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, Phaser.Easing.Quadratic.In, true, 0.8 * Phaser.Timer.SECOND);
 			}
 		}
 
@@ -466,7 +476,7 @@ function init() {
 			ground = game.add.existing(new Ground(game, HEIGHT - GR));
 			bird = game.add.existing(new Bird(game, 45, 125));
 
-			demoTween = game.add.tween(bird).to({ y : 125 + 5}, 0.5 * Phaser.Timer.SECOND, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
+			demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
 
 			help = game.add.group();
 			help.add(game.add.image(24, 53, 'gui', 'txt_ready.png'));
