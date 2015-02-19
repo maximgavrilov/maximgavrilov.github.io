@@ -97,6 +97,23 @@ function init() {
 		return btn;
 	}
 
+	function create_color_box(game, color) {
+		var box = game.add.graphics(0, 0);
+		box.beginFill(color, 1.0);
+		box.drawRect(0, 0, WIDTH, HEIGHT);
+		box.endFill();
+		return box;
+	}
+
+	function hide_to_state(game, name) {
+		var blink = create_color_box(game, 0);
+		blink.alpha = 0;
+
+		game.add.tween(blink).to({alpha : 1}, 0.2 * Phaser.Timer.SECOND, undefined, true).onComplete.addOnce(function () {
+			game.state.start(name);
+		});
+	}
+
 	var bgBitmap;
 	var Background = function (game, x, y, width, height) {
 		var back = bgBitmap;
@@ -359,7 +376,7 @@ function init() {
 			// game.state.start('menu');
 		}));
 		buttons.add(add_button(game, 38, 174, 'btn_menu', function () {
-			game.state.start('menu');
+			hide_to_state(game, 'menu');
 		}));
 		this.add(buttons);
 
@@ -388,7 +405,7 @@ function init() {
 			game.add.existing(new Bird(game, 75, 100));
 
 			add_button(game, 38, 137, 'btn_play', function () {
-				game.state.start('game');
+				hide_to_state(game, 'game');
 			});
 			add_button(game, 38, 174, 'btn_top', function () {
 				game.state.start('top');
@@ -434,31 +451,25 @@ function init() {
 			if (bird.alive) {
 				bird.alive = false;
 				isWallStarted = false;
-				score.visible = false;
 
 				walls.callAll('stop');
 				ground.stopScroll();
 
-				blink = game.add.graphics(0, 0);
-				blink.beginFill(0xffffff, 1.0);
-				blink.drawRect(0, 0, WIDTH, HEIGHT);
-				blink.endFill();
+				blink = create_color_box(game, 0xffffff);
 				blink.alpha = 0;
 
 				bird.body.enable = false;
-				game.add.tween(blink).to({alpha : 0.3}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0, 0, true).onComplete.addOnce(function () {
-					if (blink) {
-						bird.body.enable = true;
-						bird.die();
+				game.add.tween(blink).to({alpha : 0.6}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0, 0, true).onComplete.addOnce(function () {
+					score.visible = false;
+					bird.body.enable = true;
+					bird.die();
 
-						blink.destroy();
-						blink = null;
-					}
+					blink.destroy();
+					blink = null;
+
+					gameOver = new GameOver(game);
+					game.add.existing(gameOver);
 				});
-
-
-				gameOver = new GameOver(game);
-				game.add.existing(gameOver);
 			}
 		}
 
@@ -530,7 +541,7 @@ function init() {
 		this.update = function () {
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
-				bird.body.reset(bird.x, bird.y);
+				bird.body.reset(bird.x, ground.y - BIRD_R);
 				death();
 			}
 
@@ -546,6 +557,7 @@ function init() {
 					sc += 1;
 					score.setValue(sc);
 				}
+
 				if (wall.isCollide(bird)) {
 					death();
 				}
@@ -562,9 +574,6 @@ function init() {
 			ground.destroy();
 			bird.destroy();
 			score.destroy();
-			if (blink) {
-				blink.destroy();
-			}
 			if (gameOver) {
 				gameOver.destroy();
 			}
