@@ -76,6 +76,7 @@ function init() {
 	var GR = 24;
 	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
 	var WALL_DIST = 75;
+	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 
 	function disable_smooting(ctx) {
@@ -188,13 +189,11 @@ function init() {
 			top.cropRect.height = wallY + 50;
 			top.updateCrop();
 			top.body.velocity.x = -SPEED;  
-			top.body.setSize(top.cropRect.width - 2, top.cropRect.height - 1, 1, 0);
 
 			bottom.reset(x, wallY + 50 + 50);
 			bottom.cropRect.y = 0;
 			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
 			bottom.updateCrop();
-			bottom.body.setSize(bottom.cropRect.width - 2, bottom.cropRect.height - 1, 1, 1);
 			bottom.body.velocity.x = -SPEED;  			
 
 			this.x = 0;
@@ -213,11 +212,33 @@ function init() {
 
 		this.stop = function () {
 			top.body.velocity.x = 0;
+			top.body.enable = false;
 			bottom.body.velocity.x = 0;
+			bottom.body.enable = false;
 		}
 
 		this.isScored = function (bird) {
 			return this.exists && bird.body.position.x >= top.body.position.x;
+		}
+
+		function intersect(bird, w) {
+		    var cx = Math.abs(bird.x - w.x - w.width / 2);
+		    var cy = Math.abs(bird.y - w.y - w.height / 2);
+
+		    if (cx > (w.width/2 + BIRD_R)) { return false; }
+		    if (cy > (w.height/2 + BIRD_R)) { return false; }
+
+		    if (cx <= (w.width/2)) { return true; } 
+		    if (cy <= (w.height/2)) { return true; }
+
+		    var sq = (cx - w.width/2) * (cx - w.width/2) + (cy - w.height/2) * (cy - w.height/2);
+
+		    return (sq <= (BIRD_R * BIRD_R));			
+		}
+
+		this.isCollide = function (bird) {
+			var over = ((bird.x + BIRD_R) >= top.x && (bird.x - BIRD_R) <= (top.x + top.width)) && bird.y < 0;
+			return over || intersect(bird, top) || intersect(bird, bottom);
 		}
 
 		this.getX = function () { 
@@ -241,7 +262,7 @@ function init() {
 		this.body.allowGravity = false;
 
 		this.update = function () {
-			if(this.alive) {
+			if(this.alive && this.body.enable) {
 				var v = this.body.velocity.y;
 				if (v <= 0) {
 					this.angle = FLAP_ANGLE * Math.min(1.0, -v / 200);
@@ -270,9 +291,6 @@ function init() {
 		}
 
 		this.die = function () {
-			if (!this.alive) {
-				return;
-			}
 			this.animations.stop();
 			this.animations.play('fly');
 			this.body.velocity.x = 0;
@@ -371,12 +389,12 @@ function init() {
 	function GameState(game) {
 		var isStarted, isWallStarted;
 		var demoTween;
-		var help, bird, bg, ground, walls, score, gameOver;
+		var help, bird, bg, ground, walls, score, blink, gameOver;
 		var flapKey;
 		var sc;
 
 		function emitWall() {
-			if (!isWallStarted) {
+			if (!isWallStarted || !bird.alive) {
 				return;
 			}
 
@@ -404,12 +422,30 @@ function init() {
 
 		function death() {
 			if (bird.alive) {
+				bird.alive = false;
 				isWallStarted = false;
 				score.visible = false;
 
-				bird.die();
 				walls.callAll('stop');
 				ground.stopScroll();
+
+				blink = game.add.graphics(0, 0);
+				blink.beginFill(0xffffff, 1.0);
+				blink.drawRect(0, 0, WIDTH, HEIGHT);
+				blink.endFill();
+				blink.alpha = 0;
+
+				bird.body.enable = false;
+				game.add.tween(blink).to({alpha : 0.3}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0, 0, true).onComplete.addOnce(function () {
+					if (blink) {
+						bird.body.enable = true;
+						bird.die();
+
+						blink.destroy();
+						blink = null;
+					}
+				});
+
 
 				gameOver = new GameOver(game);
 				game.add.existing(gameOver);
@@ -484,18 +520,28 @@ function init() {
 		}
 
 		this.update = function () {
-			emitWall();
-			game.physics.arcade.collide(bird, ground, death);
-			if (bird.alive) {
-				walls.forEach(function (wall) {
-					if (!wall.scored && wall.isScored(bird)) {
-						wall.scored = true;
-						sc += 1;
-						score.setValue(sc);
-					}
-					game.physics.arcade.collide(bird, wall, death);
-				}, this, true);				
+			if (bird.y + BIRD_R >= ground.y) {
+				bird.allowGravity = false;
+				bird.body.reset(bird.x, bird.y);
+				death();
 			}
+
+			if (!bird.alive) {
+				return;
+			}
+
+			emitWall();
+
+			walls.forEach(function (wall) {				
+				if (!wall.scored && wall.isScored(bird)) {
+					wall.scored = true;
+					sc += 1;
+					score.setValue(sc);
+				}
+				if (wall.isCollide(bird)) {
+					death();
+				}
+			}, this, true);				
 		}
 
 		this.shutdown = function() {  
@@ -508,6 +554,9 @@ function init() {
 			ground.destroy();
 			bird.destroy();
 			score.destroy();
+			if (blink) {
+				blink.destroy();
+			}
 			if (gameOver) {
 				gameOver.destroy();
 			}
