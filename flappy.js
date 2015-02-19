@@ -311,6 +311,7 @@ function init() {
 			this.animations.stop();
 			this.animations.play('fly');
 			this.body.velocity.x = 0;
+			this.body.velocity.y = 0;
 			game.add.tween(this).to({ angle : 90 }, 0.15 * Phaser.Timer.SECOND).start();
 			this.alive = false;
 		}
