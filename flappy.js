@@ -319,10 +319,33 @@ function init() {
 	Bird.prototype = Object.create(Phaser.Sprite.prototype);
 	Bird.prototype.constructor = Bird;
 
-	var Score = function (game) {
+	var Score = function (game, x, y, small, align) {
 		Phaser.Group.call(this, game);
 
-		this.setValue = function (value) {
+		this.x = x;
+		this.y = y;
+
+		var val = 0;
+		var needUpdate = true;
+
+		Object.defineProperty(this, 'value', {
+		    get: function () {
+		        return val;
+		    },
+
+		    set: function (value) {
+		    	if (val != value) {
+			        val = value;
+			        needUpdate = true;
+		    	}
+		    }
+		});
+
+		this.update = function () {
+			if (!needUpdate) return;
+			needUpdate = false;
+
+			var value = val;
 			var a;
 			if (value == 0) {
 				a = ['0'];
@@ -343,31 +366,54 @@ function init() {
 			for (var i = a.length - 1; i >= 0; i--) {
 				var d = this.children[i];
 				d.reset(x, 0);
-				d.frameName = a[i] + '.png';
-				var w = 10;
-				if (a[i] == '1') {
-					w = 7;
-				} else if (a[i] == '7') {
-					w = 8;
+				if (small) {
+					d.frameName = 's' + a[i] + '.png';
+					var w = 7;
+					if (a[i] == '1') {
+						w = 6;
+					}							
+				} else {
+					d.frameName = a[i] + '.png';
+					var w = 10;
+					if (a[i] == '1') {
+						w = 7;
+					} else if (a[i] == '7') {
+						w = 8;
+					}
 				}
 				x += w + 1;
 			}
-			x = Math.floor(x / 2);
+			
+			if (align == 'center') {
+				x = Math.floor(x / 2);
+			} else if (align == 'left') {
+				x = 0;
+			} else if (align == 'right') {
+				x = x;
+			}
+
 			for (var i = a.length - 1; i >= 0; i--) {
 				this.children[i].x -= x;
-			}
+			}			
 		}
 	}
 	Score.prototype = Object.create(Phaser.Group.prototype);
 	Score.prototype.constructor = Score;
 
-	var GameOver = function (game) {
+	var GameOver = function (game, score_, bestScore_) {
 		Phaser.Group.call(this, game);
 		var title = this.add(game.add.image(37, 13, 'gui', 'txt_game_over.png'));
 
 		var result = game.add.group();
-		result.add(game.add.image(19, 29, 'gui', 'result_bg.png'));
-		result.add(add_button(game, 31, 96, 'btn_share', function () {
+		result.x = 19;
+		result.y = 29;
+		result.add(game.add.image(0, 0, 'gui', 'result_bg.png'));
+		result.add(game.add.image(27 - 10, 37, 'gui', 'txt_result.png'));
+		result.add(game.add.image(44 - 10, 49, 'gui', 'txt_best.png'));
+		result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
+		var score = result.add(new Score(game, 101, 36, true, 'right'));
+		var bestScore = result.add(new Score(game, 101, 50, true, 'right'));
+		result.add(add_button(game, 12, 67, 'btn_share', function () {
 			// game.state.start('menu');
 		}));
 		this.add(result);
@@ -381,8 +427,10 @@ function init() {
 		}));
 		this.add(buttons);
 
+		bestScore.value = bestScore_;
 		game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0.5 * Phaser.Timer.SECOND);
 		game.add.tween(result).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, undefined, true, 0.8 * Phaser.Timer.SECOND);
+		game.add.tween(score).to({ value : score_}, 0.5 * Phaser.Timer.SECOND, undefined, true, 1.5 * Phaser.Timer.SECOND);
 		game.add.tween(buttons).from({ alpha : 0 }, 0.2 * Phaser.Timer.SECOND, undefined, true, 1.5 * Phaser.Timer.SECOND);
 	}
 	GameOver.prototype = Object.create(Phaser.Group.prototype);
@@ -468,7 +516,7 @@ function init() {
 					blink.destroy();
 					blink = null;
 
-					gameOver = new GameOver(game);
+					gameOver = new GameOver(game, sc, 110);
 					game.add.existing(gameOver);
 				});
 			}
@@ -498,10 +546,8 @@ function init() {
 				walls.add(new Wall(game));
 			}
 
-			score = game.add.existing(new Score(game));
-			score.x = 75;
-			score.y = 10;
-			score.setValue(sc);
+			score = game.add.existing(new Score(game, 75, 10, false, 'center'));
+			score.value = 0;
 
     		flapKey.onDown.addOnce(start, this);
     		this.input.onDown.addOnce(start, this);
@@ -556,7 +602,7 @@ function init() {
 				if (!wall.scored && wall.isScored(bird)) {
 					wall.scored = true;
 					sc += 1;
-					score.setValue(sc);
+					score.value = sc;
 				}
 
 				if (wall.isCollide(bird)) {
