@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 28;
+var VERSION = 29;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -210,24 +210,29 @@ function init() {
 		this.animations.add('fly', ['bird2.png'], 6, true);
 		this.animations.play('demo');
 
-		this.game.physics.arcade.enableBody(this);
+		// this.game.physics.arcade.enableBody(this);
 		this.alive = false;
-		this.body.allowGravity = false;
+
+		this.bodyGravity = false;
+		var velocityY = 0;
 
 		this.update = function () {
-			if(this.alive && this.body.enable) {
-				var v = this.body.velocity.y;
-				if (v <= 0) {
-					this.angle = FLAP_ANGLE * Math.min(1.0, -v / 200);
+			if (this.bodyGravity) {
+				this.y += velocityY * game.time.physicsElapsed + GRAVITY * game.time.physicsElapsed * game.time.physicsElapsed / 2;
+				velocityY += GRAVITY * game.time.physicsElapsed;
+			}
+			if(this.alive && this.bodyGravity) {
+				if (velocityY <= 0) {
+					this.angle = FLAP_ANGLE * Math.min(1.0, -velocityY / 200);
 				} else {
-					this.angle = 90 * Math.min(1.0, v / 200);
+					this.angle = 90 * Math.min(1.0, velocityY / 200);
 				}
 			}		
 		}
 
 		this.hatch = function () {
 			this.alive = true;		
-			this.body.allowGravity = true;
+			this.bodyGravity = true;
 			this.animations.stop();
 			this.animations.play('fly');
 		}
@@ -236,7 +241,7 @@ function init() {
 			if (!this.alive) {
 				return;
 			}
-			this.body.velocity.y = -FLAP_VEL;		
+			velocityY = -FLAP_VEL;
 			this.animations.stop();
 			this.animations.play('flap').onComplete.addOnce(function () {
 				this.animations.play('fly');
@@ -246,8 +251,7 @@ function init() {
 		this.die = function () {
 			this.animations.stop();
 			this.animations.play('fly');
-			this.body.velocity.x = 0;
-			this.body.velocity.y = 0;
+			velocityY = 0;
 			game.add.tween(this).to({ angle : 90 }, 0.15 * Phaser.Timer.SECOND).start();
 			this.alive = false;
 		}
@@ -444,10 +448,10 @@ function init() {
 				var blink = create_color_box(game, 0xffffff);
 				blink.alpha = 0;
 
-				bird.body.enable = false;
+				bird.bodyGravity = false;
 				game.add.tween(blink).to({alpha : 0.9}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0, 0, true).onComplete.addOnce(function () {
 					score.visible = false;
-					bird.body.enable = true;
+					bird.bodyGravity = true;
 					bird.die();
 
 					blink.destroy();
@@ -506,8 +510,8 @@ function init() {
 				bird.hatch();
 				bird.flap();
 
-				game.physics.startSystem(Phaser.Physics.ARCADE);
-	    		game.physics.arcade.gravity.y = GRAVITY;
+				// game.physics.startSystem(Phaser.Physics.ARCADE);
+	   //  		game.physics.arcade.gravity.y = GRAVITY;
 
 	    		flapKey.onDown.add(bird.flap, bird);
 	    		this.input.onDown.add(bird.flap, bird);
@@ -525,7 +529,9 @@ function init() {
 		this.update = function () {
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
-				bird.body.reset(bird.x, ground.y - BIRD_R);
+				bird.x = bird.x;
+				bird.y = ground.y - BIRD_R;
+				bird.bodyGravity = false;
 				death();
 			}
 
