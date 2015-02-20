@@ -460,7 +460,8 @@ function init() {
 				isWallStarted = false;
 
 				walls.callAll('stop');
-				ground.stopScroll();
+				game.tweens.removeFrom(ground);
+				// ground.stopScroll();
 
 				var blink = create_color_box(game, 0xffffff);
 				blink.alpha = 0;
@@ -485,7 +486,10 @@ function init() {
 
 			game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png');
 			walls = game.add.group();
-			ground = game.add.existing(new Ground(game, HEIGHT - GR));
+			// ground = game.add.existing(new Ground(game, HEIGHT - GR));
+			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground2.png');
+			game.add.tween(ground).to({ x : -15}, 15 * Phaser.Timer.SECOND / SPEED, undefined, true, 0, -1);
+
 			bird = game.add.existing(new Bird(game, 45, 125));
 
 			var demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
