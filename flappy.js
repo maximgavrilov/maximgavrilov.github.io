@@ -582,7 +582,7 @@ function init() {
 			game.stage.disableVisibilityChange = true;
 			game.stage.smoothed = false;
 
-			// game.time.advancedTiming = true;
+			game.time.advancedTiming = true;
 
 			game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
 			game.scale.setMinMax(WIDTH, HEIGHT, 10 * WIDTH, 10 * HEIGHT);
@@ -593,7 +593,7 @@ function init() {
 			});		
 			game.scale.refresh();
 
-			// game.plugins.add(FPSPlugin);
+			game.plugins.add(FPSPlugin);
 		});
 
 		game.state.add('preload', PreloadState, true);
