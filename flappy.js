@@ -210,7 +210,6 @@ function init() {
 		this.animations.add('fly', ['bird2.png'], 6, true);
 		this.animations.play('demo');
 
-		// this.game.physics.arcade.enableBody(this);
 		this.alive = false;
 
 		this.bodyGravity = false;
@@ -509,9 +508,6 @@ function init() {
 
 				bird.hatch();
 				bird.flap();
-
-				// game.physics.startSystem(Phaser.Physics.ARCADE);
-	   //  		game.physics.arcade.gravity.y = GRAVITY;
 
 	    		flapKey.onDown.add(bird.flap, bird);
 	    		this.input.onDown.add(bird.flap, bird);
