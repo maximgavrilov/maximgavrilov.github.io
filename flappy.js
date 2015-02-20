@@ -464,7 +464,7 @@ function init() {
 
 			game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png');
 			walls = game.add.group();
-			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground2.png');
+			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground.png');
 
 			bird = game.add.existing(new Bird(game, 45, 125));
 
@@ -531,8 +531,8 @@ function init() {
 
 			if (bird.alive) {
 		        ground.x += -SPEED * game.time.physicsElapsed;
-		        while (ground.x < -15) {
-		        	ground.x += 15;
+		        while (ground.x <= -150) {
+		        	ground.x += 150;
 		        }
 			}
 
