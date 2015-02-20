@@ -93,7 +93,6 @@ function init() {
 			}
 		}, null, name + '_over.png', name + '_out.png', name + '_down.png');
 		btn.anchor.setTo(0, 0);
-		btn.smoothed = false;
 		return btn;
 	}
 
@@ -117,7 +116,6 @@ function init() {
 	var Ground = function (game, y) {
 		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'gui', 'ground.png');
 		this.autoScroll(-SPEED, 0);
-		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.body.immovable = true;  
 		this.body.allowGravity = false;
@@ -142,7 +140,6 @@ function init() {
 		game.physics.arcade.enableBody(top);
 		top.body.allowGravity = false;
 		top.body.immovable = true;  
-		top.smoothed = false;
 		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(top);
 
@@ -151,7 +148,6 @@ function init() {
 		game.physics.arcade.enableBody(bottom);
 		bottom.body.allowGravity = false;
 		bottom.body.immovable = true;  
-		bottom.smoothed = false;
 		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(bottom);
 
@@ -236,7 +232,6 @@ function init() {
 		this.animations.add('fly', ['bird2.png'], 6, true);
 		this.animations.play('demo');
 
-		this.smoothed = false;
 		this.game.physics.arcade.enableBody(this);
 		this.alive = false;
 		this.body.allowGravity = false;
