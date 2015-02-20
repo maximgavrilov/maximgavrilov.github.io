@@ -113,41 +113,16 @@ function init() {
 		});
 	}
 
-	var Ground = function (game, y) {
-		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'gui', 'ground.png');
-		this.autoScroll(-SPEED, 0);
-		this.game.physics.arcade.enableBody(this);
-		this.body.immovable = true;  
-		this.body.allowGravity = false;
-
-		// workaround for Phaser 2.2.2 bug
-		this.destroy = function () {
-			Phaser.TileSprite.prototype.destroy.call(this);
-			if (this.tilingTexture) {
-				this.tilingTexture.destroy(true);
-				this.tilingTexture = null;								
-			}
-		}
-	}	
-	Ground.prototype = Object.create(Phaser.TileSprite.prototype);
-	Ground.prototype.constructor = Ground;
-
 	var Wall = function (game) {
 		Phaser.Group.call(this, game);
 
 		var top = new Phaser.Sprite(game, 0, -150, 'gui');
 		top.frameName = 'wall_u.png';
-		game.physics.arcade.enableBody(top);
-		top.body.allowGravity = false;
-		top.body.immovable = true;  
 		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(top);
 
 		var bottom = new Phaser.Sprite(game, 0, 100, 'gui');
 		bottom.frameName = 'wall_d.png';
-		game.physics.arcade.enableBody(bottom);
-		bottom.body.allowGravity = false;
-		bottom.body.immovable = true;  
 		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(bottom);
 
@@ -159,42 +134,45 @@ function init() {
 		this.checkWorldBounds = true;
   		this.outOfBoundsKill = true;
 
+  		var isMoving = true;
+
 		this.reset = function (x, wallY) {
 			top.reset(x, 0);
 			top.cropRect.y = 200 - wallY - 50;
 			top.cropRect.height = wallY + 50;
 			top.updateCrop();
-			top.body.velocity.x = -SPEED;  
 
 			bottom.reset(x, wallY + 50 + 50);
 			bottom.cropRect.y = 0;
 			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
 			bottom.updateCrop();
-			bottom.body.velocity.x = -SPEED;  			
 
 			this.x = 0;
 			this.y = 0;
 			this.exists = true;
 			this.visible = true;
 			this.scored = false;
+
+			isMoving = true;
 		}
 
 		this.update = function () {
-			if (this.exists && top.position.x < -26) {
+			if (this.exists && top.x < -26) {
 				this.exists = false;
 				this.visible = false;
+				isMoving = false;
+			} else if (isMoving) {
+		        top.x += -SPEED * game.time.physicsElapsed;
+		        bottom.x += -SPEED * game.time.physicsElapsed;
 			}
 		}
 
 		this.stop = function () {
-			top.body.velocity.x = 0;
-			top.body.enable = false;
-			bottom.body.velocity.x = 0;
-			bottom.body.enable = false;
+			isMoving = false;
 		}
 
 		this.isScored = function (bird) {
-			return this.exists && bird.body.position.x >= top.body.position.x;
+			return this.exists && bird.x >= top.x + top.width / 2;
 		}
 
 		function intersect(bird, w) {
@@ -218,7 +196,7 @@ function init() {
 		}
 
 		this.getX = function () { 
-			return top.position.x;
+			return top.x;
 		}
 	}
 	Wall.prototype = Object.create(Phaser.Group.prototype);
@@ -486,9 +464,7 @@ function init() {
 
 			game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png');
 			walls = game.add.group();
-			// ground = game.add.existing(new Ground(game, HEIGHT - GR));
 			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground2.png');
-			game.add.tween(ground).to({ x : -15}, 15 * Phaser.Timer.SECOND / SPEED, undefined, true, 0, -1);
 
 			bird = game.add.existing(new Bird(game, 45, 125));
 
@@ -551,6 +527,13 @@ function init() {
 				bird.allowGravity = false;
 				bird.body.reset(bird.x, ground.y - BIRD_R);
 				death();
+			}
+
+			if (bird.alive) {
+		        ground.x += -SPEED * game.time.physicsElapsed;
+		        while (ground.x < -15) {
+		        	ground.x += 15;
+		        }
 			}
 
 			if (!bird.alive) {
