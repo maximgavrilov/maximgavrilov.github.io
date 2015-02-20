@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 26;
+var VERSION = 27;
 
 // hdpi hook
 Phaser.Game.prototype.setUpRenderer = function () {
@@ -113,43 +113,6 @@ function init() {
 			game.state.start(name);
 		});
 	}
-
-	var bgBitmap;
-	var Background = function (game, x, y, width, height) {
-		var back = bgBitmap;
-		if (!back) {
-			back = new Phaser.BitmapData(game, null, width, height);
-			var ctx = back.context;
-
-			disable_smooting(ctx);
-
-			ctx.fillStyle = '#93d4c3';
-			ctx.fillRect(0, 0, width, height - GR);
-
-			ctx.fillStyle = '#f5dab5';
-			ctx.fillRect(0, height - GR, width, GR);
-
-			var frame = game.cache.getFrameByName('gui', 'bg.png');
-			var texture = PIXI.TextureCache[frame.uuid];
-			ctx.drawImage(texture.baseTexture.source,
-                               texture.frame.x,
-                               texture.frame.y,
-                               texture.frame.width,
-                               texture.frame.height,
-                               0,
-                               height - GR - texture.frame.height,
-                               texture.frame.width,
-                               texture.frame.height);
-
-			// var town = game.cache.getImage('bg');
-			// ctx.drawImage(town, 0, height - GR - town.height, width, town.height);
-
-			bgBitmap = back;
-		}
-		Phaser.Image.call(this, game, x, y, back);
-	}
-	Background.prototype = Object.create(Phaser.Image.prototype);  
-	Background.prototype.constructor = Background;
 
 	var Ground = function (game, y) {
 		Phaser.TileSprite.call(this, game, 0, y, 150, 24, 'gui', 'ground.png');
@@ -452,8 +415,6 @@ function init() {
 
 	function MenuState(game) {
 		this.create = function () {
-			// game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
-			// game.add.existing(new Ground(game, HEIGHT - GR));
 			game.add.image(22, 37, 'gui', 'logo.png');
 			game.add.existing(new Bird(game, 75, 100));
 
@@ -467,10 +428,8 @@ function init() {
 	}
 
 	function GameState(game) {
-		var isStarted, isWallStarted;
-		var demoTween;
-		var help, bird, bg, ground, walls, score, blink, gameOver;
-		var flapKey;
+		var isWallStarted;
+		var bird, ground, walls, score;
 		var sc;
 
 		function emitWall() {
@@ -508,7 +467,7 @@ function init() {
 				walls.callAll('stop');
 				ground.stopScroll();
 
-				blink = create_color_box(game, 0xffffff);
+				var blink = create_color_box(game, 0xffffff);
 				blink.alpha = 0;
 
 				bird.body.enable = false;
@@ -520,28 +479,23 @@ function init() {
 					blink.destroy();
 					blink = null;
 
-					gameOver = new GameOver(game, sc, 110);
-					game.add.existing(gameOver);
+					game.add.existing(new GameOver(game, sc, 110));
 				});
 			}
 		}
 
 		this.create = function () {
     		game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
-    		flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    		var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-			isStarted = false;
-			isWallStarted = false;
-
-			sc = 0;
-			bg = game.add.existing(new Background(game, 0, 0, WIDTH, HEIGHT));
+			game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png');
 			walls = game.add.group();
 			ground = game.add.existing(new Ground(game, HEIGHT - GR));
 			bird = game.add.existing(new Bird(game, 45, 125));
 
-			demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
+			var demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
 
-			help = game.add.group();
+			var help = game.add.group();
 			help.add(game.add.image(24, 53, 'gui', 'txt_ready.png'));
 			help.add(game.add.image(75, 114, 'gui', 'gray_bird.png')).anchor.setTo(0.5, 0.5);
 			help.add(game.add.image(75, 126, 'gui', 'txt_taptap.png')).anchor.setTo(0.5, 0);
@@ -551,43 +505,47 @@ function init() {
 			}
 
 			score = game.add.existing(new Score(game, 75, 10, false, 'center'));
+
+			var isStarted = false;
+			isWallStarted = false;
+			sc = 0;
 			score.value = 0;
+
+	   		function start() {
+	    		if (isStarted) {
+	    			return;
+	    		}
+				isStarted = true;
+
+				demoTween.stop();
+				demoTween = null;
+
+				game.add.tween(help)
+					.to({ alpha : 0}, 0.3 * Phaser.Timer.SECOND)
+					.start()
+					.onComplete.addOnce(function () {
+			    		help.destroy();
+			    		help = null;
+		    		});
+
+				bird.hatch();
+				bird.flap();
+
+				game.physics.startSystem(Phaser.Physics.ARCADE);
+	    		game.physics.arcade.gravity.y = GRAVITY;
+
+	    		flapKey.onDown.add(bird.flap, bird);
+	    		this.input.onDown.add(bird.flap, bird);
+
+	    		game.time.events.add(1.25 * Phaser.Timer.SECOND, function () {
+	    			isWallStarted = true;
+	    			emitWall();
+	    		});
+			}
 
     		flapKey.onDown.addOnce(start, this);
     		this.input.onDown.addOnce(start, this);
     	}
-
-    	function start() {
-    		if (isStarted) {
-    			return;
-    		}
-			isStarted = true;
-
-			demoTween.stop();
-			demoTween = null;
-
-			game.add.tween(help)
-				.to({ alpha : 0}, 0.3 * Phaser.Timer.SECOND)
-				.start()
-				.onComplete.addOnce(function () {
-		    		help.destroy();
-		    		help = null;
-	    		});
-
-			bird.hatch();
-			bird.flap();
-
-			game.physics.startSystem(Phaser.Physics.ARCADE);
-    		game.physics.arcade.gravity.y = GRAVITY;
-
-    		flapKey.onDown.add(bird.flap, bird);
-    		this.input.onDown.add(bird.flap, bird);
-
-    		game.time.events.add(1.25 * Phaser.Timer.SECOND, function () {
-    			isWallStarted = true;
-    			emitWall();
-    		});
-		}
 
 		this.update = function () {
 			if (bird.y + BIRD_R >= ground.y) {
@@ -616,18 +574,6 @@ function init() {
 		}
 
 		this.shutdown = function() {  
-			if (help) {
-				help.destroy();
-				help = null;				
-			}
-			bg.destroy();
-			walls.destroy();
-			ground.destroy();
-			bird.destroy();
-			score.destroy();
-			if (gameOver) {
-				gameOver.destroy();
-			}
   			game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 		}
 	}
