@@ -408,9 +408,13 @@ function init() {
 		result.x = 19;
 		result.y = 29;
 		result.add(game.add.image(0, 0, 'gui', 'result_bg.png'));
+		result.add(game.add.image(13, 9, 'gui', 'medal_gold.png'));
+		result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
 		result.add(game.add.image(27 - 10, 37, 'gui', 'txt_result.png'));
 		result.add(game.add.image(44 - 10, 49, 'gui', 'txt_best.png'));
-		result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
+		if (score_ > bestScore_) {
+			result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
+		}
 		var score = result.add(new Score(game, 101, 36, true, 'right'));
 		var bestScore = result.add(new Score(game, 101, 50, true, 'right'));
 		result.add(add_button(game, 12, 67, 'btn_share', function () {
