@@ -94,8 +94,8 @@ function init() {
 				this.visible = false;
 				isMoving = false;
 			} else if (isMoving) {
-		        top.x += -SPEED * game.time.physicsElapsed;
-		        bottom.x += -SPEED * game.time.physicsElapsed;
+		        top.x += -SPEED * game.time.elapsed / 1000;
+		        bottom.x += -SPEED * game.time.elapsed / 1000;
 			}
 		}
 
@@ -149,8 +149,10 @@ function init() {
 
 		this.update = function () {
 			if (this.bodyGravity) {
-				this.y += velocityY * game.time.physicsElapsed + GRAVITY * game.time.physicsElapsed * game.time.physicsElapsed / 2;
-				velocityY += GRAVITY * game.time.physicsElapsed;
+				var e = game.time.elapsed / 1000;
+				console.warn(e);
+				this.y += velocityY * e + GRAVITY * e * e / 2;
+				velocityY += GRAVITY * e;
 			}
 			if(this.alive && this.bodyGravity) {
 				if (velocityY <= 0) {
@@ -464,7 +466,7 @@ function init() {
 			}
 
 			if (bird.alive) {
-		        ground.x += -SPEED * game.time.physicsElapsed;
+		        ground.x += -SPEED * game.time.elapsed / 1000;
 		        while (ground.x <= -150) {
 		        	ground.x += 150;
 		        }
