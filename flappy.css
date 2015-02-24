@@ -11,7 +11,7 @@ html, body {
 	padding-right: 5px;
 	padding-left: 5px;
 	background: red;
-	z-index: 1;	
+	z-index: 2;	
 }
 
 #game {
@@ -29,4 +29,5 @@ canvas {
     image-rendering: pixelated;
     image-rendering: optimize-contrast;
     -ms-interpolation-mode: nearest-neighbor;
+	z-index: 1;	
 }
