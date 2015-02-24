@@ -150,7 +150,6 @@ function init() {
 		this.update = function () {
 			if (this.bodyGravity) {
 				var e = game.time.elapsed / 1000;
-				console.warn(e);
 				this.y += velocityY * e + GRAVITY * e * e / 2;
 				velocityY += GRAVITY * e;
 			}
