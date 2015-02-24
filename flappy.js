@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 34;
+var VERSION = 35;
 
 // hdpi hook
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
@@ -524,7 +524,7 @@ function init() {
     	}
 
 		this.update = function () {
-			console.warn(game.time.physicsElapsed);
+			console.warn(game.time.elapsed);
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
 				bird.x = bird.x;
