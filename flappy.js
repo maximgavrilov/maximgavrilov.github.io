@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 42;
+var VERSION = 43;
 
 var WIDTH = 150, HEIGHT = 200;
 var HDPI = (window.devicePixelRatio || 1) * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
@@ -47,7 +47,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
                 this.renderType = Phaser.CANVAS;
             }
 
-            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": HDPI, "clearBeforeRender": true });
+            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": false, "resolution": HDPI, "clearBeforeRender": true });
             this.context = this.renderer.context;
         }
         else
@@ -60,7 +60,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
         //  They requested WebGL and their browser supports it
         this.renderType = Phaser.WEBGL;
 
-        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": HDPI, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : true });
+        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": false, "resolution": HDPI, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : true });
         this.context = null;
     }
 
