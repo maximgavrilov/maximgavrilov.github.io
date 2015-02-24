@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 35;
+var VERSION = 36;
 
 // hdpi hook
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
@@ -595,7 +595,7 @@ function init() {
 			});		
 			game.scale.refresh();
 
-			game.plugins.add(FPSPlugin);
+			// game.plugins.add(FPSPlugin);
 		});
 
 		game.state.add('preload', PreloadState, true);
