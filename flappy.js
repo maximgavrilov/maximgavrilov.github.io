@@ -1,10 +1,11 @@
 'use strict'
-var VERSION = 36;
+var VERSION = 37;
 
 // hdpi hook
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 Phaser.Game.prototype.setUpRenderer = function () {
 	var hdpi = window.devicePixelRatio || 1;
+	hdpi = 10;
 
     if (this.config['canvasID'])
     {
@@ -571,7 +572,7 @@ function init() {
 		this.render = function () {
 			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 			if (fpsSpan) {
-				fpsSpan.innerHTML = '' + game.time.fps + ' ' + game.time.desiredFps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' ' + VERSION;
+				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' ' + VERSION;
 			}
 		}
 	}
@@ -595,7 +596,7 @@ function init() {
 			});		
 			game.scale.refresh();
 
-			// game.plugins.add(FPSPlugin);
+			game.plugins.add(FPSPlugin);
 		});
 
 		game.state.add('preload', PreloadState, true);
