@@ -1,8 +1,8 @@
 'use strict'
-var VERSION = 43;
+var VERSION = 44;
 
 var WIDTH = 150, HEIGHT = 200;
-var HDPI = (window.devicePixelRatio || 1) * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
+var HDPI = (window.devicePixelRatio || 1);// * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
 	
 // hdpi hook
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
@@ -570,7 +570,7 @@ function init() {
 		this.render = function () {
 			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 			if (fpsSpan) {
-				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + HDPI + ' ' + r + ' ' + VERSION;
+				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + game.renderer.resolution + ' ' + r + ' ' + VERSION;
 			}
 		}
 	}
@@ -593,6 +593,8 @@ function init() {
 				var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
 				if (s != lastScale) {
 					lastScale = s;
+					game.renderer.resolution = HDPI * s;
+					game.renderer.resize(WIDTH, HEIGHT)
 					scale.setUserScale(s, s);
 				}
 			});		
