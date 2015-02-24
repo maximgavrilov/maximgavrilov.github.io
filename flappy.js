@@ -2,6 +2,7 @@
 var VERSION = 29;
 
 // hdpi hook
+PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 Phaser.Game.prototype.setUpRenderer = function () {
 	var hdpi = window.devicePixelRatio || 1;
 
