@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 38;
+var VERSION = 39;
 
 var WIDTH = 150, HEIGHT = 200;
 var HDPI = (window.devicePixelRatio || 1) * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
@@ -524,7 +524,6 @@ function init() {
     	}
 
 		this.update = function () {
-			console.warn(game.time.elapsed);
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
 				bird.x = bird.x;
