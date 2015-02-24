@@ -1,12 +1,11 @@
 'use strict'
-var VERSION = 49;
+var VERSION = 50;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
-	var PHYS_DT = 1 / 120.0;
 	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
 	var WALL_DIST = 75;
 	var BIRD_R = 6;
@@ -69,7 +68,6 @@ function init() {
 
   		var isMoving = true;
 
-		var el = 0;
 		this.reset = function (x, wallY) {
 			top.reset(x, 0);
 			top.cropRect.y = 200 - wallY - 50;
@@ -88,7 +86,6 @@ function init() {
 			this.scored = false;
 
 			isMoving = true;
-			el = 0;
 		}
 
 		this.update = function () {
@@ -97,12 +94,8 @@ function init() {
 				this.visible = false;
 				isMoving = false;
 			} else if (isMoving) {
-				el += game.time.elapsed / 1000;
-				while (el > PHYS_DT) {
-			        top.x += -SPEED * PHYS_DT;
-			        bottom.x += -SPEED * PHYS_DT;					
-			        el -= PHYS_DT;
-				}
+		        top.x += -SPEED * game.time.elapsed / 1000;
+		        bottom.x += -SPEED * game.time.elapsed / 1000;
 			}
 		}
 
@@ -154,15 +147,11 @@ function init() {
 		this.bodyGravity = false;
 		var velocityY = 0;
 
-		var el = 0;
 		this.update = function () {
-			el += game.time.elapsed / 1000;
-			while (el > PHYS_DT) {
-				if (this.bodyGravity) {
-					this.y += velocityY * PHYS_DT + GRAVITY * PHYS_DT * PHYS_DT / 2;
-					velocityY += GRAVITY * PHYS_DT;
-				}
-				el -= PHYS_DT;
+			var e = game.time.elapsed / 1000;
+			if (this.bodyGravity) {
+				this.y += velocityY * e + GRAVITY * e * e / 2;
+				velocityY += GRAVITY * e;
 			}
 			if(this.alive && this.bodyGravity) {
 				if (velocityY <= 0) {
@@ -477,15 +466,11 @@ function init() {
 				death();
 			}
 
-			el += game.time.elapsed / 1000;
-			while (el > PHYS_DT) {
-				if (bird.alive) {
-			        ground.x += -SPEED * PHYS_DT;
-			        while (ground.x <= -150) {
-			        	ground.x += 150;
-			        }
-				}
-				el -= PHYS_DT;
+			if (bird.alive) {
+		        ground.x += -SPEED * game.time.elapsed / 1000;
+		        while (ground.x <= -150) {
+		        	ground.x += 150;
+		        }
 			}
 
 			if (!bird.alive) {
