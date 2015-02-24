@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 46;
+var VERSION = 47;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
