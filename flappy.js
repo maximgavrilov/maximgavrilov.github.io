@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 32;
+var VERSION = 33;
 
 // hdpi hook
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
