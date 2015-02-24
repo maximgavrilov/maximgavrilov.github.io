@@ -1,12 +1,12 @@
 'use strict'
-var VERSION = 37;
+var VERSION = 38;
 
+var WIDTH = 150, HEIGHT = 200;
+var HDPI = (window.devicePixelRatio || 1) * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
+	
 // hdpi hook
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 Phaser.Game.prototype.setUpRenderer = function () {
-	var hdpi = window.devicePixelRatio || 1;
-	hdpi = 10;
-
     if (this.config['canvasID'])
     {
         this.canvas = Phaser.Canvas.create(this.width, this.height, this.config['canvasID']);
@@ -47,7 +47,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
                 this.renderType = Phaser.CANVAS;
             }
 
-            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "clearBeforeRender": true });
+            this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": HDPI, "clearBeforeRender": true });
             this.context = this.renderer.context;
         }
         else
@@ -60,7 +60,7 @@ Phaser.Game.prototype.setUpRenderer = function () {
         //  They requested WebGL and their browser supports it
         this.renderType = Phaser.WEBGL;
 
-        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": hdpi, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : true });
+        this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": HDPI, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer, "clearBeforeRender" : true });
         this.context = null;
     }
 
@@ -74,7 +74,6 @@ Phaser.Game.prototype.setUpRenderer = function () {
 }
 
 function init() {	
-	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
 	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
 	var WALL_DIST = 75;
@@ -572,7 +571,7 @@ function init() {
 		this.render = function () {
 			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 			if (fpsSpan) {
-				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' ' + VERSION;
+				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + HDPI + ' ' + r + ' ' + VERSION;
 			}
 		}
 	}
