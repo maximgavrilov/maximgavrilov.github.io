@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 39;
+var VERSION = 40;
 
 var WIDTH = 150, HEIGHT = 200;
 var HDPI = (window.devicePixelRatio || 1) * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
@@ -589,6 +589,7 @@ function init() {
 			game.scale.setMinMax(WIDTH, HEIGHT, 10 * WIDTH, 10 * HEIGHT);
 			game.scale.pageAlignHorizontally = true;
 			game.scale.setResizeCallback(function (scale, parentBounds) {
+				console.warn('scale');
 				var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
 				scale.setUserScale(s, s);
 			});		
