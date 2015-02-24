@@ -570,7 +570,7 @@ function init() {
 		this.render = function () {
 			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 			if (fpsSpan) {
-				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' ' + VERSION;
+				fpsSpan.innerHTML = '' + game.time.fps + ' ' + game.time.desiredFps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + window.devicePixelRatio + ' ' + r + ' ' + VERSION;
 			}
 		}
 	}
