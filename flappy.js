@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 40;
+var VERSION = 41;
 
 var WIDTH = 150, HEIGHT = 200;
 var HDPI = (window.devicePixelRatio || 1) * Math.min(screen.width / WIDTH, screen.height / HEIGHT);
@@ -588,10 +588,14 @@ function init() {
 			game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
 			game.scale.setMinMax(WIDTH, HEIGHT, 10 * WIDTH, 10 * HEIGHT);
 			game.scale.pageAlignHorizontally = true;
+			var lastS = 0;
 			game.scale.setResizeCallback(function (scale, parentBounds) {
 				console.warn('scale');
 				var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
-				scale.setUserScale(s, s);
+				if (s != lastS) {
+					lastS = s;
+					scale.setUserScale(s, s);
+				}
 			});		
 			game.scale.refresh();
 
