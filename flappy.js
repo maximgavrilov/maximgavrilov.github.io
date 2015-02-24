@@ -1,12 +1,12 @@
 'use strict'
-var VERSION = 48;
+var VERSION = 49;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
-	var PHYS_DT = 1 / 100.0;
+	var PHYS_DT = 1 / 120.0;
 	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
 	var WALL_DIST = 75;
 	var BIRD_R = 6;
