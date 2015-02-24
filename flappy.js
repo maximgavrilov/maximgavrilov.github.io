@@ -6,6 +6,7 @@ PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 function init() {	
 	var WIDTH = 150, HEIGHT = 200;
 	var GR = 24;
+	var PHYS_DT = 1 / 100.0;
 	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
 	var WALL_DIST = 75;
 	var BIRD_R = 6;
@@ -68,6 +69,7 @@ function init() {
 
   		var isMoving = true;
 
+		var el = 0;
 		this.reset = function (x, wallY) {
 			top.reset(x, 0);
 			top.cropRect.y = 200 - wallY - 50;
@@ -86,6 +88,7 @@ function init() {
 			this.scored = false;
 
 			isMoving = true;
+			el = 0;
 		}
 
 		this.update = function () {
@@ -94,8 +97,12 @@ function init() {
 				this.visible = false;
 				isMoving = false;
 			} else if (isMoving) {
-		        top.x += -SPEED * game.time.elapsed / 1000;
-		        bottom.x += -SPEED * game.time.elapsed / 1000;
+				el += game.time.elapsed / 1000;
+				while (el > PHYS_DT) {
+			        top.x += -SPEED * PHYS_DT;
+			        bottom.x += -SPEED * PHYS_DT;					
+			        el -= PHYS_DT;
+				}
 			}
 		}
 
@@ -147,11 +154,15 @@ function init() {
 		this.bodyGravity = false;
 		var velocityY = 0;
 
+		var el = 0;
 		this.update = function () {
-			if (this.bodyGravity) {
-				var e = game.time.elapsed / 1000;
-				this.y += velocityY * e + GRAVITY * e * e / 2;
-				velocityY += GRAVITY * e;
+			el += game.time.elapsed / 1000;
+			while (el > PHYS_DT) {
+				if (this.bodyGravity) {
+					this.y += velocityY * PHYS_DT + GRAVITY * PHYS_DT * PHYS_DT / 2;
+					velocityY += GRAVITY * PHYS_DT;
+				}
+				el -= PHYS_DT;
 			}
 			if(this.alive && this.bodyGravity) {
 				if (velocityY <= 0) {
@@ -455,6 +466,8 @@ function init() {
     		this.input.onDown.addOnce(start, this);
     	}
 
+    	var el = 0;
+
 		this.update = function () {
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
@@ -464,11 +477,15 @@ function init() {
 				death();
 			}
 
-			if (bird.alive) {
-		        ground.x += -SPEED * game.time.elapsed / 1000;
-		        while (ground.x <= -150) {
-		        	ground.x += 150;
-		        }
+			el += game.time.elapsed / 1000;
+			while (el > PHYS_DT) {
+				if (bird.alive) {
+			        ground.x += -SPEED * PHYS_DT;
+			        while (ground.x <= -150) {
+			        	ground.x += 150;
+			        }
+				}
+				el -= PHYS_DT;
 			}
 
 			if (!bird.alive) {
