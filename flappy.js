@@ -285,7 +285,7 @@ function init() {
 			if (!needUpdate) return;
 			needUpdate = false;
 
-			var value = val;
+			var value = Math.round(val);
 			var a;
 			if (value == 0) {
 				a = ['0'];
