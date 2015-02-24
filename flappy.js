@@ -124,7 +124,7 @@ function init() {
 
 		this.isCollide = function (bird) {
 			var over = ((bird.x + BIRD_R) >= top.x && (bird.x - BIRD_R) <= (top.x + top.width)) && bird.y < 0;
-			return over || intersect(bird, top) || intersect(bird, bottom);
+			return false;//over || intersect(bird, top) || intersect(bird, bottom);
 		}
 
 		this.getX = function () { 
@@ -463,7 +463,7 @@ function init() {
 				bird.x = bird.x;
 				bird.y = ground.y - BIRD_R;
 				bird.bodyGravity = false;
-				death();
+				// death();
 			}
 
 			if (bird.alive) {
