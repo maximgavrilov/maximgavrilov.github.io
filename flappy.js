@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 67;
+var VERSION = 68;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -534,7 +534,7 @@ function init() {
 	}
 	
 	(function () {
-		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'game', null, false, false, null);
+		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
 		game.forceSingleUpdate = true;
 		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
@@ -550,10 +550,14 @@ function init() {
 			var lastScale = 0;
 			game.scale.setResizeCallback(function (scale, parentBounds) {
 				var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
-				if (s != lastScale) {
-					lastScale = s;
-					var HDPI = (window.devicePixelRatio || 1);
-					game.renderer.resolution = HDPI;// * s;
+				var HDPI = (window.devicePixelRatio || 1);
+				if (HDPI * s != lastScale) {
+					lastScale = HDPI * s;
+					if (game.renderType == Phaser.WEBGL) {
+						game.renderer.resolution = HDPI * s;
+					} else {
+						game.renderer.resolution = HDPI;
+					}
 					game.renderer.resize(WIDTH, HEIGHT)
 					scale.setUserScale(s, s);
 				}
