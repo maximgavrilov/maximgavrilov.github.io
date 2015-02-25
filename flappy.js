@@ -464,7 +464,7 @@ function init() {
 				bird.x = bird.x;
 				bird.y = ground.y - BIRD_R;
 				bird.bodyGravity = false;
-				// death();
+				death();
 			}
 
 			if (bird.alive) {
