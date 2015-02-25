@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 62;
+var VERSION = 63;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -531,7 +531,7 @@ function init() {
 	}
 	
 	(function () {
-		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
+		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'game', null, false, false, null);
 		game.forceSingleUpdate = true;
 		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
