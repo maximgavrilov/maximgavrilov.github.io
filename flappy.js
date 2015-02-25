@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 53;
+var VERSION = 54;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -512,7 +512,7 @@ function init() {
 	}
 	
 	(function () {
-		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, 'game', null, false, false, null);
+		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
 		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
 			game.stage.backgroundColor = '#95d5c4';

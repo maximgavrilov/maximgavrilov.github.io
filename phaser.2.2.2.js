@@ -7952,7 +7952,7 @@ PIXI.WebGLSpriteBatch.prototype.flush = function()
     }
 
     this.renderBatch(currentBaseTexture, batchSize, start);
-
+    gl.finish();
     // then reset the batch!
     this.currentBatchSize = 0;
 };
