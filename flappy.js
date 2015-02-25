@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 59;
+var VERSION = 60;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -516,7 +516,7 @@ function init() {
 	}
 
 	function VSyncPlugin(game) {
-		var vsync = new Phaser.Sprite(game, 0, 0, 'gui');
+		var vsync = new Phaser.Sprite(game, WIDTH - 10, 0, 'gui');
 		vsync.frameName = 'vsync0.png';
 		game.stage.addChild(vsync)
 		var frame = 0;
