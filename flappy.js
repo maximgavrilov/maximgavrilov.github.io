@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 64;
+var VERSION = 65;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -553,7 +553,7 @@ function init() {
 				if (s != lastScale) {
 					lastScale = s;
 					var HDPI = (window.devicePixelRatio || 1);
-					game.renderer.resolution = HDPI * s;
+					game.renderer.resolution = HDPI;// * s;
 					game.renderer.resize(WIDTH, HEIGHT)
 					scale.setUserScale(s, s);
 				}
