@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 54;
+var VERSION = 55;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -502,11 +502,14 @@ function init() {
 	function FPSPlugin(game) {
 		var fpsSpan = document.getElementById('fps');
 		var gameDiv = document.getElementById('game');
+		var lastHTML;
 
 		this.render = function () {
 			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
-			if (fpsSpan) {
-				fpsSpan.innerHTML = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + game.renderer.resolution + ' ' + r + ' ' + VERSION;
+			var html = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + game.renderer.resolution + ' ' + r + ' ' + VERSION;
+			if (fpsSpan && lastHTML != html) {
+				fpsSpan.innerHTML = html;
+				lastHTML = html;
 			}
 		}
 	}
