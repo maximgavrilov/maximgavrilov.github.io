@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 57;
+var VERSION = 58;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -341,6 +341,7 @@ function init() {
 		var isWallStarted;
 		var bird, ground, walls, score;
 		var sc;
+		var vsync;
 
 		function emitWall() {
 			if (!isWallStarted || !bird.alive) {
@@ -404,6 +405,7 @@ function init() {
 			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground.png');
 
 			bird = game.add.existing(new Bird(game, 45, 125));
+			vsync = game.add.graphics(0, 0);
 
 			var demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
 
@@ -456,9 +458,14 @@ function init() {
     		this.input.onDown.addOnce(start, this);
     	}
 
-    	var el = 0;
+    	var frame = 0;
 
 		this.update = function () {
+			frame += 1;
+			vsync.beginFill((frame & 1) ? 0xfb8282 : 0x89fefe, 1.0);
+			vsync.drawRect(0, 0, 10, 10);
+			vsync.endFill();
+
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
 				bird.x = bird.x;
