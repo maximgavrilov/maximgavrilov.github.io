@@ -545,7 +545,6 @@ function init() {
 			game.time.advancedTiming = true;
 
 			game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-			game.scale.setMinMax(WIDTH, HEIGHT, 10 * WIDTH, 10 * HEIGHT);
 			game.scale.pageAlignHorizontally = true;
 			var lastScale = 0;
 			game.scale.setResizeCallback(function (scale, parentBounds) {
