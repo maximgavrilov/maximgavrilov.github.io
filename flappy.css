@@ -21,11 +21,11 @@ html, body {
 	height: 100%;
 }
 
-canvas {
+/*canvas {
 	transform: translateZ(0px);
 }
-
-/*canvas {
+*/
+canvas {
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
@@ -33,6 +33,4 @@ canvas {
     image-rendering: pixelated;
     image-rendering: optimize-contrast;
     -ms-interpolation-mode: nearest-neighbor;
-	z-index: 1;	
 }
-*/
