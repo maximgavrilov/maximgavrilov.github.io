@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 58;
+var VERSION = 59;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -319,6 +319,8 @@ function init() {
 		}
 
 		this.create = function () {
+			game.plugins.add(FPSPlugin);
+			game.plugins.add(VSyncPlugin);
 			game.state.start('menu');
 		}
 	}
@@ -341,7 +343,6 @@ function init() {
 		var isWallStarted;
 		var bird, ground, walls, score;
 		var sc;
-		var vsync;
 
 		function emitWall() {
 			if (!isWallStarted || !bird.alive) {
@@ -405,7 +406,6 @@ function init() {
 			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground.png');
 
 			bird = game.add.existing(new Bird(game, 45, 125));
-			vsync = game.add.graphics(0, 0);
 
 			var demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
 
@@ -458,13 +458,7 @@ function init() {
     		this.input.onDown.addOnce(start, this);
     	}
 
-    	var frame = 0;
-
 		this.update = function () {
-			frame += 1;
-			vsync.beginFill((frame & 1) ? 0xfb8282 : 0x89fefe, 1.0);
-			vsync.drawRect(0, 0, 10, 10);
-			vsync.endFill();
 
 			if (bird.y + BIRD_R >= ground.y) {
 				bird.allowGravity = false;
@@ -511,13 +505,28 @@ function init() {
 		var gameDiv = document.getElementById('game');
 		var lastHTML;
 
-		this.render = function () {
+		this.update = function () {
 			var r = (game.renderType == Phaser.WEBGL) ? "WebGL" : "Canvas";
 			var html = '' + game.time.fps + ' ' + gameDiv.clientWidth + 'x' + gameDiv.clientHeight + ' ' + game.renderer.resolution + ' ' + r + ' ' + VERSION;
 			if (fpsSpan && lastHTML != html) {
 				fpsSpan.innerHTML = html;
 				lastHTML = html;
 			}
+		}
+	}
+
+	function VSyncPlugin(game) {
+		var vsync = new Phaser.Sprite(game, 0, 0, 'gui');
+		vsync.frameName = 'vsync0.png';
+		game.stage.addChild(vsync)
+		var frame = 0;
+
+		this.update = function () {
+			frame += 1;
+			if (game.stage.getChildIndex(vsync) != game.stage.children.length - 1) {
+				game.stage.setChildIndex(vsync, game.stage.children.length - 1);
+			}
+			vsync.frameName = (frame & 1) ? 'vsync0.png' : 'vsync1.png';
 		}
 	}
 	
@@ -546,8 +555,6 @@ function init() {
 				}
 			});		
 			game.scale.refresh();
-
-			game.plugins.add(FPSPlugin);
 		});
 
 		game.state.add('preload', PreloadState, true);
