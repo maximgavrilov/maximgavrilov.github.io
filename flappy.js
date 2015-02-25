@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 63;
+var VERSION = 64;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -49,11 +49,13 @@ function init() {
 		Phaser.Group.call(this, game);
 
 		var top = new Phaser.Sprite(game, 0, -150, 'gui');
+		top.smoothed = false;
 		top.frameName = 'wall_u.png';
 		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(top);
 
 		var bottom = new Phaser.Sprite(game, 0, 100, 'gui');
+		bottom.smoother = false;
 		bottom.frameName = 'wall_d.png';
 		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(bottom);
@@ -144,6 +146,7 @@ function init() {
 		this.animations.play('demo');
 
 		this.alive = false;
+		this.smoothed = false;
 
 		this.bodyGravity = false;
 		var velocityY = 0;
