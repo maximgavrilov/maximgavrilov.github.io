@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 61;
+var VERSION = 62;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -94,7 +94,7 @@ function init() {
 				this.visible = false;
 				isMoving = false;
 			} else if (isMoving) {
-				var e = game.time.physicsElapsed; //game.time.elapsed / 1000;
+				var e = game.time.elapsed / 1000;
 		        top.x += -SPEED * e;
 		        bottom.x += -SPEED * e;
 			}
@@ -149,7 +149,7 @@ function init() {
 		var velocityY = 0;
 
 		this.update = function () {
-			var e = game.time.physicsElapsed; //game.time.elapsed / 1000;
+			var e = game.time.elapsed / 1000;
 			if (this.bodyGravity) {
 				this.y += velocityY * e + GRAVITY * e * e / 2;
 				velocityY += GRAVITY * e;
@@ -469,7 +469,7 @@ function init() {
 			}
 
 			if (bird.alive) {
-				var e = game.time.physicsElapsed;// game.time.elapsed / 1000;
+				var e = game.time.elapsed / 1000;
 		        ground.x += -SPEED * e;
 		        while (ground.x <= -150) {
 		        	ground.x += 150;
@@ -532,6 +532,7 @@ function init() {
 	
 	(function () {
 		var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
+		game.forceSingleUpdate = true;
 		game.config.enableDebug = false;
 		game.device.whenReady(function () {		
 			game.stage.backgroundColor = '#95d5c4';
