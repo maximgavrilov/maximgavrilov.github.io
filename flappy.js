@@ -15,13 +15,21 @@ function init() {
 	var MAX_BANK_VALUE = 50;
 	var birdType = 0, gold = 35, bestScore = 110;
 
+	function assert(condition, message) {
+	    if (!condition) {
+	        message = message || "Assertion failed";
+	        if (typeof Error !== "undefined") {
+	            throw new Error(message);
+	        }
+	        throw message;
+	    }
+	}
+
 	function registerFonts(game) {
 		function registerFont(game, key, atlas, map) {
 			var info = map.info;
-			if (!info) {
-				console.warn('No info for font ' + key);
-				return;
-			}
+
+			assert(info, 'No info for font ' + key);
 
 			var data = {};
 			data.chars = {};
@@ -35,10 +43,7 @@ function init() {
 					continue;
 				}
 
-				if (k.length > 1) {
-					console.warn('Unknown char ' + k);
-					continue;
-				}
+				assert(k.length == 1, 'Unknown char ' + k);
 
 				var code = k.charCodeAt(0);
 				var name = map[k];
