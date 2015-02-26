@@ -4,7 +4,7 @@ var VERSION = 71;
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
-	var WIDTH = 150, HEIGHT = 200, GR = 0;//24;
+	var WIDTH = 150, HEIGHT = 224, GR = 24;
 	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 175, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
@@ -304,7 +304,7 @@ function init() {
 
 		bestScore.value = bestScore_;
 		game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * Phaser.Timer.SECOND, undefined, true, 0.5 * Phaser.Timer.SECOND);
-		game.add.tween(result).from({ y : 200 }, 0.4 * Phaser.Timer.SECOND, undefined, true, 0.8 * Phaser.Timer.SECOND);
+		game.add.tween(result).from({ y : HEIGHT }, 0.4 * Phaser.Timer.SECOND, undefined, true, 0.8 * Phaser.Timer.SECOND);
 		game.add.tween(score).to({ value : score_}, 0.5 * Phaser.Timer.SECOND, undefined, true, 1.5 * Phaser.Timer.SECOND);
 		game.add.tween(buttons).from({ alpha : 0 }, 0.2 * Phaser.Timer.SECOND, undefined, true, 1.5 * Phaser.Timer.SECOND);
 	}
