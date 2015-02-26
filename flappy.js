@@ -1,58 +1,143 @@
 'use strict'
-var VERSION = 75;
+var VERSION = 76;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
+	var COLLIDE_ENABLED = true;
+
 	var WIDTH = 150, HEIGHT = 224, GR = 24;
 	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 180, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 	var UNLOCKED_BIRDS = [true, false, false];
-	var birdType = 0, gold = 35;
+
 	var MAX_BANK_VALUE = 50;
-	var COLLIDE_ENABLED = true;
+	var birdType = 0, gold = 35, bestScore = 110;
 
-	function registerFont(game, key, atlas, map) {
-		var info = map.info;
-		if (!info) {
-			console.warn('No info for font ' + key);
-			return;
-		}
-
-		var data = {};
-		data.chars = {};
-		var xSpacing = info.xSpacing;
-		data.font = info.face;
-		data.size = info.size;
-		data.lineHeight = info.lineHeight + info.ySpacing;
-
-		for (var k in map) {
-			if (!map.hasOwnProperty(k) || k == 'info') {
-				continue;
+	function registerFonts(game) {
+		function registerFont(game, key, atlas, map) {
+			var info = map.info;
+			if (!info) {
+				console.warn('No info for font ' + key);
+				return;
 			}
 
-			if (k.length > 1) {
-				console.warn('Unknown char ' + k);
-				continue;
+			var data = {};
+			data.chars = {};
+			var xSpacing = info.xSpacing;
+			data.font = info.face;
+			data.size = info.size;
+			data.lineHeight = info.lineHeight + info.ySpacing;
+
+			for (var k in map) {
+				if (!map.hasOwnProperty(k) || k == 'info') {
+					continue;
+				}
+
+				if (k.length > 1) {
+					console.warn('Unknown char ' + k);
+					continue;
+				}
+
+				var code = k.charCodeAt(0);
+				var name = map[k];
+				var frame = game.cache.getFrameByName(atlas, name);
+				var texture = PIXI.TextureCache[frame.uuid];
+
+				data.chars[code] = {
+					xOffset: 0,
+					yOffset: 0,
+					xAdvance: texture.frame.width + xSpacing,
+					kerning: {},
+					texture: new PIXI.Texture(PIXI.BaseTextureCache[atlas], texture.frame)
+				}
 			}
 
-			var code = k.charCodeAt(0);
-			var name = map[k];
-			var frame = game.cache.getFrameByName(atlas, name);
-			var texture = PIXI.TextureCache[frame.uuid];
+			PIXI.BitmapText.fonts[key] = data;
+			game.cache._bitmapFont[key] = PIXI.BitmapText.fonts[key];
+		}		
 
-			data.chars[code] = {
-				xOffset: 0,
-				yOffset: 0,
-				xAdvance: texture.frame.width + xSpacing,
-				kerning: {},
-				texture: new PIXI.Texture(PIXI.BaseTextureCache[atlas], texture.frame)
-			}
-		}
+		registerFont(game, 'bank_time', 'gui', {
+			'info' : {
+				face : 'bank_time',
+				size : 5,
+				lineHeight: 5,
+				xSpacing : 1,
+				ySpacing : 1
+			},
+			'0' : 'font_bt0.png',
+			'1' : 'font_bt1.png',
+			'2' : 'font_bt2.png',
+			'3' : 'font_bt3.png',
+			'4' : 'font_bt4.png',
+			'5' : 'font_bt5.png',
+			'6' : 'font_bt6.png',
+			'7' : 'font_bt7.png',
+			'8' : 'font_bt8.png',
+			'9' : 'font_bt9.png',
+			':' : 'font_btpt.png'
+		});
 
-		PIXI.BitmapText.fonts[key] = data;
-		game.cache._bitmapFont[key] = PIXI.BitmapText.fonts[key];
+		registerFont(game, 'bank_add', 'gui', {
+			'info' : {
+				face : 'bank_add',
+				size : 7,
+				lineHeight: 7,
+				xSpacing : -1,
+				ySpacing : 1
+			},
+			'0' : 'font_ba0.png',
+			'1' : 'font_ba1.png',
+			'2' : 'font_ba2.png',
+			'3' : 'font_ba3.png',
+			'4' : 'font_ba4.png',
+			'5' : 'font_ba5.png',
+			'6' : 'font_ba6.png',
+			'7' : 'font_ba7.png',
+			'8' : 'font_ba8.png',
+			'9' : 'font_ba9.png'
+		});
+
+		registerFont(game, 'score', 'gui', {
+			'info' : {
+				face : 'score',
+				size : 11,
+				lineHeight: 11,
+				xSpacing : 1,
+				ySpacing : 1
+			},
+			'0' : 'font_sc0.png',
+			'1' : 'font_sc1.png',
+			'2' : 'font_sc2.png',
+			'3' : 'font_sc3.png',
+			'4' : 'font_sc4.png',
+			'5' : 'font_sc5.png',
+			'6' : 'font_sc6.png',
+			'7' : 'font_sc7.png',
+			'8' : 'font_sc8.png',
+			'9' : 'font_sc9.png'
+		});
+
+		registerFont(game, 'score_s', 'gui', {
+			'info' : {
+				face : 'score_s',
+				size : 8,
+				lineHeight: 8,
+				xSpacing : 1,
+				ySpacing : 1
+			},
+			'0' : 'font_scs0.png',
+			'1' : 'font_scs1.png',
+			'2' : 'font_scs2.png',
+			'3' : 'font_scs3.png',
+			'4' : 'font_scs4.png',
+			'5' : 'font_scs5.png',
+			'6' : 'font_scs6.png',
+			'7' : 'font_scs7.png',
+			'8' : 'font_scs8.png',
+			'9' : 'font_scs9.png'
+		});
 	}
 
 	function add_button(game, x, y, name, cb) {
@@ -128,6 +213,8 @@ function init() {
 		}
 
 		this.update = function () {
+			Phaser.Group.prototype.update.call(this);
+
 			if (this.exists && top.x < -26) {
 				this.exists = false;
 				this.visible = false;
@@ -237,16 +324,17 @@ function init() {
 	Bird.prototype = Object.create(Phaser.Sprite.prototype);
 	Bird.prototype.constructor = Bird;
 
-	var DigitText = function (game, x, y, font, size, align) {
+	var AlignText = function (game, x, y, font, size, align) {
 		Phaser.Group.call(this, game);
 
 		this.x = x;
 		this.y = y;
 
-		var text = game.add.bitmapText(0, 0, font, '', size);
-		this.add(text);
+		var txt = game.add.bitmapText(0, 0, font, '', size);
+		this.add(txt);
 
 		var val = 0;
+		var text = undefined;
 		var needUpdate = true;
 
 		Object.defineProperty(this, 'value', {
@@ -262,24 +350,39 @@ function init() {
 		    }
 		});
 
+		Object.defineProperty(this, 'text', {
+		    get: function () {
+		        return text;
+		    },
+
+		    set: function (value) {
+		    	if (text != value) {
+			        text = value;
+			        needUpdate = true;
+		    	}
+		    }
+		});
+
 		this.update = function () {
+			Phaser.Group.prototype.update.call(this);
+
 			if (!needUpdate) return;
 			needUpdate = false;
 
-			text.text = '' + Math.round(val);
-			text.updateText();
+			txt.text = text ? text : ('' + Math.round(val));
+			txt.updateText();
 
 			if (align == 'center') {
-				text.x = -Math.floor(text.textWidth / 2);
+				txt.x = -Math.floor(txt.textWidth / 2);
 			} else if (align == 'left') {
-				text.x = 0;
+				txt.x = 0;
 			} else if (align == 'right') {
-				text.x = -Math.floor(text.textWidth);
+				txt.x = -Math.floor(txt.textWidth);
 			}
 		}
 	}
-	DigitText.prototype = Object.create(Phaser.Group.prototype);
-	DigitText.prototype.constructor = DigitText;
+	AlignText.prototype = Object.create(Phaser.Group.prototype);
+	AlignText.prototype.constructor = AlignText;
 
 	var GameOver = function (game, score_, bestScore_) {
 		Phaser.Group.call(this, game);
@@ -296,8 +399,8 @@ function init() {
 		if (score_ > bestScore_) {
 			result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
 		}
-		var score = result.add(new DigitText(game, 101, 36, 'score_s', 8, 'right'));
-		var bestScore = result.add(new DigitText(game, 101, 50, 'score_s', 8,'right'));
+		var score = result.add(new AlignText(game, 101, 36, 'score_s', 8, 'right'));
+		var bestScore = result.add(new AlignText(game, 101, 50, 'score_s', 8,'right'));
 		result.add(add_button(game, 12, 67, 'btn_share', function () {
 			// game.state.start('menu');
 		}));
@@ -323,6 +426,7 @@ function init() {
 
 	var Bank = function (game) {
 		Phaser.Group.call(this, game);
+
 		this.add(game.add.image(0, 0, 'gui', 'bank_bg.png'));
 		var progress = this.add(game.add.image(19, 6, 'gui', 'bank_p.png'));
 		progress.crop(new Phaser.Rectangle(0, 0, 36, 6));
@@ -331,6 +435,17 @@ function init() {
 		this.add(add_button(game, 63, 2, 'btn_plus', function () {
 			// TODO
 		}));
+
+		var balance = new AlignText(game, 12, 5, 'bank_time', 5, 'center');
+		this.add(balance);
+
+		var time = new AlignText(game, 37, 15, 'bank_time', 5, 'center');
+		this.add(time);
+		time.text = '05:21';
+
+		var add = new AlignText(game, 78, 6, 'bank_add', 7, 'left');
+		this.add(add);
+		add.value = 2978;
 
 		var val, needUpdate = false;
 
@@ -348,6 +463,8 @@ function init() {
 		});
 
 		this.update = function () {
+			Phaser.Group.prototype.update.call(this);
+
 			if (!needUpdate) return;
 			needUpdate = false;
 
@@ -355,6 +472,8 @@ function init() {
 			progress.cropRect.x = Math.round(36 - 36 * v);
 			progress.cropRect.width = 36 - progress.cropRect.x;
 			progress.updateCrop();
+
+			balance.value = val;
 		}
 	}
 	Bank.prototype = Object.create(Phaser.Group.prototype);
@@ -368,46 +487,7 @@ function init() {
 		this.create = function () {
 			game.plugins.add(FPSPlugin);
 			game.plugins.add(VSyncPlugin);
-
-			registerFont(game, 'score', 'gui', {
-				'info' : {
-					face : 'score',
-					size : 11,
-					lineHeight: 11,
-					xSpacing : 1,
-					ySpacing : 1
-				},
-				'0' : 'score_0.png',
-				'1' : 'score_1.png',
-				'2' : 'score_2.png',
-				'3' : 'score_3.png',
-				'4' : 'score_4.png',
-				'5' : 'score_5.png',
-				'6' : 'score_6.png',
-				'7' : 'score_7.png',
-				'8' : 'score_8.png',
-				'9' : 'score_9.png'
-			});
-
-			registerFont(game, 'score_s', 'gui', {
-				'info' : {
-					face : 'score',
-					size : 8,
-					lineHeight: 8,
-					xSpacing : 1,
-					ySpacing : 1
-				},
-				'0' : 'score_s0.png',
-				'1' : 'score_s1.png',
-				'2' : 'score_s2.png',
-				'3' : 'score_s3.png',
-				'4' : 'score_s4.png',
-				'5' : 'score_s5.png',
-				'6' : 'score_s6.png',
-				'7' : 'score_s7.png',
-				'8' : 'score_s8.png',
-				'9' : 'score_s9.png'
-			});
+			registerFonts(game);
 
 			game.state.start('menu');
 		}
@@ -515,7 +595,7 @@ function init() {
 					blink.destroy();
 					blink = null;
 
-					game.add.existing(new GameOver(game, sc, 110));
+					game.add.existing(new GameOver(game, sc, bestScore));
 				});
 			}
 		}
@@ -541,7 +621,7 @@ function init() {
 				walls.add(new Wall(game));
 			}
 
-			score = new DigitText(game, 75, 10, 'score', 11, 'center');
+			score = new AlignText(game, 75, 10, 'score', 11, 'center');
 
 			var isStarted = false;
 			isWallStarted = false;
