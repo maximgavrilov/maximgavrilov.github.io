@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 74;
+var VERSION = 75;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -12,6 +12,48 @@ function init() {
 	var birdType = 0, gold = 35;
 	var MAX_BANK_VALUE = 50;
 	var COLLIDE_ENABLED = true;
+
+	function registerFont(game, key, atlas, map) {
+		var info = map.info;
+		if (!info) {
+			console.warn('No info for font ' + key);
+			return;
+		}
+
+		var data = {};
+		data.chars = {};
+		var xSpacing = info.xSpacing;
+		data.font = info.face;
+		data.size = info.size;
+		data.lineHeight = info.lineHeight + info.ySpacing;
+
+		for (var k in map) {
+			if (!map.hasOwnProperty(k) || k == 'info') {
+				continue;
+			}
+
+			if (k.length > 1) {
+				console.warn('Unknown char ' + k);
+				continue;
+			}
+
+			var code = k.charCodeAt(0);
+			var name = map[k];
+			var frame = game.cache.getFrameByName(atlas, name);
+			var texture = PIXI.TextureCache[frame.uuid];
+
+			data.chars[code] = {
+				xOffset: 0,
+				yOffset: 0,
+				xAdvance: texture.frame.width + xSpacing,
+				kerning: {},
+				texture: new PIXI.Texture(PIXI.BaseTextureCache[atlas], texture.frame)
+			}
+		}
+
+		PIXI.BitmapText.fonts[key] = data;
+		game.cache._bitmapFont[key] = PIXI.BitmapText.fonts[key];
+	}
 
 	function add_button(game, x, y, name, cb) {
 		var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {				
@@ -195,11 +237,14 @@ function init() {
 	Bird.prototype = Object.create(Phaser.Sprite.prototype);
 	Bird.prototype.constructor = Bird;
 
-	var Score = function (game, x, y, small, align) {
+	var DigitText = function (game, x, y, font, size, align) {
 		Phaser.Group.call(this, game);
 
 		this.x = x;
 		this.y = y;
+
+		var text = game.add.bitmapText(0, 0, font, '', size);
+		this.add(text);
 
 		var val = 0;
 		var needUpdate = true;
@@ -221,60 +266,20 @@ function init() {
 			if (!needUpdate) return;
 			needUpdate = false;
 
-			var value = Math.round(val);
-			var a;
-			if (value == 0) {
-				a = ['0'];
-			} else {
-				a = [];
-				while (value > 0) {
-					a.push('' + (value % 10));
-					value = Math.floor(value / 10);
-				}
-			}
-			while (this.children.length < a.length) {
-				this.add(new Phaser.Sprite(game, 0, 0, 'gui'));
-			}
-			while (this.children.length > a.length) {
-				this.remove(this.children[0]);
-			}
-			var x = 0;
-			for (var i = a.length - 1; i >= 0; i--) {
-				var d = this.children[i];
-				d.reset(x, 0);
-				if (small) {
-					d.frameName = 'score_s' + a[i] + '.png';
-					var w = 7;
-					if (a[i] == '1') {
-						w = 6;
-					}							
-				} else {
-					d.frameName = 'score_' + a[i] + '.png';
-					var w = 10;
-					if (a[i] == '1') {
-						w = 7;
-					} else if (a[i] == '7') {
-						w = 8;
-					}
-				}
-				x += w + 1;
-			}
-			
-			if (align == 'center') {
-				x = Math.floor(x / 2);
-			} else if (align == 'left') {
-				x = 0;
-			} else if (align == 'right') {
-				x = x;
-			}
+			text.text = '' + Math.round(val);
+			text.updateText();
 
-			for (var i = a.length - 1; i >= 0; i--) {
-				this.children[i].x -= x;
-			}			
+			if (align == 'center') {
+				text.x = -Math.floor(text.textWidth / 2);
+			} else if (align == 'left') {
+				text.x = 0;
+			} else if (align == 'right') {
+				text.x = -Math.floor(text.textWidth);
+			}
 		}
 	}
-	Score.prototype = Object.create(Phaser.Group.prototype);
-	Score.prototype.constructor = Score;
+	DigitText.prototype = Object.create(Phaser.Group.prototype);
+	DigitText.prototype.constructor = DigitText;
 
 	var GameOver = function (game, score_, bestScore_) {
 		Phaser.Group.call(this, game);
@@ -291,8 +296,8 @@ function init() {
 		if (score_ > bestScore_) {
 			result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
 		}
-		var score = result.add(new Score(game, 101, 36, true, 'right'));
-		var bestScore = result.add(new Score(game, 101, 50, true, 'right'));
+		var score = result.add(new DigitText(game, 101, 36, 'score_s', 8, 'right'));
+		var bestScore = result.add(new DigitText(game, 101, 50, 'score_s', 8,'right'));
 		result.add(add_button(game, 12, 67, 'btn_share', function () {
 			// game.state.start('menu');
 		}));
@@ -363,6 +368,47 @@ function init() {
 		this.create = function () {
 			game.plugins.add(FPSPlugin);
 			game.plugins.add(VSyncPlugin);
+
+			registerFont(game, 'score', 'gui', {
+				'info' : {
+					face : 'score',
+					size : 11,
+					lineHeight: 11,
+					xSpacing : 1,
+					ySpacing : 1
+				},
+				'0' : 'score_0.png',
+				'1' : 'score_1.png',
+				'2' : 'score_2.png',
+				'3' : 'score_3.png',
+				'4' : 'score_4.png',
+				'5' : 'score_5.png',
+				'6' : 'score_6.png',
+				'7' : 'score_7.png',
+				'8' : 'score_8.png',
+				'9' : 'score_9.png'
+			});
+
+			registerFont(game, 'score_s', 'gui', {
+				'info' : {
+					face : 'score',
+					size : 8,
+					lineHeight: 8,
+					xSpacing : 1,
+					ySpacing : 1
+				},
+				'0' : 'score_s0.png',
+				'1' : 'score_s1.png',
+				'2' : 'score_s2.png',
+				'3' : 'score_s3.png',
+				'4' : 'score_s4.png',
+				'5' : 'score_s5.png',
+				'6' : 'score_s6.png',
+				'7' : 'score_s7.png',
+				'8' : 'score_s8.png',
+				'9' : 'score_s9.png'
+			});
+
 			game.state.start('menu');
 		}
 	}
@@ -495,12 +541,12 @@ function init() {
 				walls.add(new Wall(game));
 			}
 
-			score = game.add.existing(new Score(game, 75, 10, false, 'center'));
+			score = new DigitText(game, 75, 10, 'score', 11, 'center');
 
 			var isStarted = false;
 			isWallStarted = false;
 			sc = 0;
-			score.value = 0;
+			score.value = sc;
 
 	   		function start() {
 	    		if (isStarted) {
