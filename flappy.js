@@ -23,7 +23,7 @@ function init() {
 		return btn;
 	}
 
-	function create_color_box(game, color) {
+	function add_color_box(game, color) {
 		var box = game.add.graphics(0, 0);
 		box.beginFill(color, 1.0);
 		box.drawRect(0, 0, WIDTH, HEIGHT);
@@ -32,7 +32,7 @@ function init() {
 	}
 
 	function hide_to_state(game, name) {
-		var blink = create_color_box(game, 0);
+		var blink = add_color_box(game, 0);
 		blink.alpha = 0;
 
 		game.add.tween(blink).to({alpha : 1}, 0.2 * Phaser.Timer.SECOND, undefined, true).onComplete.addOnce(function () {
@@ -457,7 +457,7 @@ function init() {
 				game.tweens.removeFrom(ground);
 				// ground.stopScroll();
 
-				var blink = create_color_box(game, 0xffffff);
+				var blink = add_color_box(game, 0xffffff);
 				blink.alpha = 0;
 
 				bird.bodyGravity = false;
