@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 72;
+var VERSION = 73;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -8,9 +8,10 @@ function init() {
 	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 180, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
+	var UNLOCKED_BIRDS = [true, false, false];
+	var birdType = 0, gold = 35;
+	var MAX_BANK_VALUE = 50;
 	var COLLIDE_ENABLED = true;
-
-	var birdType = 1;
 
 	function add_button(game, x, y, name, cb) {
 		var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {				
@@ -146,6 +147,10 @@ function init() {
 		this.bodyGravity = false;
 		var velocityY = 0;
 
+		this.setType = function (type) {
+
+		}
+
 		this.update = function () {
 			var e = game.time.elapsed / 1000;
 			if (this.bodyGravity) {
@@ -238,13 +243,13 @@ function init() {
 				var d = this.children[i];
 				d.reset(x, 0);
 				if (small) {
-					d.frameName = 's' + a[i] + '.png';
+					d.frameName = 'score_s' + a[i] + '.png';
 					var w = 7;
 					if (a[i] == '1') {
 						w = 6;
 					}							
 				} else {
-					d.frameName = a[i] + '.png';
+					d.frameName = 'score_' + a[i] + '.png';
 					var w = 10;
 					if (a[i] == '1') {
 						w = 7;
@@ -311,6 +316,45 @@ function init() {
 	GameOver.prototype = Object.create(Phaser.Group.prototype);
 	GameOver.prototype.constructor = GameOver;
 
+	var Bank = function (game) {
+		Phaser.Group.call(this, game);
+		this.add(game.add.image(0, 0, 'gui', 'bank_bg.png'));
+		var progress = this.add(game.add.image(19, 6, 'gui', 'bank_p.png'));
+		progress.crop(new Phaser.Rectangle(0, 0, 36, 6));
+		this.add(game.add.image(1, 1, 'gui', 'bank_top.png'));
+
+		this.add(add_button(game, 63, 2, 'btn_plus', function () {
+			// TODO
+		}));
+
+		var val, needUpdate = false;
+
+		Object.defineProperty(this, 'value', {
+		    get: function () {
+		        return val;
+		    },
+
+		    set: function (value) {
+		    	if (val != value) {
+			        val = value;
+			        needUpdate = true;
+		    	}
+		    }
+		});
+
+		this.update = function () {
+			if (!needUpdate) return;
+			needUpdate = false;
+
+			var v = val / MAX_BANK_VALUE;
+			progress.cropRect.x = Math.round(36 - 36 * v);
+			progress.cropRect.width = 36 - progress.cropRect.x;
+			progress.updateCrop();
+		}
+	}
+	Bank.prototype = Object.create(Phaser.Group.prototype);
+	Bank.prototype.constructor = Bank;
+
 	function PreloadState(game) {
 		this.preload = function () {
 			game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
@@ -325,15 +369,50 @@ function init() {
 
 	function MenuState(game) {
 		this.create = function () {
+			var bird, play, lock, buy, bank;
+						
 			game.add.image(22, 37, 'gui', 'logo.png');
-			game.add.existing(new Bird(game, birdType, 75, 100));
+			bank = new Bank(game);
+			bank.x = 6;
+			bank.y = 5;
+			game.add.existing(bank);
+			lock = game.add.image(69, 114, 'gui', 'ico_lock.png');
 
-			add_button(game, 38, 137, 'btn_play', function () {
+			bank.value = gold;
+
+			add_button(game, 21, 88, 'btn_left', function () {
+				birdType -= 1;
+				if (birdType < 0) {
+					birdType = UNLOCKED_BIRDS.length - 1;
+				}
+				updateBird();
+			});
+			add_button(game, 117, 88, 'btn_right', function () {
+				birdType += 1;
+				if (birdType >= UNLOCKED_BIRDS.length) {
+					birdType = 0;
+				}
+				updateBird();
+			});
+			play = add_button(game, 38, 137, 'btn_play', function () {
 				hide_to_state(game, 'game');
+			});
+			buy = add_button(game, 38, 137, 'btn_buy', function () {
+				// TODO
 			});
 			add_button(game, 38, 174, 'btn_top', function () {
 				game.state.start('top');
 			});
+
+			function updateBird() {
+				game.world.remove(bird);
+				bird = new Bird(game, birdType, 75, 100);
+				game.add.existing(bird);
+				play.visible = UNLOCKED_BIRDS[birdType];
+				buy.visible = lock.visible = !UNLOCKED_BIRDS[birdType];
+			}
+
+			updateBird();
 		}
 	}
 
