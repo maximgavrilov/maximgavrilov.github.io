@@ -1,22 +1,14 @@
 'use strict'
-var VERSION = 68;
+var VERSION = 69;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
-	var WIDTH = 150, HEIGHT = 200;
-	var GR = 24;
-	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180;
-	var WALL_DIST = 75;
+	var WIDTH = 150, HEIGHT = 200, GR = 24;
+	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180, HOLE_SIZE = 50, WALL_DIST = 75;
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
-
-	function disable_smooting(ctx) {
-		ctx.imageSmoothingEnabled = false;
-		ctx.mozImageSmoothingEnabled = false;
-		ctx.oImageSmoothingEnabled = false;
-		ctx.webkitImageSmoothingEnabled = false;		
-	}
+	var COLLIDE_ENABLED = true;
 
 	function add_button(game, x, y, name, cb) {
 		var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {				
@@ -54,7 +46,7 @@ function init() {
 		top.crop(new Phaser.Rectangle(0, 0, 26, 200));
 		this.add(top);
 
-		var bottom = new Phaser.Sprite(game, 0, 100, 'gui');
+		var bottom = new Phaser.Sprite(game, 0, -150 + 200 + HOLE_SIZE, 'gui');
 		bottom.smoother = false;
 		bottom.frameName = 'wall_d.png';
 		bottom.crop(new Phaser.Rectangle(0, 0, 26, 200));
@@ -126,8 +118,9 @@ function init() {
 		}
 
 		this.isCollide = function (bird) {
+			if (!COLLIDE_ENABLED) return false;
 			var over = ((bird.x + BIRD_R) >= top.x && (bird.x - BIRD_R) <= (top.x + top.width)) && bird.y < 0;
-			return false;//over || intersect(bird, top) || intersect(bird, bottom);
+			return over || intersect(bird, top) || intersect(bird, bottom);
 		}
 
 		this.getX = function () { 
