@@ -4,11 +4,13 @@ var VERSION = 69;
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
-	var WIDTH = 150, HEIGHT = 200, GR = 24;
-	var SPEED = 60, GRAVITY = 500, FLAP_VEL = 180, HOLE_SIZE = 50, WALL_DIST = 75;
+	var WIDTH = 150, HEIGHT = 200, GR = 0;//24;
+	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 175, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 	var COLLIDE_ENABLED = true;
+
+	var birdType = 1;
 
 	function add_button(game, x, y, name, cb) {
 		var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {				
@@ -64,13 +66,13 @@ function init() {
 
 		this.reset = function (x, wallY) {
 			top.reset(x, 0);
-			top.cropRect.y = 200 - wallY - 50;
-			top.cropRect.height = wallY + 50;
+			top.cropRect.y = 200 - wallY;
+			top.cropRect.height = wallY;
 			top.updateCrop();
 
-			bottom.reset(x, wallY + 50 + 50);
+			bottom.reset(x, wallY + HOLE_SIZE);
 			bottom.cropRect.y = 0;
-			bottom.cropRect.height = HEIGHT - wallY - 50 - 50 - GR;
+			bottom.cropRect.height = HEIGHT - wallY - HOLE_SIZE - GR;
 			bottom.updateCrop();
 
 			this.x = 0;
@@ -130,12 +132,12 @@ function init() {
 	Wall.prototype = Object.create(Phaser.Group.prototype);
 	Wall.prototype.constructor = Wall;
 
-	var Bird = function (game, x, y) {
+	var Bird = function (game, type, x, y) {
 		Phaser.Sprite.call(this, game, x, y, 'gui');
 		this.anchor.setTo(0.5, 0.5);
-		this.animations.add('demo', ['bird1.png', 'bird2.png', 'bird3.png', 'bird2.png'], 6, true);
-		this.animations.add('flap', ['bird1.png', 'bird2.png', 'bird3.png', 'bird2.png'], 6);
-		this.animations.add('fly', ['bird2.png'], 6, true);
+		this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
+		this.animations.add('flap', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6);
+		this.animations.add('fly', ['bird' + type + '_2.png'], 6, true);
 		this.animations.play('demo');
 
 		this.alive = false;
@@ -324,7 +326,7 @@ function init() {
 	function MenuState(game) {
 		this.create = function () {
 			game.add.image(22, 37, 'gui', 'logo.png');
-			game.add.existing(new Bird(game, 75, 100));
+			game.add.existing(new Bird(game, birdType, 75, 100));
 
 			add_button(game, 38, 137, 'btn_play', function () {
 				hide_to_state(game, 'game');
@@ -357,7 +359,7 @@ function init() {
 			}
 
 			if (maxX + WALL_DIST <= WIDTH) {
-				var wallY = game.rnd.integerInRange(-50, 50);
+				var wallY = game.rnd.integerInRange(HOLE_RANGE[0], HOLE_RANGE[1]);
 	 			var wall = walls.getFirstExists(false);
 	 			if (!wall) {
 	 				wall = new Wall(game);
@@ -401,7 +403,7 @@ function init() {
 			walls = game.add.group();
 			ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground.png');
 
-			bird = game.add.existing(new Bird(game, 45, 125));
+			bird = game.add.existing(new Bird(game, birdType, 45, 125));
 
 			var demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * Phaser.Timer.SECOND, undefined, true, 0, -1, true);
 
