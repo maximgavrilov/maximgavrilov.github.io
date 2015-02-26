@@ -1,11 +1,11 @@
 'use strict'
-var VERSION = 71;
+var VERSION = 72;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
 function init() {	
 	var WIDTH = 150, HEIGHT = 224, GR = 24;
-	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 175, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
+	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 180, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
 	var COLLIDE_ENABLED = true;
