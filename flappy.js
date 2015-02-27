@@ -124,6 +124,27 @@ function init() {
 			'9' : 'font_sc9.png'
 		});
 
+		registerFont(game, 'store', 'gui', {
+			'info' : {
+				face : 'store',
+				size : 11,
+				lineHeight: 11,
+				xSpacing : -1,
+				ySpacing : 1
+			},
+			'0' : 'font_sc0.png',
+			'1' : 'font_sc1.png',
+			'2' : 'font_sc2.png',
+			'3' : 'font_sc3.png',
+			'4' : 'font_sc4.png',
+			'5' : 'font_sc5.png',
+			'6' : 'font_sc6.png',
+			'7' : 'font_sc7.png',
+			'8' : 'font_sc8.png',
+			'9' : 'font_sc9.png'
+		});
+
+
 		registerFont(game, 'score_s', 'gui', {
 			'info' : {
 				face : 'score_s',
@@ -438,7 +459,7 @@ function init() {
 		this.add(game.add.image(1, 1, 'gui', 'bank_top.png'));
 
 		this.add(add_button(game, 63, 2, 'btn_plus', function () {
-			// TODO
+			game.state.start('store');
 		}));
 
 		var balance = new AlignText(game, 12, 5, 'bank_time', 5, 'center');
@@ -529,7 +550,7 @@ function init() {
 				hide_to_state(game, 'game');
 			});
 			buy = add_button(game, 38, 137, 'btn_buy', function () {
-				// TODO
+				game.state.start('store');
 			});
 			add_button(game, 38, 174, 'btn_top', function () {
 				game.state.start('top');
@@ -544,6 +565,31 @@ function init() {
 			}
 
 			updateBird();
+		}
+	}
+
+	function StoreState(game) {
+		this.create = function () {
+			game.add.image(47, 13, 'gui', 'txt_store.png');
+			
+			game.add.existing(new AlignText(game, 41, 50, 'bank_add', 7, 'right')).text = '1200';
+			game.add.image(45, 46, 'gui', 'ico_heart.png');
+			add_button(game, 73, 39, 'btn_buy1', function () {			
+			});
+
+			game.add.existing(new AlignText(game, 41, 93, 'bank_add', 7, 'right')).text = '275';
+			game.add.image(45, 89, 'gui', 'ico_heart.png');
+			add_button(game, 73, 82, 'btn_buy2', function () {			
+			});
+
+			game.add.existing(new AlignText(game, 41, 135, 'bank_add', 7, 'right')).text = '50';
+			game.add.image(45, 131, 'gui', 'ico_heart.png');
+			add_button(game, 73, 124, 'btn_buy3', function () {			
+			});
+
+			add_button(game, 38, 174, 'btn_menu', function () {
+				game.state.start('menu');
+			})
 		}
 	}
 
@@ -771,6 +817,7 @@ function init() {
 
 		game.state.add('preload', PreloadState, true);
 		game.state.add('menu', MenuState);
+		game.state.add('store', StoreState);
 		game.state.add('game', GameState);
 	})()
 }
