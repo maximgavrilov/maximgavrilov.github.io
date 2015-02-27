@@ -1,5 +1,5 @@
 'use strict'
-var VERSION = 77;
+var VERSION = 78;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -10,10 +10,35 @@ function init() {
 	var SPEED = 60, GRAVITY = 600, FLAP_VEL = 180, HOLE_SIZE = 48, WALL_DIST = 79, HOLE_RANGE = [24, 128];
 	var BIRD_R = 6;
 	var FLAP_ANGLE = -45, FLAP_TIME = 0.05 * Phaser.Timer.SECOND;
-	var UNLOCKED_BIRDS = [true, false, false];
+	
+	var REAL2GOLD = [50, 275, 1200];
+	var TOUR_PRICE = 1, BIRD_PRICES = [0, 250, 250], RISE_PRICE = 250;;
 
-	var MAX_BANK_VALUE = 50;
-	var birdType = 0, gold = 35, bestScore = 110;
+	var MAX_FREE_GOLD_VALUE = 50;
+	var birdType = 0, freeGold = 35, paidGold = 0, bestScore = 110;
+	var onGoldChanged = new Phaser.Signal();
+
+	function purchase(game, amount, cb) {
+		if (freeGold + paidGold >= amount) {
+			var freeDec = Math.min(freeGold, amount);
+			freeGold -= freeDec;
+			paidGold -= amount - freeDec;
+			onGoldChanged.dispatch(freeGold, paidGold);
+			cb(true);
+		} else {
+			game.state.states['store_back'] = {};
+			game.state.link('store_back');
+			game.state.start('store');
+			cb(false);
+		}
+	}
+
+	function purchaseGold(realItem, cb) {
+		assert(REAL2GOLD[realItem]);
+		paidGold += REAL2GOLD[realItem];
+		onGoldChanged.dispatch(freeGold, paidGold);
+		cb(true);
+	}
 
 	function assert(condition, message) {
 	    if (!condition) {
@@ -434,7 +459,11 @@ function init() {
 
 		var buttons = game.add.group();
 		buttons.add(add_button(game, 38, 137, 'btn_continue', function () {
-			// game.state.start('menu');
+			purchase(game, RISE_PRICE, function (result) {
+				if (result) {
+					console.warn('continue');
+				}
+			});
 		}));
 		buttons.add(add_button(game, 38, 174, 'btn_menu', function () {
 			hide_to_state(game, 'menu');
@@ -471,18 +500,34 @@ function init() {
 
 		var add = new AlignText(game, 78, 6, 'bank_add', 7, 'left');
 		this.add(add);
-		add.value = 2978;
 
-		var val, needUpdate = false;
+		var _free = freeGold, _paid = paidGold, needUpdate = true;
 
-		Object.defineProperty(this, 'value', {
+		onGoldChanged.add(function (freeGold, paidGold) {
+			game.add.tween(this).to({ freeGold : freeGold, paidGold : paidGold }, 0.5 * Phaser.Timer.SECOND, undefined, true);
+		}, this);
+
+		Object.defineProperty(this, 'freeGold', {
 		    get: function () {
-		        return val;
+		        return _free;
 		    },
 
 		    set: function (value) {
-		    	if (val != value) {
-			        val = value;
+		    	if (_free != value) {
+			        _free = Math.round(value);
+			        needUpdate = true;
+		    	}
+		    }
+		});
+
+		Object.defineProperty(this, 'paidGold', {
+		    get: function () {
+		        return _paid;
+		    },
+
+		    set: function (value) {
+		    	if (_paid != value) {
+			        _paid = Math.round(value);
 			        needUpdate = true;
 		    	}
 		    }
@@ -494,12 +539,19 @@ function init() {
 			if (!needUpdate) return;
 			needUpdate = false;
 
-			var v = val / MAX_BANK_VALUE;
+			var v = _free / MAX_FREE_GOLD_VALUE;
 			progress.cropRect.x = Math.round(36 - 36 * v);
 			progress.cropRect.width = 36 - progress.cropRect.x;
 			progress.updateCrop();
 
-			balance.value = val;
+			balance.value = _free;
+			add.value = _paid;
+			add.visible = (_paid > 0);
+		}
+
+		this.destroy = function () {
+			Phaser.Group.prototype.destroy.call(this);
+			onGoldChanged.removeAll(this);
 		}
 	}
 	Bank.prototype = Object.create(Phaser.Group.prototype);
@@ -530,27 +582,39 @@ function init() {
 			game.add.existing(bank);
 			lock = game.add.image(69, 114, 'gui', 'ico_lock.png');
 
-			bank.value = gold;
-
 			add_button(game, 21, 88, 'btn_left', function () {
 				birdType -= 1;
 				if (birdType < 0) {
-					birdType = UNLOCKED_BIRDS.length - 1;
+					birdType = BIRD_PRICES.length - 1;
 				}
 				updateBird();
 			});
 			add_button(game, 117, 88, 'btn_right', function () {
 				birdType += 1;
-				if (birdType >= UNLOCKED_BIRDS.length) {
+				if (birdType >= BIRD_PRICES.length) {
 					birdType = 0;
 				}
 				updateBird();
 			});
 			play = add_button(game, 38, 137, 'btn_play', function () {
-				hide_to_state(game, 'game');
+				play.inputEnabled = false;
+				purchase(game, TOUR_PRICE, function (result) {
+					play.inputEnabled = true;
+					if (result) {
+						hide_to_state(game, 'game');
+					}
+				});
 			});
 			buy = add_button(game, 38, 137, 'btn_buy', function () {
-				game.state.start('store');
+				assert(BIRD_PRICES[birdType] > 0);
+				buy.inputEnabled = false;
+				purchase(game, BIRD_PRICES[birdType], function (result) {
+					buy.inputEnabled = true;
+					if (result) {
+						BIRD_PRICES[birdType] = 0;
+						updateBird();
+					}
+				});
 			});
 			add_button(game, 38, 174, 'btn_top', function () {
 				game.state.start('top');
@@ -560,8 +624,9 @@ function init() {
 				game.world.remove(bird);
 				bird = new Bird(game, birdType, 75, 100);
 				game.add.existing(bird);
-				play.visible = UNLOCKED_BIRDS[birdType];
-				buy.visible = lock.visible = !UNLOCKED_BIRDS[birdType];
+				var p = (BIRD_PRICES[birdType] == 0);
+				play.visible = p;
+				buy.visible = lock.visible = !p;
 			}
 
 			updateBird();
@@ -574,21 +639,36 @@ function init() {
 			
 			game.add.existing(new AlignText(game, 41, 50, 'bank_add', 7, 'right')).text = '1200';
 			game.add.image(45, 46, 'gui', 'ico_heart.png');
-			add_button(game, 73, 39, 'btn_buy1', function () {			
+			add_button(game, 73, 39, 'btn_buy1', function () {
+				purchaseGold(2, function (result) {
+					if (result) {
+						game.state.start('store_back');
+					}
+				});
 			});
 
 			game.add.existing(new AlignText(game, 41, 93, 'bank_add', 7, 'right')).text = '275';
 			game.add.image(45, 89, 'gui', 'ico_heart.png');
-			add_button(game, 73, 82, 'btn_buy2', function () {			
+			add_button(game, 73, 82, 'btn_buy2', function () {
+				purchaseGold(1, function (result) {
+					if (result) {
+						game.state.start('store_back');
+					}
+				});
 			});
 
 			game.add.existing(new AlignText(game, 41, 135, 'bank_add', 7, 'right')).text = '50';
 			game.add.image(45, 131, 'gui', 'ico_heart.png');
-			add_button(game, 73, 124, 'btn_buy3', function () {			
+			add_button(game, 73, 124, 'btn_buy3', function () {
+				purchaseGold(0, function (result) {
+					if (result) {
+						game.state.start('store_back');
+					}
+				});
 			});
 
 			add_button(game, 38, 174, 'btn_menu', function () {
-				game.state.start('menu');
+				game.state.start('store_back');
 			})
 		}
 	}
