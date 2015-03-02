@@ -103,25 +103,24 @@ function init() {
             game.cache._bitmapFont[key] = PIXI.BitmapText.fonts[key];
         }
 
-        registerFont(game, 'bank_time', 'gui', {
+        registerFont(game, 'bank', 'gui', {
             'info' : {
-                face : 'bank_time',
+                face : 'bank',
                 size : 5,
                 lineHeight: 5,
                 xSpacing : 1,
                 ySpacing : 1
             },
-            '0' : 'font_bt0.png',
-            '1' : 'font_bt1.png',
-            '2' : 'font_bt2.png',
-            '3' : 'font_bt3.png',
-            '4' : 'font_bt4.png',
-            '5' : 'font_bt5.png',
-            '6' : 'font_bt6.png',
-            '7' : 'font_bt7.png',
-            '8' : 'font_bt8.png',
-            '9' : 'font_bt9.png',
-            ':' : 'font_btpt.png'
+            '0' : 'font_h0.png',
+            '1' : 'font_h1.png',
+            '2' : 'font_h2.png',
+            '3' : 'font_h3.png',
+            '4' : 'font_h4.png',
+            '5' : 'font_h5.png',
+            '6' : 'font_h6.png',
+            '7' : 'font_h7.png',
+            '8' : 'font_h8.png',
+            '9' : 'font_h9.png'
         });
 
         registerFont(game, 'bank_add', 'gui', {
@@ -144,6 +143,27 @@ function init() {
             '9' : 'font_ba9.png'
         });
 
+        registerFont(game, 'bank_time', 'gui', {
+            'info' : {
+                face : 'bank_time',
+                size : 5,
+                lineHeight: 5,
+                xSpacing : 1,
+                ySpacing : 1
+            },
+            '0' : 'font_bt0.png',
+            '1' : 'font_bt1.png',
+            '2' : 'font_bt2.png',
+            '3' : 'font_bt3.png',
+            '4' : 'font_bt4.png',
+            '5' : 'font_bt5.png',
+            '6' : 'font_bt6.png',
+            '7' : 'font_bt7.png',
+            '8' : 'font_bt8.png',
+            '9' : 'font_bt9.png',
+            ':' : 'font_btpt.png'
+        });
+
         registerFont(game, 'score', 'gui', {
             'info' : {
                 face : 'score',
@@ -164,45 +184,24 @@ function init() {
             '9' : 'font_sc9.png'
         });
 
-        registerFont(game, 'store', 'gui', {
+        registerFont(game, 'score_result', 'gui', {
             'info' : {
-                face : 'store',
-                size : 11,
-                lineHeight: 11,
-                xSpacing : -1,
-                ySpacing : 1
-            },
-            '0' : 'font_sc0.png',
-            '1' : 'font_sc1.png',
-            '2' : 'font_sc2.png',
-            '3' : 'font_sc3.png',
-            '4' : 'font_sc4.png',
-            '5' : 'font_sc5.png',
-            '6' : 'font_sc6.png',
-            '7' : 'font_sc7.png',
-            '8' : 'font_sc8.png',
-            '9' : 'font_sc9.png'
-        });
-
-
-        registerFont(game, 'score_s', 'gui', {
-            'info' : {
-                face : 'score_s',
+                face : 'score_result',
                 size : 8,
                 lineHeight: 8,
                 xSpacing : 1,
                 ySpacing : 1
             },
-            '0' : 'font_scs0.png',
-            '1' : 'font_scs1.png',
-            '2' : 'font_scs2.png',
-            '3' : 'font_scs3.png',
-            '4' : 'font_scs4.png',
-            '5' : 'font_scs5.png',
-            '6' : 'font_scs6.png',
-            '7' : 'font_scs7.png',
-            '8' : 'font_scs8.png',
-            '9' : 'font_scs9.png'
+            '0' : 'font_r0.png',
+            '1' : 'font_r1.png',
+            '2' : 'font_r2.png',
+            '3' : 'font_r3.png',
+            '4' : 'font_r4.png',
+            '5' : 'font_r5.png',
+            '6' : 'font_r6.png',
+            '7' : 'font_r7.png',
+            '8' : 'font_r8.png',
+            '9' : 'font_r9.png'
         });
     }
 
@@ -465,8 +464,8 @@ function init() {
         if (score_ > bestScore_) {
             result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
         }
-        var score = result.add(new AlignText(game, 101, 36, 'score_s', 8, 'right'));
-        var bestScore = result.add(new AlignText(game, 101, 50, 'score_s', 8,'right'));
+        var score = result.add(new AlignText(game, 101, 36, 'score_result', 8, 'right'));
+        var bestScore = result.add(new AlignText(game, 101, 50, 'score_result', 8,'right'));
         result.add(add_button(game, 12, 67, 'btn_share', function () {
             // game.state.start('menu');
         }));
@@ -506,7 +505,7 @@ function init() {
             game.state.start('store');
         }));
 
-        var balance = new AlignText(game, 12, 5, 'bank_time', 5, 'center');
+        var balance = new AlignText(game, 12, 5, 'bank', 5, 'center');
         this.add(balance);
 
         var time = new AlignText(game, 37, 15, 'bank_time', 5, 'center');
