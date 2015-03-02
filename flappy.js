@@ -353,7 +353,7 @@ function init() {
             }
             if(this.alive && this.bodyGravity) {
                 if (velocityY <= 0) {
-                    this.angle = FLAP_ANGLE * Math.min(1.0, -velocityY / 200);
+                    this.angle = FLAP_ANGLE * Math.min(1.0, -velocityY / 400);
                 } else {
                     this.angle = 90 * Math.min(1.0, velocityY / 400);
                 }
