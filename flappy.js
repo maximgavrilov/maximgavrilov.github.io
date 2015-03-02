@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 78;
+var VERSION = 79;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
