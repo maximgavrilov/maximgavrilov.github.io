@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 80;
+var VERSION = 81;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -547,6 +547,11 @@ function init() {
         var add = new AlignText(game, 78, 6, 'bank_add', 7, 'left');
         this.add(add);
 
+        var test = new AlignText(game, 0, 0, 'top', 8, 'left');
+        this.add(test);
+        test.text = '_,!?."()[]{}§@*/&#%`^+±<=>|~$\n0123456789:\nABCDEFGHIJKL\nMNOPQRSTUVWX\nYZАБВГДЕЁЖЗИЙ\nКЛМНОПРСТ\nУФХЦЧШЩЪЫЬЮЯ';
+        test.tint = 0xff0000;
+
         var _free = freeGold, _paid = paidGold, needUpdate = true;
 
         onGoldChanged.add(function (freeGold, paidGold) {
@@ -679,7 +684,7 @@ function init() {
         }
     }
 
-    function BankDialog(game) {
+    var BankDialog = function (game) {
         Phaser.Group.call(this, game);
 
         var dlg = this;
