@@ -616,10 +616,6 @@ function init() {
         this.preload = function () {
             game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
 
-            okInit = true;
-            checkInit();
-
-
             okParams = FAPI.Util.getRequestParameters();
             okParams['web_server'] = okParams['web_server'] || 'ok.ru';
             FAPI.init(okParams['api_server'], okParams['apiconnection'],
@@ -631,13 +627,14 @@ function init() {
                         if (status === 'ok') {
                             document.getElementById(".okwidget").innerHTML = data;
                         }
+                        console.warn(err);
                     });
 
                     okInit = true;
                     checkInit();
                 },
                 function (err) {
-                    // TODO
+                    console.warn(err);
                 });
         }
 
