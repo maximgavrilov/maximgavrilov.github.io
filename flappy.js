@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 85;
+var VERSION = 88;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -616,8 +616,19 @@ function init() {
         this.preload = function () {
             game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
 
+
+            FAPI.Client.call({
+                method: 'widget.getWidgetContent',
+                wid: 'mobile-header-small'
+            }, function (status, data, err) {
+                if (status === 'ok') {
+                    document.getElementById(".okwidget").innerHTML = data;
+                }
+                console.warn(err);
+            });
+
+
             okParams = FAPI.Util.getRequestParameters();
-            okParams['web_server'] = okParams['web_server'] || 'ok.ru';
             FAPI.init(okParams['api_server'], okParams['apiconnection'],
                 function () {
                     FAPI.Client.call({
