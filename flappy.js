@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 103;
+var VERSION = 104;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -793,7 +793,7 @@ function init() {
             var NUM_LINES = 5;
             var top = topResults.concat();
             top.push({ id : viewerId, name : viewerName, score : bestScore });
-            top.sort(function (a, b) { return a.score < b.score });
+            top.sort(function (a, b) { return b.score - a.score });
             
             var idx;
             for (var i = 0; i < top.length; i++) {
