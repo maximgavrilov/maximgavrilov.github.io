@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 94;
+var VERSION = 95;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -621,8 +621,8 @@ function init() {
 
             FAPI.Client.call({
                 method: 'widget.getWidgetContent',
-                wid: 'mobile-header-small',
-                style: okParams['header_widget']
+                wid: 'mobile-header-small'
+                // style: okParams['header_widget']
             }, function (status, data, err) {
                 if (status === 'ok') {
                     document.getElementById(".okwidget").innerHTML = data;
@@ -630,25 +630,25 @@ function init() {
                 console.warn(err);
             });
 
-            FAPI.init(okParams['api_server'], okParams['apiconnection'],
-                function () {
-                    FAPI.Client.call({
-                        method: 'widget.getWidgetContent',
-                        wid: 'mobile-header-small',
-                        style: okParams['header_widget']
-                    }, function (status, data, err) {
-                        if (status === 'ok') {
-                            document.getElementById(".okwidget").innerHTML = data;
-                        }
-                        console.warn(err);
-                    });
+            // FAPI.init(okParams['api_server'], okParams['apiconnection'],
+            //     function () {
+            //         FAPI.Client.call({
+            //             method: 'widget.getWidgetContent',
+            //             wid: 'mobile-header-small',
+            //             style: okParams['header_widget']
+            //         }, function (status, data, err) {
+            //             if (status === 'ok') {
+            //                 document.getElementById(".okwidget").innerHTML = data;
+            //             }
+            //             console.warn(err);
+            //         });
 
-                    okInit = true;
-                    checkInit();
-                },
-                function (err) {
-                    console.warn(err);
-                });
+            //         okInit = true;
+            //         checkInit();
+            //     },
+            //     function (err) {
+            //         console.warn(err);
+            //     });
         }
 
         this.create = function () {
