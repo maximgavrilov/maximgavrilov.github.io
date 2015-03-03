@@ -24,6 +24,8 @@ html, body {
 
 #okwidget {
 	position: : fixed;
+	left: 0px;
+	top: 0px;
 }
 /*canvas {
 	transform: translateZ(0px);
