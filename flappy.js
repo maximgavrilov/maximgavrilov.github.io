@@ -242,12 +242,12 @@ function init() {
         return box;
     }
 
-    function hide_to_state(game, name) {
+    function hide_to_state(game, cb) {
         var blink = add_color_box(game, 0);
         blink.alpha = 0;
 
         game.add.tween(blink).to({alpha : 1}, 0.2 * SEC, undefined, true).onComplete.addOnce(function () {
-            game.state.start(name);
+            cb();
         });
     }
 
@@ -510,7 +510,7 @@ function init() {
             });
         }));
         buttons.add(add_button(game, 38, 174, 'btn_menu', function () {
-            hide_to_state(game, 'menu');
+            hide_to_state(game, function () { game.state.start('menu'); });
         }));
         this.add(buttons);
 
@@ -645,7 +645,7 @@ function init() {
                 purchase(game, TOUR_PRICE, function (result) {
                     play.inputEnabled = true;
                     if (result) {
-                        hide_to_state(game, 'game');
+                        hide_to_state(game, function () { game.state.start('game'); });
                     }
                 });
             });
@@ -682,7 +682,9 @@ function init() {
 
         var dlg = this;
         function back() {
-            dlg.destroy();
+            hide_to_state(game, function () {
+                dlg.destroy();
+            });
         }
 
         this.add(add_color_box(game, BG_COLOR));
@@ -721,6 +723,10 @@ function init() {
         this.add(add_button(game, 38, 174, 'btn_menu', function () {
             back();
         }));
+
+        hide_to_state(game, function () {
+            dlg.visible = true;
+        });
     }
     BankDialog.prototype = Object.create(Phaser.Group.prototype);
     BankDialog.prototype.constructor = BankDialog;
