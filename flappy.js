@@ -627,7 +627,8 @@ function init() {
                 if (status === 'ok') {
                     document.getElementById(".okwidget").innerHTML = window.atob(data);
                 }
-                console.warn(err);
+                okInit = true;
+                checkInit();
             });
 
             // FAPI.init(okParams['api_server'], okParams['apiconnection'],
