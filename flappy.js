@@ -12,6 +12,7 @@ function init() {
         WIDTH = 150,
         HEIGHT = 224,
         GR = 24,
+        BG_COLOR = 0x95d5c4,
 
         SPEED = 60,
         GRAVITY = 600,
@@ -56,7 +57,7 @@ function init() {
             onGoldChanged.dispatch(freeGold, paidGold);
             cb(true);
         } else {
-            game.state.start('store');
+            game.add.exists(new BankDialog(game));
             cb(false);
         }
     }
@@ -531,7 +532,7 @@ function init() {
         this.add(game.add.image(1, 1, 'gui', 'bank_top.png'));
 
         this.add(add_button(game, 63, 2, 'btn_plus', function () {
-            game.state.start('store');
+            game.add.exists(new BankDialog(game));
         }));
 
         var balance = new AlignText(game, 12, 5, 'bank', 5, 'center');
@@ -676,45 +677,53 @@ function init() {
         }
     }
 
-    function StoreState(game) {
-        this.create = function () {
-            game.add.image(47, 13, 'gui', 'txt_store.png');
+    function BankDialog(game) {
+        Phaser.Group.call(this, game);
 
-            game.add.existing(new AlignText(game, 41, 50, 'bank_add', 7, 'right')).text = '1200';
-            game.add.image(45, 46, 'gui', 'ico_heart.png');
-            add_button(game, 73, 39, 'btn_buy1', function () {
-                purchaseGold(2, function (result) {
-                    if (result) {
-                        game.state.start('store_back');
-                    }
-                });
-            });
-
-            game.add.existing(new AlignText(game, 41, 93, 'bank_add', 7, 'right')).text = '275';
-            game.add.image(45, 89, 'gui', 'ico_heart.png');
-            add_button(game, 73, 82, 'btn_buy2', function () {
-                purchaseGold(1, function (result) {
-                    if (result) {
-                        game.state.start('store_back');
-                    }
-                });
-            });
-
-            game.add.existing(new AlignText(game, 41, 135, 'bank_add', 7, 'right')).text = '50';
-            game.add.image(45, 131, 'gui', 'ico_heart.png');
-            add_button(game, 73, 124, 'btn_buy3', function () {
-                purchaseGold(0, function (result) {
-                    if (result) {
-                        game.state.start('store_back');
-                    }
-                });
-            });
-
-            add_button(game, 38, 174, 'btn_menu', function () {
-                game.state.start('store_back');
-            })
+        var dlg = this;
+        function back() {
+            dlg.destroy();
         }
+
+        this.add(add_color_box(game, BG_COLOR));
+        this.add(game.add.image(47, 13, 'gui', 'txt_store.png'));
+
+        this.add(game.add.existing(new AlignText(game, 41, 50, 'bank_add', 7, 'right'))).text = '1200';
+        this.add(game.add.image(45, 46, 'gui', 'ico_heart.png'));
+        this.add(add_button(game, 73, 39, 'btn_buy1', function () {
+            purchaseGold(2, function (result) {
+                if (result) {
+                    back();
+                }
+            });
+        }));
+
+        this.add(game.add.existing(new AlignText(game, 41, 93, 'bank_add', 7, 'right'))).text = '275';
+        this.add(game.add.image(45, 89, 'gui', 'ico_heart.png'));
+        this.add(add_button(game, 73, 82, 'btn_buy2', function () {
+            purchaseGold(1, function (result) {
+                if (result) {
+                    back();
+                }
+            });
+        }));
+
+        this.add(game.add.existing(new AlignText(game, 41, 135, 'bank_add', 7, 'right'))).text = '50';
+        this.add(game.add.image(45, 131, 'gui', 'ico_heart.png'));
+        this.add(add_button(game, 73, 124, 'btn_buy3', function () {
+            purchaseGold(0, function (result) {
+                if (result) {
+                    back();
+                }
+            });
+        }));
+
+        this.add(add_button(game, 38, 174, 'btn_menu', function () {
+            back();
+        }));
     }
+    BankDialog.prototype = Object.create(Phaser.Group.prototype);
+    BankDialog.prototype.constructor = BankDialog;
 
     function GameState(game) {
         var isWallStarted;
@@ -912,7 +921,7 @@ function init() {
         game.forceSingleUpdate = true;
         game.config.enableDebug = false;
         game.device.whenReady(function () {
-            game.stage.backgroundColor = '#95d5c4';
+            game.stage.backgroundColor = BG_COLOR;
             game.stage.disableVisibilityChange = true;
             game.stage.smoothed = false;
 
@@ -940,7 +949,6 @@ function init() {
 
         game.state.add('preload', PreloadState, true);
         game.state.add('menu', MenuState);
-        game.state.add('store', StoreState);
         game.state.add('game', GameState);
     })()
 }
