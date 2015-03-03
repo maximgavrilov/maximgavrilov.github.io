@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 95;
+var VERSION = 96;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -621,11 +621,11 @@ function init() {
 
             FAPI.Client.call({
                 method: 'widget.getWidgetContent',
-                wid: 'mobile-header-small'
-                // style: okParams['header_widget']
+                wid: 'mobile-header-small',
+                style: okParams['header_widget']
             }, function (status, data, err) {
                 if (status === 'ok') {
-                    document.getElementById(".okwidget").innerHTML = data;
+                    document.getElementById(".okwidget").innerHTML = window.atob(data);
                 }
                 console.warn(err);
             });
