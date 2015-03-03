@@ -3,6 +3,7 @@
 var VERSION = 81;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
+PIXI.CanvasTinter.convertTintToImage = true;
 
 function init() {
     'use strict';
@@ -417,7 +418,6 @@ function init() {
         this.y = y;
 
         var txt = game.add.bitmapText(0, 0, font, '', size);
-        txt.tint = 0xffff0000;
         this.add(txt);
 
         var val = 0;
