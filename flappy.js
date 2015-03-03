@@ -32,12 +32,16 @@ function init() {
         BIRD_PRICES = [0, 250, 250],
         RISE_PRICE = 250,
 
-        MAX_FREE_GOLD_VALUE = 50,
+        MAX_FREE_GOLD_VALUE = 50,        
         birdType = 0,
+        onGoldChanged = new Phaser.Signal(),
+
+        viewerId = 10,
+        viewerName = "Maxim",
+        topResults = [ { id : 1, name : 'AAAA', score : 7232356}, { id : 213, name : 'Машка', score : 6254}, { id : 21, name : 'Василий Т.', score : 465}, { id : 211, name : 'Alexs.', score : 211}, { id : 211, name : 'asdfAlsadfasfexs.', score : 12}, { id : 211, name : 'sadfsadjfkhsadlfsadf;lasAlexs.', score : 2} ],
         freeGold = 35,
         paidGold = 0,
-        bestScore = 110,
-        onGoldChanged = new Phaser.Signal();
+        bestScore = 0;
 
     function assert(condition, message) {
         if (!condition) {
@@ -248,10 +252,9 @@ function init() {
         blink.alpha = 0;
 
         game.add.tween(blink).to({alpha : 1}, 0.2 * SEC, undefined, true).onComplete.addOnce(function () {
-            blink.destroy();
-
             cb();
         });
+        return blink;
     }
 
     var Wall = function (game) {
@@ -481,7 +484,7 @@ function init() {
     AlignText.prototype = Object.create(Phaser.Group.prototype);
     AlignText.prototype.constructor = AlignText;
 
-    var GameOver = function (game, score_, bestScore_) {
+    var GameOver = function (game, score_, bestScore_, isNew_) {
         Phaser.Group.call(this, game);
         var title = this.add(game.add.image(37, 13, 'gui', 'txt_game_over.png'));
 
@@ -493,13 +496,13 @@ function init() {
         result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
         result.add(game.add.image(27 - 10, 37, 'gui', 'txt_result.png'));
         result.add(game.add.image(44 - 10, 49, 'gui', 'txt_best.png'));
-        if (score_ > bestScore_) {
+        if (isNew_) {
             result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
         }
         var score = result.add(new AlignText(game, 101, 36, 'score_result', 8, 'right'));
         var bestScore = result.add(new AlignText(game, 101, 50, 'score_result', 8,'right'));
         result.add(add_button(game, 12, 67, 'btn_share', function () {
-            // game.state.start('menu');
+            // TODO: game.state.start('menu');
         }));
         this.add(result);
 
@@ -547,11 +550,6 @@ function init() {
         var add = new AlignText(game, 78, 6, 'bank_add', 7, 'left');
         this.add(add);
 
-        var test = new AlignText(game, 0, 0, 'top', 8, 'left');
-        this.add(test);
-        test.text = '_,!?."()[]{}§@*/&#%`^+±<=>|~$\n0123456789:\nABCDEFGHIJKL\nMNOPQRSTUVWX\nYZАБВГДЕЁЖЗИЙ\nКЛМНОПРСТ\nУФХЦЧШЩЪЫЬЮЯ';
-        test.tint = 0xff0000;
-
         var _free = freeGold, _paid = paidGold, needUpdate = true;
 
         onGoldChanged.add(function (freeGold, paidGold) {
@@ -596,7 +594,9 @@ function init() {
             progress.updateCrop();
 
             balance.value = _free;
+            balance.update();
             add.value = _paid;
+            add.update();
             add.visible = (_paid > 0);
         }
 
@@ -608,7 +608,7 @@ function init() {
     Bank.prototype = Object.create(Phaser.Group.prototype);
     Bank.prototype.constructor = Bank;
 
-    function PreloadState(game) {
+    var PreloadState = function (game) {
         this.preload = function () {
             game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
         }
@@ -622,7 +622,7 @@ function init() {
         }
     }
 
-    function MenuState(game) {
+    var MenuState = function (game) {
         this.create = function () {
             var bird, play, lock, buy, bank;
 
@@ -668,7 +668,7 @@ function init() {
                 });
             });
             add_button(game, 38, 174, 'btn_top', function () {
-                game.state.start('top');
+                hide_to_state(game, function () { game.state.start('top'); });
             });
 
             function updateBird() {
@@ -688,9 +688,11 @@ function init() {
         Phaser.Group.call(this, game);
 
         var dlg = this;
+
         function back() {
-            hide_to_state(game, function () {
+            var blink = hide_to_state(game, function () {
                 dlg.destroy();
+                blink.destroy();
             });
         }
 
@@ -732,14 +734,92 @@ function init() {
         }));
 
         dlg.visible = false;
-        hide_to_state(game, function () {
+        var blink = hide_to_state(game, function () {
             dlg.visible = true;
+            blink.destroy();
         });
     }
     BankDialog.prototype = Object.create(Phaser.Group.prototype);
     BankDialog.prototype.constructor = BankDialog;
 
-    function GameState(game) {
+    var TopState = function (game) {
+        this.create = function () {
+            var NUM_LINES = 5;
+            var top = topResults.concat();
+            top.push({ id : viewerId, name : viewerName, score : bestScore });
+            top.sort(function (a, b) { return a.score < b.score });
+            
+            var idx;
+            for (var i = 0; i < top.length; i++) {
+                if (top[i].id == viewerId) {
+                    idx = i;
+                    break;
+                }
+            }
+            assert(idx !== undefined);
+            if (idx >= 0 && idx < NUM_LINES) {
+                idx = 0;
+            } else if (idx >= top.length - NUM_LINES) {
+                idx = Math.max(0, top.length - NUM_LINES);
+            } else {
+                idx = Math.max(0, idx - 2);
+            }
+
+            game.add.image(44, 13, 'gui', 'txt_top.png');
+
+            var up = add_button(game, 64, 30, 'btn_up', function () {
+                idx -= 1;
+                updateTop();
+            });
+
+            game.add.image(13, 46, 'gui', 'top_bg.png');
+
+            var lines = [];
+            for (var l = 0; l < NUM_LINES; l++) {
+                lines.push([
+                    new AlignText(game, 30, 55 + 20 * l, 'top', 8, 'right'),
+                    new AlignText(game, 45, 55 + 20 * l, 'top', 8, 'left'),
+                    new AlignText(game, 80, 55 + 20 * l, 'top', 8, 'left'),
+                    ]);                
+            }
+
+            var down = add_button(game, 64, 153, 'btn_down', function () {
+                idx += 1;
+                updateTop();
+            });
+
+            add_button(game, 38, 174, 'btn_menu', function () {
+                hide_to_state(game, function () { game.state.start('menu'); });
+            });
+
+            function updateTop() {
+                up.visible = idx > 0;
+                down.visible = (idx + NUM_LINES) < top.length;
+                for (var i = 0; i < NUM_LINES; i++) {
+                    if (idx + i >= top.length) {
+                        lines[i][0].visible = false;
+                        lines[i][1].visible = false;
+                        lines[i][2].visible = false;
+                    } else {
+                        var tint = (top[idx + i].id === viewerId) ? 0x89d443 : 0x373737;
+                        lines[i][0].value = (idx + i + 1);
+                        lines[i][0].tint = tint;
+                        lines[i][0].visible = true;
+                        lines[i][1].value = Math.min(999999, top[idx + i].score);
+                        lines[i][1].tint = tint;
+                        lines[i][1].visible = true;
+                        lines[i][2].text = top[idx + i].name.toUpperCase().substr(0, 11);
+                        lines[i][2].tint = tint;
+                        lines[i][2].visible = true;                        
+                    }
+                }
+            }
+
+            updateTop();
+        }
+    }
+
+    var GameState = function (game) {
         var isWallStarted;
         var bird, ground, walls, score;
         var sc;
@@ -792,7 +872,11 @@ function init() {
                     blink.destroy();
                     blink = null;
 
-                    game.add.existing(new GameOver(game, sc, bestScore));
+                    var isNew = (sc > bestScore);
+                    if (isNew) {
+                        bestScore = sc;
+                    }
+                    game.add.existing(new GameOver(game, sc, bestScore, isNew));
                 });
             }
         }
@@ -964,5 +1048,6 @@ function init() {
         game.state.add('preload', PreloadState, true);
         game.state.add('menu', MenuState);
         game.state.add('game', GameState);
+        game.state.add('top', TopState);
     })()
 }
