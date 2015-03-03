@@ -247,6 +247,8 @@ function init() {
         blink.alpha = 0;
 
         game.add.tween(blink).to({alpha : 1}, 0.2 * SEC, undefined, true).onComplete.addOnce(function () {
+            blink.destroy();
+
             cb();
         });
     }
@@ -724,6 +726,7 @@ function init() {
             back();
         }));
 
+        dlg.visible = false;
         hide_to_state(game, function () {
             dlg.visible = true;
         });
