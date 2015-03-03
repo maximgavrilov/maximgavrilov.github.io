@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 82;
+var VERSION = 83;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -35,6 +35,8 @@ function init() {
         MAX_FREE_GOLD_VALUE = 50,        
         birdType = 0,
         onGoldChanged = new Phaser.Signal(),
+
+        okParams,
 
         viewerId = 10,
         viewerName = "Maxim",
@@ -609,16 +611,43 @@ function init() {
     Bank.prototype.constructor = Bank;
 
     var PreloadState = function (game) {
+        var created = false, okInit = false;
+
         this.preload = function () {
             game.load.atlasJSONHash('gui', 'gui.png', 'gui.json');
+
+            okParams = FAPI.Util.getRequestParameters();
+            FAPI.init(okParams['api_server'], okParams['apiconnection'],
+                function () {
+                    FAPI.Client.call({
+                        method: 'widget.getWidgetContent',
+                        wid: 'mobile-header-small'
+                    }, function (status, data, err) {
+                        if (status === 'ok') {
+                            document.getElementById(".okwidget").innerHTML = data;
+                        }
+                    });
+
+                    okInit = true;
+                    checkInit();
+                },
+                function (err) {
+                    // TODO
+                });
         }
 
         this.create = function () {
             game.plugins.add(FPSPlugin);
             game.plugins.add(VSyncPlugin);
             registerFonts(game);
+            created = true;
+            checkInit();
+        }
 
-            game.state.start('menu');
+        function checkInit() {
+            if (created && okInit) {
+                game.state.start('menu');
+            }
         }
     }
 
