@@ -203,6 +203,24 @@ function init() {
             '8' : 'font_r8.png',
             '9' : 'font_r9.png'
         });
+
+        var res = '_,!?."()[]{}§@*/&#%`^+±<=>|~$0123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЮЯ';
+        var d = {
+            'info' : {
+                face : 'top',
+                size : 8,
+                lineHeight: 8,
+                xSpacing : 1,
+                ySpacing : 0
+            }
+        };
+        for (var i = 0; i < res.length; i++) {
+            var name = res[i];
+            if (name === ':') name = 'col';
+            else if (name === '/') name = 'slash';
+            d[res[i]] = 'font_res_' + name + '.png';
+        }
+        registerFont(game, 'top', 'gui', d);
     }
 
     function add_button(game, x, y, name, cb) {
@@ -396,6 +414,7 @@ function init() {
         this.y = y;
 
         var txt = game.add.bitmapText(0, 0, font, '', size);
+        txt.tint = 0xffff0000;
         this.add(txt);
 
         var val = 0;
@@ -507,6 +526,11 @@ function init() {
 
         var balance = new AlignText(game, 12, 5, 'bank', 5, 'center');
         this.add(balance);
+
+        var test = new AlignText(game, 0, 0, 'top', 8, 'left');
+        this.add(test);
+        test.text = '_,!?."()[]{}§@*/&#%`^+±<=>|~$\n0123456789:ABCDEFGHI\nJKLMNOPQRSTUVWX\nYZАБВГДЕЁЖЗИЙКЛМ\nНОПРСТУФХЦЧ\nШЩЪЫЬЮЯ'.toUpperCase();
+        test.tint = 0xff0000;
 
         var time = new AlignText(game, 37, 15, 'bank_time', 5, 'center');
         this.add(time);
