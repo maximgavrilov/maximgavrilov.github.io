@@ -447,6 +447,16 @@ function init() {
             }
         });
 
+        Object.defineProperty(this, 'tint', {
+            get: function () {
+                return txt.tint;
+            },
+
+            set: function (value) {
+                txt.tint = value;
+            }
+        });
+
         this.update = function () {
             Phaser.Group.prototype.update.call(this);
 
@@ -526,11 +536,6 @@ function init() {
 
         var balance = new AlignText(game, 12, 5, 'bank', 5, 'center');
         this.add(balance);
-
-        var test = new AlignText(game, 0, 0, 'top', 8, 'left');
-        this.add(test);
-        test.text = '_,!?."()[]{}§@*/&#%`^+±<=>|~$\n0123456789:ABCDEFGHI\nJKLMNOPQRSTUVWX\nYZАБВГДЕЁЖЗИЙКЛМ\nНОПРСТУФХЦЧ\nШЩЪЫЬЮЯ'.toUpperCase();
-        test.tint = 0xff0000;
 
         var time = new AlignText(game, 37, 15, 'bank_time', 5, 'center');
         this.add(time);
