@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 99;
+var VERSION = 100;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -621,7 +621,8 @@ function init() {
 
             FAPI.Client.call({
                 method: 'widget.getWidgetContent',
-                wid: 'mobile-header' //'mobile-header-small', style: okParams['header_widget']
+                wid: 'mobile-header-small', 
+                style: okParams['header_widget']
             }, function (status, data, err) {
                 if (status === 'ok') {
                     var d = window.atob(data);

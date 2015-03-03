@@ -22,6 +22,9 @@ html, body {
 	height: 100%;
 }
 
+#okwidget {
+	position: : fixed;
+}
 /*canvas {
 	transform: translateZ(0px);
 }
