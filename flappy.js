@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 109;
+var VERSION = 110;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -212,7 +212,7 @@ function init() {
             '9' : 'font_r9.png'
         });
 
-        var res = '_,!?."()[]{}§@*/&#%`^+±<=>|~$0123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЮЯ';
+        var res = ' _,!?."()[]{}§@*/&#%`^+±<=>|~$0123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЮЯ';
         var d = {
             'info' : {
                 face : 'top',
