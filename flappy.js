@@ -631,26 +631,6 @@ function init() {
                 okInit = true;
                 checkInit();
             });
-
-            // FAPI.init(okParams['api_server'], okParams['apiconnection'],
-            //     function () {
-            //         FAPI.Client.call({
-            //             method: 'widget.getWidgetContent',
-            //             wid: 'mobile-header-small',
-            //             style: okParams['header_widget']
-            //         }, function (status, data, err) {
-            //             if (status === 'ok') {
-            //                 document.getElementById(".okwidget").innerHTML = data;
-            //             }
-            //             console.warn(err);
-            //         });
-
-            //         okInit = true;
-            //         checkInit();
-            //     },
-            //     function (err) {
-            //         console.warn(err);
-            //     });
         }
 
         this.create = function () {

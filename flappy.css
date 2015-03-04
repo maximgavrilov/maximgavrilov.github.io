@@ -6,7 +6,7 @@ html, body {
 
 #fps {
 	position: fixed;
-	left: 0px;
+	right: 0px;
 	top: 0px;
 	padding-right: 5px;
 	padding-left: 5px;
