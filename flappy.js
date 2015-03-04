@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 108;
+var VERSION = 109;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -38,8 +38,8 @@ function init() {
 
         okParams,
 
-        viewerId = 10,
-        viewerName = "Maxim",
+        viewerId,
+        viewerName,
         topResults = [ { id : 1, name : 'AAAA', score : 7232356}, { id : 213, name : 'Машка', score : 6254}, { id : 21, name : 'Василий Т.', score : 465}, { id : 211, name : 'Alexs.', score : 211}, { id : 211, name : 'asdfAlsadfasfexs.', score : 12}, { id : 211, name : 'sadfsadjfkhsadlfsadf;lasAlexs.', score : 2} ],
         freeGold = 35,
         paidGold = 0,
@@ -618,14 +618,14 @@ function init() {
 
 
             okParams = FAPI.Util.getRequestParameters();
+            viewerId = okParams['logged_user_id'];
 
             FAPI.Client.call({
                 method: 'users.getCurrentUser',
-                fields: 'UID,NAME'
+                fields: 'NAME'
             }, function (status, data, err) {
                 if (status == 'ok') {
-                    var d = window.atob(data);
-                    console.warn(d);                    
+                    viewerName = data.name;
                 }
                 okInit = true;
                 checkInit();
