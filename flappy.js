@@ -689,10 +689,12 @@ function init() {
 
                         serverAccepted = true;
                         check();
+                    } else {
+                        blink.destroy();
                     }
                 });
 
-                hide_to_state(game, function () {
+                var blink = hide_to_state(game, function () {
                     tweenCompleted = true;
                     check();
                 });
@@ -722,9 +724,11 @@ function init() {
                     if (result) {
                         topResults = result.top;
                         check();
+                    } else {
+                        blink.destroy();
                     }
                 });
-                hide_to_state(game, function () {
+                var blink = hide_to_state(game, function () {
                     tweenCompleted = true;
                     check();
                 });
