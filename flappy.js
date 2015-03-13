@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 130;
+var VERSION = 131;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -28,22 +28,20 @@ function init() {
         FLAP_ANGLE = -45,
         FLAP_TIME = 0.05 * SEC,
 
-        REAL2GOLD = [{real: 1, gold: 50}, {real:10, gold: 275}, {real:50, gold:1200}],
         TOUR_PRICE = 1,
         BIRD_PRICES = [0, 250, 250],
         RISE_PRICE = 250,
 
-        MAX_FREE_GOLD_VALUE = 50,
+        MAX_HEALTH_VALUE = 50,
         birdType = 0,
-        onGoldChanged = new Phaser.Signal(),
+        onHealthChanged = new Phaser.Signal(),
 
         fsig,
         viewerId,
         viewerName,
         friendIds,
         topResults = [],
-        freeGold = 35,
-        paidGold = 10000;
+        health = 35;
 
     var GAME_STATE_HELP = 'help',
         GAME_STATE_PREFLY = 'prefly',
@@ -97,26 +95,6 @@ function init() {
             throw message;
         }
         return condition;
-    }
-
-    function purchase(game, amount, cb) {
-        if (freeGold + paidGold >= amount) {
-            var freeDec = Math.min(freeGold, amount);
-            freeGold -= freeDec;
-            paidGold -= amount - freeDec;
-            onGoldChanged.dispatch(freeGold, paidGold);
-            cb(true);
-        } else {
-            game.add.exists(new BankDialog(game));
-            cb(false);
-        }
-    }
-
-    function purchaseGold(realItem, cb) {
-        assert(REAL2GOLD[realItem]);
-        paidGold += REAL2GOLD[realItem].gold;
-        onGoldChanged.dispatch(freeGold, paidGold);
-        cb(true);
     }
 
     function registerFonts(game) {
@@ -500,10 +478,6 @@ function init() {
         progress.crop(new Phaser.Rectangle(0, 0, 36, 6));
         this.add(game.add.image(1, 1, 'gui', 'bank_top.png'));
 
-        this.add(add_button(game, 63, 2, 'btn_plus', function () {
-            game.add.exists(new BankDialog(game));
-        }));
-
         var balance = new AlignText(game, 12, 5, 'bank', 5, 'center');
         this.add(balance);
 
@@ -511,36 +485,21 @@ function init() {
         this.add(time);
         time.text = '05:21';
 
-        var add = new AlignText(game, 78, 6, 'bank_add', 7, 'left');
-        this.add(add);
+        var _health = health, needUpdate = true;
 
-        var _free = freeGold, _paid = paidGold, needUpdate = true;
-
-        onGoldChanged.add(function (freeGold, paidGold) {
-            game.add.tween(this).to({ freeGold : freeGold, paidGold : paidGold }, 0.5 * SEC, undefined, true);
+        onHealthChanged.add(function (health) {
+            game.add.tween(this).to({ health : health }, 0.5 * SEC, undefined, true);
         }, this);
 
-        Object.defineProperty(this, 'freeGold', {
+        Object.defineProperty(this, 'health', {
             get: function () {
-                return _free;
+                return _health;
             },
 
             set: function (value) {
-                if (_free != value) {
-                    _free = Math.round(value);
-                    needUpdate = true;
-                }
-            }
-        });
-
-        Object.defineProperty(this, 'paidGold', {
-            get: function () {
-                return _paid;
-            },
-
-            set: function (value) {
-                if (_paid != value) {
-                    _paid = Math.round(value);
+                value = Math.round(value);
+                if (_health != value) {
+                    _health = value;
                     needUpdate = true;
                 }
             }
@@ -552,21 +511,18 @@ function init() {
             if (!needUpdate) return;
             needUpdate = false;
 
-            var v = _free / MAX_FREE_GOLD_VALUE;
+            var v = Math.min(1.0, _health / MAX_HEALTH_VALUE);
             progress.cropRect.x = Math.round(36 - 36 * v);
             progress.cropRect.width = 36 - progress.cropRect.x;
             progress.updateCrop();
 
-            balance.value = _free;
+            balance.value = _health;
             balance.update();
-            add.value = _paid;
-            add.update();
-            add.visible = (_paid > 0);
         }
 
         this.destroy = function () {
             Phaser.Group.prototype.destroy.call(this);
-            onGoldChanged.removeAll(this);
+            onHealthChanged.removeAll(this);
         }
     }
     Bank.prototype = Object.create(Phaser.Group.prototype);
@@ -601,8 +557,7 @@ function init() {
                                 viewerName = obj.name;
                             }
                             // TODO obj.unlocked, obj.free_update_time
-                            freeGold = obj.free;
-                            paidGold = obj.paid;
+                            health = obj.free;
 
                             logged = true;
                             checkInit();
@@ -678,9 +633,8 @@ function init() {
                 play.inputEnabled = false;
                 serverCall('play', { }, function (result) {
                     if (result) {
-                        freeGold = result.free;
-                        paidGold = result.paid;
-                        onGoldChanged.dispatch(freeGold, paidGold);
+                        health = result.free;
+                        onHealthChanged.dispatch(health);
 
                         hide_to_state(game, function () {
                             game.state.start('game');
@@ -733,64 +687,6 @@ function init() {
             }
         }
     }
-
-    var BankDialog = function (game) {
-        Phaser.Group.call(this, game);
-
-        var dlg = this;
-
-        function back() {
-            var blink = hide_to_state(game, function () {
-                dlg.destroy();
-                blink.destroy();
-            });
-        }
-
-        this.add(add_color_box(game, BG_COLOR));
-        this.add(game.add.image(47, 13, 'gui', 'txt_store.png'));
-
-        this.add(game.add.existing(new AlignText(game, 41, 50, 'bank_add', 7, 'right'))).text = '1200';
-        this.add(game.add.image(45, 46, 'gui', 'ico_heart.png'));
-        this.add(add_button(game, 73, 39, 'btn_buy1', function () {
-            purchaseGold(2, function (result) {
-                if (result) {
-                    back();
-                }
-            });
-        }));
-
-        this.add(game.add.existing(new AlignText(game, 41, 93, 'bank_add', 7, 'right'))).text = '275';
-        this.add(game.add.image(45, 89, 'gui', 'ico_heart.png'));
-        this.add(add_button(game, 73, 82, 'btn_buy2', function () {
-            purchaseGold(1, function (result) {
-                if (result) {
-                    back();
-                }
-            });
-        }));
-
-        this.add(game.add.existing(new AlignText(game, 41, 135, 'bank_add', 7, 'right'))).text = '50';
-        this.add(game.add.image(45, 131, 'gui', 'ico_heart.png'));
-        this.add(add_button(game, 73, 124, 'btn_buy3', function () {
-            purchaseGold(0, function (result) {
-                if (result) {
-                    back();
-                }
-            });
-        }));
-
-        this.add(add_button(game, 38, 174, 'btn_menu', function () {
-            back();
-        }));
-
-        dlg.visible = false;
-        var blink = hide_to_state(game, function () {
-            dlg.visible = true;
-            blink.destroy();
-        });
-    }
-    BankDialog.prototype = Object.create(Phaser.Group.prototype);
-    BankDialog.prototype.constructor = BankDialog;
 
     var TopState = function (game) {
         this.create = function () {
