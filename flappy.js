@@ -445,7 +445,7 @@ function init() {
         var bestScore = result.add(new AlignText(game, 100, 49, 'score_result', 8,'right'));
         bestScore.value = bestScore_;
         if (true || isNew_) {
-            result.add(game.add.image(bestScore.left, 48, 'gui', 'txt_new.png'));
+            result.add(game.add.image(bestScore.x + bestScore.left, 48, 'gui', 'txt_new.png'));
         }
         result.add(add_button(game, 12, 67, 'btn_share', function () {
             // TODO: game.state.start('menu');
