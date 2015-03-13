@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 139;
+var VERSION = 140;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -439,7 +439,7 @@ function init() {
         result.add(game.add.image(0, 0, 'gui', 'result_bg.png'));
         result.add(game.add.image(14, 13, 'gui', 'medal_' + medal_ + '.png'));
         // result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
-        result.add(game.add.image(77, 14, 'gui', 'txt_result.png'));
+        result.add(game.add.image(77, 14, 'gui', 'txt_points.png'));
         result.add(game.add.image(63, 38, 'gui', 'txt_best.png'));
         var score = result.add(new AlignText(game, 100, 23, 'score_result', 8, 'right'));
         var bestScore = result.add(new AlignText(game, 100, 49, 'score_result', 8,'right'));
