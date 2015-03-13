@@ -721,6 +721,10 @@ function init() {
             }
 
             updateBird();
+
+            this.reflow = function (scale, widgetWidth) {
+                bank.x = widgetWidth / scale + 6;
+            }
         }
     }
 
@@ -1106,7 +1110,11 @@ function init() {
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
-                document.getElementById('okwidget').style.marginLeft = scale.margin.x + 'px';
+                var widget = document.getElementById('okwidget');
+                widget.style.marginLeft = scale.margin.x + 'px';
+                if (game.state.current === 'menu') {
+                    game.state.reflow(lastScale, widget.offsetWidth);
+                }
             });
             game.scale.refresh();
         });
