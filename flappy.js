@@ -543,8 +543,8 @@ function init() {
                             if (obj.name) {
                                 viewerName = obj.name;
                             }
-                            // TODO obj.unlocked, obj.free_update_time
-                            health = obj.free;
+                            // TODO obj.unlocked, obj.health_update_time
+                            health = obj.health;
 
                             logged = true;
                             checkInit();
@@ -620,7 +620,7 @@ function init() {
                 play.inputEnabled = false;
                 serverCall('play', { }, function (result) {
                     if (result) {
-                        health = result.free;
+                        health = result.health;
                         onHealthChanged.dispatch(health);
 
                         hide_to_state(game, function () {
