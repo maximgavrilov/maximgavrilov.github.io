@@ -1104,9 +1104,9 @@ function init() {
                     }
                     game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
-                    scale.reflowCanvas();
-                    document.getElementById('okwidget').style.marginLeft = scale.margin.x + 'px';
                 }
+                scale.reflowCanvas();
+                document.getElementById('okwidget').style.marginLeft = scale.margin.x + 'px';
             });
             game.scale.refresh();
         });
