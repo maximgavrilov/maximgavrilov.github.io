@@ -480,9 +480,8 @@ function init() {
         var balance = new AlignText(game, 12, 5, 'bank', 5, 'center');
         this.add(balance);
 
-        var time = new AlignText(game, 37, 15, 'bank_time', 5, 'center');
-        this.add(time);
-        time.text = '05:21';
+        var ttime = new AlignText(game, 37, 15, 'bank_time', 5, 'center');
+        this.add(ttime);
 
         var _health = health, _time = next_health_update, needUpdateHealth = true, needUpdateTime = true;
 
@@ -538,7 +537,7 @@ function init() {
                 var up = _time - time()
                 var min = Math.floor(up / 60);
                 var sec = up % 60;
-                time.text = min + ':' + sec;
+                ttime.text = min + ':' + sec;
             }
         }
 
