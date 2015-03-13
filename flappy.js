@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 137;
+var VERSION = 138;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -40,8 +40,8 @@ function init() {
         viewerId,
         viewerName,
         friendIds,
-        topResults = [],
-        health = 35;
+        topResults,
+        health;
 
     var GAME_STATE_HELP = 'help',
         GAME_STATE_PREFLY = 'prefly',
@@ -409,7 +409,7 @@ function init() {
             txt.updateText();
 
             if (align == 'center') {
-                txt.x = -Math.floor(txt.textWidth / 2);
+                txt.x = -Math.ceil(txt.textWidth / 2);
             } else if (align == 'left') {
                 txt.x = 0;
             } else if (align == 'right') {
