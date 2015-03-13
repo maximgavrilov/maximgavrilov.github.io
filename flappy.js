@@ -749,7 +749,7 @@ function init() {
 
             var idx;
             for (var i = 0; i < top.length; i++) {
-                if (top[i].id == viewerId) {
+                if (top[i].uid == viewerId) {
                     idx = i;
                     break;
                 }
