@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 118;
+var VERSION = 119;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -672,8 +672,8 @@ function init() {
                 updateBird();
             });
             var play = add_button(game, 38, 137, 'btn_play', function () {
+                play.inputEnabled = false;
                 serverCall('play', { }, function (result) {
-                    play.inputEnabled = true;
                     if (result) {
                         freeGold = result.free;
                         paidGold = result.paid;
@@ -682,6 +682,8 @@ function init() {
                         hide_to_state(game, function () {
                             game.state.start('game');
                         });
+                    } else {
+                        play.inputEnabled = false;
                     }
                 });
             });
@@ -702,7 +704,6 @@ function init() {
                     if (result) {
                         topResults = result.top;
                         hide_to_state(game, function () {
-                            top.inputEnabled = true;
                             game.state.start('top');
                         });
                     }
@@ -828,9 +829,7 @@ function init() {
 
             var menu = add_button(game, 38, 174, 'btn_menu', function () {
                 menu.inputEnabled = false;
-                console.warn('menu');
                 hide_to_state(game, function () {
-                    console.warn('menu_done');
                     game.state.start('menu');
                 });
             });
