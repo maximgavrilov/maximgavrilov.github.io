@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 144;
+var VERSION = 145;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -606,6 +606,7 @@ function init() {
             bank.y = 5;
             game.add.existing(bank);
             var lock = game.add.image(69, 114, 'gui', 'ico_lock.png');
+            var nolife = game.add.image(33, 119, 'gui', 'txt_ended_life.png');
 
             add_button(game, 21, 88, 'btn_left', function () {
                 birdType -= 1;
@@ -632,7 +633,9 @@ function init() {
                     });
                 });
             });
-            var buy = add_button(game, 38, 137, 'btn_buy_bird', function () {
+            var buy_health = add_button(game, 38, 137, 'btn_buy_health', function () {
+            });
+            var buy_bird = add_button(game, 38, 137, 'btn_buy_bird', function () {
                 // TODO : buy bird
                 // buy.inputEnabled = false;
                 // purchase(game, BIRD_PRICES[birdType], function (result) {
@@ -659,9 +662,24 @@ function init() {
                 game.world.remove(bird);
                 bird = new Bird(game, birdType, 75, 100);
                 game.add.existing(bird);
-                var p = unlocked[birdType];
-                play.visible = p;
-                buy.visible = lock.visible = !p;
+
+                play.visible = false;
+                buy_bird.visible = false;
+                buy_health.visible = false;
+                lock.visible = false;
+                nolife.visible = false;
+
+                if (unlocked[birdType]) {
+                    if (health > 0) {
+                        play.visible = true;
+                    } else {
+                        nolife.visible = true;
+                        buy_health.visible = true;
+                    }
+                } else {
+                    buy_bird.visible = true;
+                    lock.visible = true;
+                }
             }
 
             updateBird();
