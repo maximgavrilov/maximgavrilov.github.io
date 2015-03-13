@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 146;
+var VERSION = 147;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -32,6 +32,7 @@ function init() {
         RISE_PRICE = 250,
 
         MAX_HEALTH_VALUE = 50,
+        HEALTH_UPDATE_SEC = 5 * 60,
         birdType = 0,
         onHealthChanged = new Phaser.Signal(),
 
@@ -82,6 +83,10 @@ function init() {
         http.open('POST', SERVER + method, true);
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         http.send(p);
+    }
+
+    function time() {
+        return new Date() / 1000;
     }
 
     function assert(condition, message) {
@@ -529,13 +534,11 @@ function init() {
                 balance.update();
             }
 
-            if (needUpdateTime) {
-                needUpdateTime = false;
-                if (health < MAX_HEALTH_VALUE) {
-                    var min = Math.floor(next_health_update / 60);
-                    var sec = next_health_update % 60;
-                    time.text = min + ':' + sec;
-                }
+            if (health < MAX_HEALTH_VALUE) {
+                var up = _time - time()
+                var min = Math.floor(up / 60);
+                var sec = up % 60;
+                time.text = min + ':' + sec;
             }
         }
 
@@ -577,7 +580,7 @@ function init() {
 
                         unlocked = obj.unlocked;
                         health = obj.health;
-                        next_health_update = obj.next_health_update;
+                        next_health_update = obj.next_health_update + time();
 
                         logged = true;
                         checkInit();
@@ -610,6 +613,7 @@ function init() {
         this.create = function () {
             game.plugins.add(FPSPlugin);
             game.plugins.add(VSyncPlugin);
+            game.plugins.add(UpdateHealthPlugin);
             registerFonts(game);
             created = true;
             checkInit();
@@ -653,7 +657,7 @@ function init() {
                 play.inputEnabled = false;
                 serverCall('play', { }, function (obj) {
                     health = obj.health;
-                    next_health_update = obj.next_health_update;
+                    next_health_update = obj.next_health_update + time();
                     onHealthChanged.dispatch(health);
 
                     hide_to_state(game, function () {
@@ -1015,6 +1019,18 @@ function init() {
                 game.stage.setChildIndex(vsync, game.stage.children.length - 1);
             }
             vsync.frameName = (frame & 1) ? 'vsync0.png' : 'vsync1.png';
+        }
+    }
+
+    function UpdateHealthPlugin(game) {
+        this.update = function () {
+            while (time() > next_health_update) {
+                next_health_update += HEALTH_UPDATE_SEC;
+                health += 1;
+            }
+            if (health > MAX_HEALTH_VALUE) {
+                health = MAX_HEALTH_VALUE;
+            }
         }
     }
 
