@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 140;
+var VERSION = 141;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -444,7 +444,7 @@ function init() {
         var score = result.add(new AlignText(game, 100, 23, 'score_result', 8, 'right'));
         var bestScore = result.add(new AlignText(game, 100, 49, 'score_result', 8,'right'));
         bestScore.value = bestScore_;
-        if (isNew_) {
+        if (true || isNew_) {
             result.add(game.add.image(bestScore.left, 48, 'gui', 'txt_new.png'));
         }
         result.add(add_button(game, 12, 67, 'btn_share', function () {
