@@ -824,8 +824,11 @@ function init() {
                 updateTop();
             });
 
-            add_button(game, 38, 174, 'btn_menu', function () {
-                hide_to_state(game, function () { game.state.start('menu'); });
+            var menu = add_button(game, 38, 174, 'btn_menu', function () {
+                menu.inputEnabled = false;
+                hide_to_state(game, function () {
+                    game.state.start('menu');
+                });
             });
 
             function updateTop() {
