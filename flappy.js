@@ -365,22 +365,24 @@ function init() {
         var val = 0;
         var text = undefined;
         var needUpdate = true;
+        var _inputEnbaled = false;
+        var _inputRect;
 
-        Object.defineProperty(this, 'events', {
-            get: function () {
-                return txt.events;
-            }
-        });
+        // function calcInputRect() {
 
-        Object.defineProperty(this, 'inputEnabled', {
-            get: function () {
-                return txt.inputEnabled;
-            },
+        // }
 
-            set: function (value) {
-                txt.inputEnabled = value;
-            }
-        });
+        // Object.defineProperty(this, 'inputEnabled', {
+        //     get: function () {
+        //         return _inputEnbaled;
+        //     },
+
+        //     set: function (value) {
+        //         if (_inputEnbaled != value) {
+
+        //         }
+        //     }
+        // });
 
         Object.defineProperty(this, 'left', {
             get: function () {
@@ -796,15 +798,15 @@ function init() {
                     new AlignText(game, 45, 55 + 20 * l, 'top', 8, 'left'),
                     link = new AlignText(game, 80, 55 + 20 * l, 'top', 8, 'left'),
                     ]);
-                link.inputEnabled = true;
-                link.events.onInputDown.add(function (link) {
-                    for (l = 0; l < NUM_LINES; l++) {
-                        if (lines[l][2] === link) {
-                          var win = window.open('http://m.ok.ru/profile/' + topResults[idx + l].uid, '_blank');
-                          win.focus();
-                        }
-                    }
-                }, link);
+                // link.inputEnabled = true;
+                // link.events.onInputDown.add(function (link) {
+                //     for (l = 0; l < NUM_LINES; l++) {
+                //         if (lines[l][2] === link) {
+                //           var win = window.open('http://m.ok.ru/profile/' + topResults[idx + l].uid, '_blank');
+                //           win.focus();
+                //         }
+                //     }
+                // }, link);
             }
 
             var down = add_button(game, 64, 153, 'btn_down', function () {
