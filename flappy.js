@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 121;
+var VERSION = 122;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -1104,6 +1104,7 @@ function init() {
                     }
                     game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
+                    scale.reflowCanvas();
                     document.getElementById('okwidget').style.marginLeft = scale.margin.x + 'px';
                 }
             });
