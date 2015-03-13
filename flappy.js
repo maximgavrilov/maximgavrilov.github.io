@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 116;
+var VERSION = 117;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -696,11 +696,14 @@ function init() {
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
                 top.inputEnabled = false;
+                console.warn('top');
                 serverCall('top', { uids : friendIds }, function (result) {
+                    console.warn('top_call');
                     top.inputEnabled = true;
                     if (result) {
                         topResults = result.top;
                         hide_to_state(game, function () {
+                    console.warn('top_done');
                             game.state.start('top');
                         });
                     }
@@ -826,7 +829,9 @@ function init() {
 
             var menu = add_button(game, 38, 174, 'btn_menu', function () {
                 menu.inputEnabled = false;
+                console.warn('menu');
                 hide_to_state(game, function () {
+                    console.warn('menu_done');
                     game.state.start('menu');
                 });
             });
