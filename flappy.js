@@ -363,6 +363,13 @@ function init() {
         var text = undefined;
         var needUpdate = true;
 
+        Object.defineProperty(this, 'left', {
+            if (needUpdate) {
+                this.update();
+            }
+            return txt.x;
+        });
+
         Object.defineProperty(this, 'value', {
             get: function () {
                 return val;
@@ -428,15 +435,16 @@ function init() {
         result.x = 19;
         result.y = 29;
         result.add(game.add.image(0, 0, 'gui', 'result_bg.png'));
-        result.add(game.add.image(13, 9, 'gui', 'medal_' + medal_ + '.png'));
-        result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
-        result.add(game.add.image(27 - 10, 37, 'gui', 'txt_result.png'));
-        result.add(game.add.image(44 - 10, 49, 'gui', 'txt_best.png'));
+        result.add(game.add.image(14, 13, 'gui', 'medal_' + medal_ + '.png'));
+        // result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
+        result.add(game.add.image(77, 14, 'gui', 'txt_result.png'));
+        result.add(game.add.image(63, 38, 'gui', 'txt_best.png'));
+        var score = result.add(new AlignText(game, 100, 23, 'score_result', 8, 'right'));
+        var bestScore = result.add(new AlignText(game, 100, 49, 'score_result', 8,'right'));
+        bestScore.value = bestScore_;
         if (isNew_) {
-            result.add(game.add.image(19 - 10, 49, 'gui', 'txt_new.png'));
+            result.add(game.add.image(bestScore.left, 48, 'gui', 'txt_new.png'));
         }
-        var score = result.add(new AlignText(game, 101, 36, 'score_result', 8, 'right'));
-        var bestScore = result.add(new AlignText(game, 101, 50, 'score_result', 8,'right'));
         result.add(add_button(game, 12, 67, 'btn_share', function () {
             // TODO: game.state.start('menu');
         }));
@@ -448,7 +456,6 @@ function init() {
         }));
         this.add(buttons);
 
-        bestScore.value = bestScore_;
         game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * SEC, undefined, true, 0.5 * SEC);
         game.add.tween(result).from({ y : HEIGHT }, 0.4 * SEC, undefined, true, 0.8 * SEC);
         game.add.tween(score).to({ value : score_}, 0.5 * SEC, undefined, true, 1.5 * SEC);
