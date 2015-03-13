@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 117;
+var VERSION = 118;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -70,13 +70,15 @@ function init() {
         var http = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 
         http.onreadystatechange = function() {
-            if (http.readyState == 4 && http.status == 200) {
-                var res = JSON.parse(http.responseText);
-                if (res && res.status === 'ok') {
-                    cb(res);
+            if (http.readyState == 4) {
+                if (http.status == 200) {
+                    var res = JSON.parse(http.responseText);
+                    if (res && res.status === 'ok') {
+                        cb(res);
+                    }
+                } else {
+                    cb();
                 }
-            } else {
-                cb();
             }
         }
 
@@ -703,7 +705,7 @@ function init() {
                     if (result) {
                         topResults = result.top;
                         hide_to_state(game, function () {
-                    console.warn('top_done');
+                            console.warn('top_done');
                             game.state.start('top');
                         });
                     }
