@@ -633,8 +633,8 @@ function init() {
                 });
             });
             var buy = add_button(game, 38, 137, 'btn_buy_bird', function () {
-                buy.inputEnabled = false;
                 // TODO : buy bird
+                // buy.inputEnabled = false;
                 // purchase(game, BIRD_PRICES[birdType], function (result) {
                 //     buy.inputEnabled = true;
                 //     if (result) {
