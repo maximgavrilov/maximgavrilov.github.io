@@ -837,7 +837,7 @@ function init() {
 
             var help = game.add.group();
             help.add(game.add.image(24, 53, 'gui', 'txt_ready.png'));
-            help.add(game.add.image(75, 114, 'gui', 'gray_bird.png')).anchor.setTo(0.5, 0.5);
+            help.add(game.add.image(75, 114, 'gui', 'gray_bird' + birdType + '.png')).anchor.setTo(0.5, 0.5);
             help.add(game.add.image(75, 126, 'gui', 'txt_taptap.png')).anchor.setTo(0.5, 0);
 
             for (var i = 0; i < 3; i++) {
