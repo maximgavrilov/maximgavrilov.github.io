@@ -41,7 +41,8 @@ function init() {
         friendIds,
         unlocked,
         topResults,
-        health;
+        health,
+        next_health_update;
 
     var GAME_STATE_HELP = 'help',
         GAME_STATE_PREFLY = 'prefly',
@@ -478,11 +479,26 @@ function init() {
         this.add(time);
         time.text = '05:21';
 
-        var _health = health, needUpdate = true;
+        var _health = health, _time = next_health_update, needUpdateHealth = true, needUpdateTime = true;
 
-        onHealthChanged.add(function (health) {
+        onHealthChanged.add(function (health, next_health_update) {
             game.add.tween(this).to({ health : health }, 0.5 * SEC, undefined, true);
+            this.time = next_health_update;
         }, this);
+
+        Object.defineProperty(this, 'time', {
+            get: function () {
+                return _time;
+            },
+
+            set: function (value) {
+                value = Math.round(value);
+                if (_time != value) {
+                    _time = value;
+                    needUpdateTime = true;
+                }
+            }
+        });
 
         Object.defineProperty(this, 'health', {
             get: function () {
@@ -493,7 +509,7 @@ function init() {
                 value = Math.round(value);
                 if (_health != value) {
                     _health = value;
-                    needUpdate = true;
+                    needUpdateHealth = true;
                 }
             }
         });
@@ -501,16 +517,26 @@ function init() {
         this.update = function () {
             Phaser.Group.prototype.update.call(this);
 
-            if (!needUpdate) return;
-            needUpdate = false;
+            if (needUpdateHealth) {
+                needUpdateHealth = false;
 
-            var v = Math.min(1.0, _health / MAX_HEALTH_VALUE);
-            progress.cropRect.x = Math.round(36 - 36 * v);
-            progress.cropRect.width = 36 - progress.cropRect.x;
-            progress.updateCrop();
+                var v = Math.min(1.0, _health / MAX_HEALTH_VALUE);
+                progress.cropRect.x = Math.round(36 - 36 * v);
+                progress.cropRect.width = 36 - progress.cropRect.x;
+                progress.updateCrop();
 
-            balance.value = _health;
-            balance.update();
+                balance.value = _health;
+                balance.update();
+            }
+
+            if (needUpdateTime) {
+                needUpdateTime = false;
+                if (health < MAX_HEALTH_VALUE) {
+                    var min = Math.floor(next_health_update / 60);
+                    var sec = next_health_update % 60;
+                    time.text = min + ':' + sec;
+                }
+            }
         }
 
         this.destroy = function () {
@@ -548,9 +574,10 @@ function init() {
                         if (obj.name) {
                             viewerName = obj.name;
                         }
-                        // TODO obj.health_update_time
+
                         unlocked = obj.unlocked;
                         health = obj.health;
+                        next_health_update = obj.next_health_update;
 
                         logged = true;
                         checkInit();
@@ -626,6 +653,7 @@ function init() {
                 play.inputEnabled = false;
                 serverCall('play', { }, function (obj) {
                     health = obj.health;
+                    next_health_update = obj.next_health_update;
                     onHealthChanged.dispatch(health);
 
                     hide_to_state(game, function () {
