@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 133;
+var VERSION = 134;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -320,16 +320,12 @@ function init() {
         this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
         this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
         this.animations.add('dead', ['bird' + type + '_2.png'], 6, true);
-        this.animations.play('demo');
+        this.animations.play('fly');
 
         this.smoothed = false;
 
         this.bodyGravity = false;
         this.velocityY = 0;
-
-        this.setType = function (type) {
-
-        }
 
         this.hatch = function () {
             this.bodyGravity = true;
