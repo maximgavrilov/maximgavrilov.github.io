@@ -72,7 +72,7 @@ function init() {
                 if (http.status == 200) {
                     var obj = JSON.parse(http.responseText);
                     if (obj && obj.status === 'ok') {
-                        cb();
+                        cb(obj);
                     }
                 }
             }
