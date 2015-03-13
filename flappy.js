@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 119;
+var VERSION = 120;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
