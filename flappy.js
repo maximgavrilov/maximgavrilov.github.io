@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 154;
+var VERSION = 155;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -369,6 +369,16 @@ function init() {
         Object.defineProperty(this, 'events', {
             get: function () {
                 return txt.events;
+            }
+        });
+
+        Object.defineProperty(this, 'inputEnabled', {
+            get: function () {
+                return txt.inputEnabled;
+            },
+
+            set: function (value) {
+                txt.inputEnabled = value;
             }
         });
 
@@ -818,7 +828,7 @@ function init() {
                         lines[i][1].visible = false;
                         lines[i][2].visible = false;
                     } else {
-                        var tint = (top[idx + i].id === viewerId) ? 0x89d443 : 0x373737;
+                        var tint = (top[idx + i].uid === viewerId) ? 0x89d443 : 0x373737;
                         lines[i][0].value = (idx + i + 1);
                         lines[i][0].tint = tint;
                         lines[i][0].visible = true;
