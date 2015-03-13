@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 151;
+var VERSION = 152;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -718,6 +718,15 @@ function init() {
             }
 
             updateBird();
+
+            var _health = health;
+            onHealthChanged.add(function (health, next_health_update) {
+                if (_health != health) {
+                    _health = health;
+                    updateBird();
+                }
+            }, this);
+
         }
 
         this.reflow = function (scale, widgetWidth) {
@@ -725,6 +734,10 @@ function init() {
             if (bank) {
                 bank.x = bankX;
             }
+        }
+
+        this.destory = function () {
+            onHealthChanged.removeAll(this);
         }
     }
 
