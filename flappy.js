@@ -366,6 +366,12 @@ function init() {
         var text = undefined;
         var needUpdate = true;
 
+        Object.defineProperty(this, 'events', {
+            get: function () {
+                return txt.events;
+            }
+        });
+
         Object.defineProperty(this, 'left', {
             get: function () {
                 if (needUpdate) {
