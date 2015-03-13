@@ -420,7 +420,7 @@ function init() {
     AlignText.prototype = Object.create(Phaser.Group.prototype);
     AlignText.prototype.constructor = AlignText;
 
-    var GameOver = function (game, score_, bestScore_, isNew_) {
+    var GameOver = function (game, score_, bestScore_, isNew_, medal_) {
         Phaser.Group.call(this, game);
         var title = this.add(game.add.image(37, 13, 'gui', 'txt_game_over.png'));
 
@@ -428,7 +428,7 @@ function init() {
         result.x = 19;
         result.y = 29;
         result.add(game.add.image(0, 0, 'gui', 'result_bg.png'));
-        result.add(game.add.image(13, 9, 'gui', 'medal_gold.png'));
+        result.add(game.add.image(13, 9, 'gui', 'medal_' + medal_ + '.png'));
         result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
         result.add(game.add.image(27 - 10, 37, 'gui', 'txt_result.png'));
         result.add(game.add.image(44 - 10, 49, 'gui', 'txt_best.png'));
@@ -794,7 +794,7 @@ function init() {
             var tweenComplete = false, overData = null;
             function showOver() {
                 if (tweenComplete && overData) {
-                    game.add.existing(new GameOver(game, sc, overData.best_score, overData.new));
+                    game.add.existing(new GameOver(game, sc, overData.best_score, overData.new, overData.medal));
                 }
             }
             bird.bodyGravity = false;
