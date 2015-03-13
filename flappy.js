@@ -29,7 +29,6 @@ function init() {
         FLAP_TIME = 0.05 * SEC,
 
         TOUR_PRICE = 1,
-        BIRD_PRICES = [0, 250, 250],
         RISE_PRICE = 250,
 
         MAX_HEALTH_VALUE = 50,
@@ -40,6 +39,7 @@ function init() {
         viewerId,
         viewerName,
         friendIds,
+        unlocked,
         topResults,
         health;
 
@@ -609,13 +609,13 @@ function init() {
             add_button(game, 21, 88, 'btn_left', function () {
                 birdType -= 1;
                 if (birdType < 0) {
-                    birdType = BIRD_PRICES.length - 1;
+                    birdType = unlocked.length - 1;
                 }
                 updateBird();
             });
             add_button(game, 117, 88, 'btn_right', function () {
                 birdType += 1;
-                if (birdType >= BIRD_PRICES.length) {
+                if (birdType >= unlocked.length) {
                     birdType = 0;
                 }
                 updateBird();
@@ -631,16 +631,16 @@ function init() {
                     });
                 });
             });
-            var buy = add_button(game, 38, 137, 'btn_buy', function () {
-                assert(BIRD_PRICES[birdType] > 0);
+            var buy = add_button(game, 38, 137, 'btn_buy_bird', function () {
                 buy.inputEnabled = false;
-                purchase(game, BIRD_PRICES[birdType], function (result) {
-                    buy.inputEnabled = true;
-                    if (result) {
-                        BIRD_PRICES[birdType] = 0;
-                        updateBird();
-                    }
-                });
+                // TODO : buy bird
+                // purchase(game, BIRD_PRICES[birdType], function (result) {
+                //     buy.inputEnabled = true;
+                //     if (result) {
+                //         BIRD_PRICES[birdType] = 0;
+                //         updateBird();
+                //     }
+                // });
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
                 top.inputEnabled = false;
@@ -658,7 +658,7 @@ function init() {
                 game.world.remove(bird);
                 bird = new Bird(game, birdType, 75, 100);
                 game.add.existing(bird);
-                var p = (BIRD_PRICES[birdType] == 0);
+                var p = unlocked[birdType];
                 play.visible = p;
                 buy.visible = lock.visible = !p;
             }
