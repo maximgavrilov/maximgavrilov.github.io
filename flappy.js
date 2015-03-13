@@ -216,6 +216,7 @@ function init() {
         var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {
             if (isOver) {
                 game.add.audio('click').play('');
+                btn.inputEnabled = false;
                 cb();
             }
         }, null, name + '_over.png', name + '_out.png', name + '_down.png');
@@ -669,7 +670,6 @@ function init() {
                 updateBird();
             });
             var play = add_button(game, 38, 137, 'btn_play', function () {
-                play.inputEnabled = false;
                 serverCall('play', { }, function (result) {
                     play.inputEnabled = true;
                     if (result) {
