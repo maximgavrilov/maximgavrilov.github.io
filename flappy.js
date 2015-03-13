@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 152;
+var VERSION = 153;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -773,12 +773,22 @@ function init() {
             game.add.image(13, 46, 'gui', 'top_bg.png');
 
             var lines = [];
+            var link;
             for (var l = 0; l < NUM_LINES; l++) {
                 lines.push([
                     new AlignText(game, 30, 55 + 20 * l, 'top', 8, 'right'),
                     new AlignText(game, 45, 55 + 20 * l, 'top', 8, 'left'),
-                    new AlignText(game, 80, 55 + 20 * l, 'top', 8, 'left'),
+                    link = new AlignText(game, 80, 55 + 20 * l, 'top', 8, 'left'),
                     ]);
+                link.inputEnabled = true;
+                link.events.onInputDown.add(function (link) {
+                    for (l = 0; l < NUM_LINES; l++) {
+                        if (lines[l][2] === link) {
+                          var win = window.open('http://m.ok.ru/profile/' + topResults[idx + l].uid, '_blank');
+                          win.focus();
+                        }
+                    }
+                }, link);
             }
 
             var down = add_button(game, 64, 153, 'btn_down', function () {
