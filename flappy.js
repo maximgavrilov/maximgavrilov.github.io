@@ -80,7 +80,6 @@ function init() {
 
         http.open('POST', SERVER + method, true);
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        http.setRequestHeader('Content-length', p.length);
         http.send(p);
     }
 
