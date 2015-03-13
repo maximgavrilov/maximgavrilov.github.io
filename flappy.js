@@ -536,7 +536,7 @@ function init() {
             if (health < MAX_HEALTH_VALUE) {
                 var up = _time - time()
                 var min = Math.floor(up / 60);
-                var sec = up % 60;
+                var sec = Math.floor(up % 60);
                 ttime.text = min + ':' + sec;
             }
         }
