@@ -443,13 +443,6 @@ function init() {
         this.add(result);
 
         var buttons = game.add.group();
-        buttons.add(add_button(game, 38, 137, 'btn_continue', function () {
-            purchase(game, RISE_PRICE, function (result) {
-                if (result) {
-                    console.warn('continue');
-                }
-            });
-        }));
         buttons.add(add_button(game, 38, 174, 'btn_menu', function () {
             hide_to_state(game, function () { game.state.start('menu'); });
         }));
