@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 125;
+var VERSION = 126;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -649,9 +649,11 @@ function init() {
     }
 
     var MenuState = function (game) {
+        var bank;
+
         this.create = function () {
             game.add.image(22, 37, 'gui', 'logo.png');
-            var bank = new Bank(game);
+            bank = new Bank(game);
             bank.x = 6;
             bank.y = 5;
             game.add.existing(bank);
@@ -721,10 +723,10 @@ function init() {
             }
 
             updateBird();
+        }
 
-            this.reflow = function (scale, widgetWidth) {
-                bank.x = widgetWidth / scale + 6;
-            }
+        this.reflow = function (scale, widgetWidth) {
+            bank.x = widgetWidth / scale + 6;
         }
     }
 
