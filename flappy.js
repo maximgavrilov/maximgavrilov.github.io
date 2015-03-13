@@ -1118,7 +1118,7 @@ function init() {
                 scale.reflowCanvas();
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
-                game.state.states['menu'].reflow(lastScale, widget.offsetWidth);
+                game.state.states['menu'].reflow(s, widget.offsetWidth);
             });
             game.scale.refresh();
         });
