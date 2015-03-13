@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 128;
+var VERSION = 129;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -727,7 +727,7 @@ function init() {
         }
 
         this.reflow = function (scale, widgetWidth) {
-            bankX = widgetWidth + 6;
+            bankX = Math.ceil(widgetWidth / scale) + 6;
             if (bank) {
                 bank.x = bankX;
             }
