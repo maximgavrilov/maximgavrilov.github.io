@@ -364,10 +364,12 @@ function init() {
         var needUpdate = true;
 
         Object.defineProperty(this, 'left', {
-            if (needUpdate) {
-                this.update();
+            get: function () {
+                if (needUpdate) {
+                    this.update();
+                }
+                return txt.x;
             }
-            return txt.x;
         });
 
         Object.defineProperty(this, 'value', {
