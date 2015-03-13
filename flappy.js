@@ -338,8 +338,8 @@ function init() {
         Phaser.Sprite.call(this, game, x, y, 'gui');
         this.anchor.setTo(0.5, 0.5);
         this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
-        this.animations.add('flap', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6);
-        this.animations.add('fly', ['bird' + type + '_2.png'], 6, true);
+        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
+        this.animations.add('dead', ['bird' + type + '_2.png'], 6, true);
         this.animations.play('demo');
 
         this.smoothed = false;
@@ -361,16 +361,13 @@ function init() {
             if (gameState === GAME_STATE_FLY || gameState === GAME_STATE_PREFLY) {
                 this.velocityY = -FLAP_VEL;
                 this.animations.stop();
-                this.animations.play('flap').onComplete.addOnce(function () {
-                    this.animations.play('fly');
-                }, this);
                 game.add.audio('flap').play('');
             }
         }
 
         this.die = function () {
             this.animations.stop();
-            this.animations.play('fly');
+            this.animations.play('dead');
             this.velocityY = 0;
             // game.add.tween(this).to({ angle : 90 }, 0.15 * SEC).start();
         }
