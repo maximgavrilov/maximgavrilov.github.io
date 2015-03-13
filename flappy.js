@@ -539,6 +539,9 @@ function init() {
                 var sec = '' + Math.floor(up % 60);
                 if (sec.length < 2) sec = '0' + sec;
                 ttime.text = min + ':' + sec;
+                ttime.visible = true;
+            } else {
+                ttime.visible = false;
             }
         }
 
