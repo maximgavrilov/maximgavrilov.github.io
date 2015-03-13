@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 141;
+var VERSION = 143;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -70,12 +70,10 @@ function init() {
         http.onreadystatechange = function() {
             if (http.readyState == 4) {
                 if (http.status == 200) {
-                    var res = JSON.parse(http.responseText);
-                    if (res && res.status === 'ok') {
-                        cb(res);
+                    var obj = JSON.parse(http.responseText);
+                    if (obj && obj.status === 'ok') {
+                        cb();
                     }
-                } else {
-                    cb();
                 }
             }
         }
@@ -444,7 +442,7 @@ function init() {
         var score = result.add(new AlignText(game, 100, 23, 'score_result', 8, 'right'));
         var bestScore = result.add(new AlignText(game, 100, 49, 'score_result', 8,'right'));
         bestScore.value = bestScore_;
-        if (true || isNew_) {
+        if (isNew_) {
             result.add(game.add.image(bestScore.x + bestScore.left - 23 - 2, 48, 'gui', 'txt_new.png'));
         }
         result.add(add_button(game, 12, 67, 'btn_share', function () {
@@ -547,17 +545,15 @@ function init() {
 
                     okParams['name'] = viewerName;
                     serverCall('login', okParams, function (obj) {
-                        if (obj) {
-                            fsig = obj.fsig;
-                            if (obj.name) {
-                                viewerName = obj.name;
-                            }
-                            // TODO obj.unlocked, obj.health_update_time
-                            health = obj.health;
-
-                            logged = true;
-                            checkInit();
+                        fsig = obj.fsig;
+                        if (obj.name) {
+                            viewerName = obj.name;
                         }
+                        // TODO obj.unlocked, obj.health_update_time
+                        health = obj.health;
+
+                        logged = true;
+                        checkInit();
                     });
                 }
             });
@@ -627,17 +623,13 @@ function init() {
             });
             var play = add_button(game, 38, 137, 'btn_play', function () {
                 play.inputEnabled = false;
-                serverCall('play', { }, function (result) {
-                    if (result) {
-                        health = result.health;
-                        onHealthChanged.dispatch(health);
+                serverCall('play', { }, function (obj) {
+                    health = obj.health;
+                    onHealthChanged.dispatch(health);
 
-                        hide_to_state(game, function () {
-                            game.state.start('game');
-                        });
-                    } else {
-                        play.inputEnabled = false;
-                    }
+                    hide_to_state(game, function () {
+                        game.state.start('game');
+                    });
                 });
             });
             var buy = add_button(game, 38, 137, 'btn_buy', function () {
@@ -653,13 +645,12 @@ function init() {
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
                 top.inputEnabled = false;
-                serverCall('top', { uids : friendIds }, function (result) {
-                    if (result) {
-                        topResults = result.top;
-                        hide_to_state(game, function () {
-                            game.state.start('top');
-                        });
-                    }
+                serverCall('top', { uids : friendIds }, function (obj) {
+                    topResults = obj.top;
+
+                    hide_to_state(game, function () {
+                        game.state.start('top');
+                    });
                 });
             });
 
@@ -801,11 +792,12 @@ function init() {
             blink.alpha = 0;
 
             var tweenComplete = false, overData = null;
-            function showOver() {
+            function check() {
                 if (tweenComplete && overData) {
                     game.add.existing(new GameOver(game, sc, overData.best_score, overData.new, overData.medal));
                 }
             }
+
             bird.bodyGravity = false;
             game.add.tween(blink).to({alpha : 0.9}, 0.2 * SEC, undefined, true, 0, 0, true).onComplete.addOnce(function () {
                 score.visible = false;
@@ -816,12 +808,12 @@ function init() {
                 blink = null;
 
                 tweenComplete = true;
-                showOver();
+                check();
             });
 
             serverCall('over', { score : sc }, function (obj) {
                 overData = obj;
-                showOver();
+                check();
             })
         }
 
