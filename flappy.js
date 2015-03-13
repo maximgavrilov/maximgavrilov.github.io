@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 134;
+var VERSION = 135;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -320,7 +320,7 @@ function init() {
         this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
         this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
         this.animations.add('dead', ['bird' + type + '_2.png'], 6, true);
-        this.animations.play('fly');
+        this.animations.play('demo');
 
         this.smoothed = false;
 
@@ -336,7 +336,6 @@ function init() {
         this.flap = function () {
             if (gameState === GAME_STATE_FLY || gameState === GAME_STATE_PREFLY) {
                 this.velocityY = -FLAP_VEL;
-                this.animations.stop();
                 game.add.audio('flap').play('');
             }
         }
