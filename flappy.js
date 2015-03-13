@@ -698,14 +698,11 @@ function init() {
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
                 top.inputEnabled = false;
-                console.warn('top');
                 serverCall('top', { uids : friendIds }, function (result) {
-                    console.warn('top_call');
-                    top.inputEnabled = true;
                     if (result) {
                         topResults = result.top;
                         hide_to_state(game, function () {
-                            console.warn('top_done');
+                            top.inputEnabled = true;
                             game.state.start('top');
                         });
                     }
