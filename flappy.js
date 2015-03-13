@@ -548,7 +548,8 @@ function init() {
                         if (obj.name) {
                             viewerName = obj.name;
                         }
-                        // TODO obj.unlocked, obj.health_update_time
+                        // TODO obj.health_update_time
+                        unlocked = obj.unlocked;
                         health = obj.health;
 
                         logged = true;
