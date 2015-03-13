@@ -657,7 +657,7 @@ function init() {
                 serverCall('play', { }, function (obj) {
                     health = obj.health;
                     next_health_update = obj.next_health_update + time();
-                    onHealthChanged.dispatch(health);
+                    onHealthChanged.dispatch(health, next_health_update);
 
                     hide_to_state(game, function () {
                         game.state.start('game');
@@ -1023,12 +1023,16 @@ function init() {
 
     function UpdateHealthPlugin(game) {
         this.update = function () {
+            var ohealth = health;
             while (time() > next_health_update) {
                 next_health_update += HEALTH_UPDATE_SEC;
                 health += 1;
             }
             if (health > MAX_HEALTH_VALUE) {
                 health = MAX_HEALTH_VALUE;
+            }
+            if (ohealth != health) {
+                onHealthChanged.dispatch(health, next_health_update);
             }
         }
     }
