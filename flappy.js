@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 132;
+var VERSION = 133;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -196,7 +196,6 @@ function init() {
         var btn = game.add.button(x, y, 'gui', function (_, pointer, isOver) {
             if (isOver) {
                 game.add.audio('click').play('');
-                btn.inputEnabled = false;
                 cb();
             }
         }, null, name + '_over.png', name + '_out.png', name + '_down.png');
