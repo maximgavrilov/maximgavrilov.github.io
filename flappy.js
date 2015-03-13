@@ -1104,7 +1104,6 @@ function init() {
                     }
                     game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
-                    scale.update();
                     document.getElementById('okwidget').style.marginLeft = scale.margin.x + 'px';
                 }
             });
