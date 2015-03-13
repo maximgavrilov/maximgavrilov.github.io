@@ -669,13 +669,6 @@ function init() {
                 updateBird();
             });
             var play = add_button(game, 38, 137, 'btn_play', function () {
-                var serverAccepted = false, tweenCompleted = false;
-                function check() {
-                    if (serverAccepted && tweenCompleted) {
-                        game.state.start('game');
-                    }
-                }
-
                 play.inputEnabled = false;
                 serverCall('play', { }, function (result) {
                     play.inputEnabled = true;
@@ -684,16 +677,10 @@ function init() {
                         paidGold = result.paid;
                         onGoldChanged.dispatch(freeGold, paidGold);
 
-                        serverAccepted = true;
-                        check();
-                    } else {
-                        blink.destroy();
+                        hide_to_state(game, function () {
+                            game.state.start('game');
+                        });
                     }
-                });
-
-                var blink = hide_to_state(game, function () {
-                    tweenCompleted = true;
-                    check();
                 });
             });
             var buy = add_button(game, 38, 137, 'btn_buy', function () {
@@ -708,26 +695,15 @@ function init() {
                 });
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
-                topResults = null;
-                var tweenCompleted = false;
-                function check() {
-                    if (topResults && tweenCompleted) {
-                        game.state.start('top');
-                    }
-                }
                 top.inputEnabled = false;
                 serverCall('top', { uids : friendIds }, function (result) {
                     top.inputEnabled = true;
                     if (result) {
                         topResults = result.top;
-                        check();
-                    } else {
-                        blink.destroy();
+                        hide_to_state(game, function () {
+                            game.state.start('top');
+                        });
                     }
-                });
-                var blink = hide_to_state(game, function () {
-                    tweenCompleted = true;
-                    check();
                 });
             });
 
