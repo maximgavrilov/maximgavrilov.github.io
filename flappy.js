@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 126;
+var VERSION = 127;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -649,12 +649,13 @@ function init() {
     }
 
     var MenuState = function (game) {
-        var bank;
+        var bank, bankX = 6;
 
         this.create = function () {
             game.add.image(22, 37, 'gui', 'logo.png');
+
             bank = new Bank(game);
-            bank.x = 6;
+            bank.x = bankX;
             bank.y = 5;
             game.add.existing(bank);
             var lock = game.add.image(69, 114, 'gui', 'ico_lock.png');
@@ -726,7 +727,10 @@ function init() {
         }
 
         this.reflow = function (scale, widgetWidth) {
-            bank.x = widgetWidth / scale + 6;
+            bankX = widgetWidth / scale + 6;
+            if (bank) {
+                bank.x = bankX;
+            }
         }
     }
 
