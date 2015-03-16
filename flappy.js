@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 160;
+var VERSION = 161;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -468,7 +468,6 @@ function init() {
         result.y = 29;
         result.add(game.add.image(0, 0, 'gui', 'result_bg.png'));
         result.add(game.add.image(14, 13, 'gui', 'medal_' + medal_ + '.png'));
-        // result.add(game.add.image(43, 17, 'gui', 'txt_medal.png'));
         result.add(game.add.image(77, 14, 'gui', 'txt_points.png'));
         result.add(game.add.image(63, 38, 'gui', 'txt_best.png'));
         var score = result.add(new AlignText(game, 100, 23, 'score_result', 8, 'right'));
@@ -477,9 +476,9 @@ function init() {
         if (isNew_) {
             result.add(game.add.image(bestScore.x + bestScore.left - 23 - 2, 48, 'gui', 'txt_new.png'));
         }
-        result.add(add_button(game, 12, 67, 'btn_share', function () {
-            // TODO: game.state.start('menu');
-        }));
+        // result.add(add_button(game, 12, 67, 'btn_share', function () {
+        //     // TODO: game.state.start('menu');
+        // }));
         this.add(result);
 
         var buttons = game.add.group();
@@ -635,7 +634,9 @@ function init() {
             }, function (status, data, err) {
                 if (status === 'ok') {
                     var d = window.atob(data);
-                    document.getElementById('okwidget').innerHTML = d;
+                    var w = document.getElementById('okwidget');
+                    w.innerHTML = d;
+                    w.display = 'block';
                 }
             });
 
