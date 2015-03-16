@@ -10,6 +10,7 @@ function init() {
 
     var COLLIDE_ENABLED = true,
         SERVER = 'http://flappyok.appspot.com/',
+        OK_PUBLIC_KEY = 'CBAJEHODEBABABABA';
 
         WIDTH = 150,
         HEIGHT = 224,
@@ -35,6 +36,13 @@ function init() {
         HEALTH_UPDATE_SEC = 5 * 60,
         birdType = 0,
         onHealthChanged = new Phaser.Signal(),
+
+        processPurchase,
+        PRODUCTS = {
+            'bird1' : { name : 'Попугай', price : 250, code : 'bird1' },
+            'bird2' : { name : 'Кит', price : 250, code : 'bird2' },
+            'health' : { name : 'Восстановить здоровье', price : 50, code : 'health' },
+        },
 
         fsig,
         viewerId,
@@ -629,6 +637,34 @@ function init() {
                     document.getElementById('okwidget').innerHTML = d;
                 }
             });
+
+            processPurchase = function (product) {
+                assert(PRODUCTS[product]);
+
+                var params = {
+                    application_key : okParams.application_key,
+                    session_key : okParams.session_key,
+                    name : PRODUCTS[product].name,
+                    price : PRODUCTS[product].price,
+                    code : PRODUCTS[product].code
+                }
+                params.sig = FAPI.Util.calcSignature(params, OK_PUBLIC_KEY)
+
+                var form = document.createElement("form");
+                form.method = "POST";
+                form.action = "http://m.odnoklassniki.ru/api/show_payment";
+                for (var k in params) {
+                    if (params.hasOwnProperty(k)) {
+                        var el = document.createElement('input');
+                        el.name = k;
+                        el.value = params[k];
+                        el.type = 'hidden';
+                        form.appendChild(el);
+                    }
+                }
+                // document.body.appendChild(form);
+                form.submit();
+            }
         }
 
         this.create = function () {
@@ -689,6 +725,7 @@ function init() {
             var buy_health = add_button(game, 38, 137, 'btn_buy_health', function () {
             });
             var buy_bird = add_button(game, 38, 137, 'btn_buy_bird', function () {
+                processPurchase('bird' + birdType);
                 // TODO : buy bird
                 // buy.inputEnabled = false;
                 // purchase(game, BIRD_PRICES[birdType], function (result) {
