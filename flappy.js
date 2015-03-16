@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 172;
+var VERSION = 173;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -1165,6 +1165,9 @@ function init() {
                     }
                     game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
+
+                    var d = parentBounds.height - HEIGHT * s;
+                    document.getElementById('underground').style.height = d + 'px';
                 }
                 scale.reflowCanvas();
 
