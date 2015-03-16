@@ -933,11 +933,11 @@ function init() {
             bird.bodyGravity = false;
 
             game.add.tween(game.stage.children[0])
-            .to({ x : 1, y : 1},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : -1, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : -1, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : 0, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : 10, y : 10},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : -10, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : -10, y : -10},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // .to({ x : 0, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
             .start();
 
             var blink = add_color_box(game, 0xffffff);
