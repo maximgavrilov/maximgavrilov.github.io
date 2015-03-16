@@ -1168,6 +1168,7 @@ function init() {
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
+                scale.resetCanvas(WIDTH, game.renderer.height / game.renderer.resolution);
 
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
