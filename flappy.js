@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 173;
+var VERSION = 174;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -1167,7 +1167,7 @@ function init() {
                     scale.setUserScale(s, s);
 
                     var d = parentBounds.height - HEIGHT * s;
-                    document.getElementById('underground').style.height = d + 'px';
+                    document.getElementById('underground').style.height = Math.floor(d) + 'px';
                 }
                 scale.reflowCanvas();
 
