@@ -892,6 +892,7 @@ function init() {
     var GameState = function (game) {
         var bird, ground, walls, score;
         var sc;
+        var globalGroup = game.add.group();
 
         function emitWall() {
             var maxX = -1;
@@ -940,7 +941,7 @@ function init() {
             // // .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
             // .start();
 
-            game.stage.children[0].x = 10;
+            globalGroup.x = 10;
 
             var blink = add_color_box(game, 0xffffff);
             blink.alpha = 0;
@@ -966,15 +967,15 @@ function init() {
             game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
             var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-            game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png');
-            walls = game.add.group();
-            ground = game.add.image(0, HEIGHT - GR, 'gui', 'ground.png');
+            globalGroup.add(game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png'));
+            walls = globalGroup.add(game.add.group());
+            ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
 
-            bird = game.add.existing(new Bird(game, birdType, 45, 125));
+            bird = globalGroup.add(game.add.existing(new Bird(game, birdType, 45, 125)));
 
             var demoTween = game.add.tween(bird).to({ y : 125 + 3}, 0.4 * SEC, undefined, true, 0, -1, true);
 
-            var help = game.add.group();
+            var help = globalGroup.add(game.add.group());
             help.add(game.add.image(24, 53, 'gui', 'txt_ready.png'));
             help.add(game.add.image(75, 114, 'gui', 'gray_bird' + birdType + '.png')).anchor.setTo(0.5, 0.5);
             help.add(game.add.image(75, 126, 'gui', 'txt_taptap.png')).anchor.setTo(0.5, 0);
