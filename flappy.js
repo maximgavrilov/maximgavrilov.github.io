@@ -1176,7 +1176,7 @@ function init() {
 
             var underground = document.createElement('div');
             underground.id = 'underground';
-            underground.style.backgroundColor = 0xd3b78d;
+            underground.style.backgroundColor = '#d3b78d';
             document.getElementById('game').appendChild(underground);
 
         });
