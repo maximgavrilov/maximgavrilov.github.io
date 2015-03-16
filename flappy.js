@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 156;
+var VERSION = 157;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -711,6 +711,7 @@ function init() {
             });
             var play = add_button(game, 38, 137, 'btn_play', function () {
                 play.inputEnabled = false;
+                top.inputEnabled = false;
                 serverCall('play', { }, function (obj) {
                     health = obj.health;
                     next_health_update = obj.next_health_update + time();
@@ -722,12 +723,15 @@ function init() {
                 });
             });
             var buy_health = add_button(game, 38, 137, 'btn_buy_health', function () {
+                buy_health.inputEnabled = false;
+                processPurchase('health');
             });
             var buy_bird = add_button(game, 38, 137, 'btn_buy_bird', function () {
                 buy_bird.inputEnabled = false;
                 processPurchase('bird' + birdType);
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
+                play.inputEnabled = false;
                 top.inputEnabled = false;
                 serverCall('top', { uids : friendIds }, function (obj) {
                     topResults = obj.top;
