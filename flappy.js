@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 165;
+var VERSION = 166;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -923,9 +923,6 @@ function init() {
             game.tweens.removeFrom(ground);
             // ground.stopScroll();
 
-            var blink = add_color_box(game, 0xffffff);
-            blink.alpha = 0;
-
             var tweenComplete = false, overData = null;
             function check() {
                 if (tweenComplete && overData) {
@@ -934,6 +931,17 @@ function init() {
             }
 
             bird.bodyGravity = false;
+
+            game.add.tween(game.stage.children[0])
+            .to({ x : 1, y : 1},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : -1, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : -1, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : 0, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .start();
+
+            var blink = add_color_box(game, 0xffffff);
+            blink.alpha = 0;
             game.add.tween(blink).to({alpha : 0.9}, 0.2 * SEC, undefined, true, 0, 0, true).onComplete.addOnce(function () {
                 score.visible = false;
                 bird.bodyGravity = true;
