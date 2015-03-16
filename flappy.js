@@ -1173,6 +1173,12 @@ function init() {
                 game.state.states['menu'].reflow(s);
             });
             game.scale.refresh();
+
+            var underground = document.createElement('div');
+            underground.id = 'underground';
+            underground.style.backgroundColor = 0xd3b78d;
+            document.getElementById('game').appendChild(underground);
+
         });
 
         game.state.add('preload', PreloadState, true);
