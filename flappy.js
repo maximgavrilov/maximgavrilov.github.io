@@ -973,7 +973,7 @@ function init() {
 
             var underground = globalGroup.add(game.add.graphics(0, HEIGHT));
             underground.beginFill(0xff0000, 1.0);
-            underground.drawRect(0, 0, WIDTH, HEIGHT);
+            underground.drawRect(0, 0, WIDTH, 10000);
             underground.endFill();
 
             bird = globalGroup.add(game.add.existing(new Bird(game, birdType, 45, 125)));
@@ -1163,8 +1163,8 @@ function init() {
                     } else {
                         game.renderer.resolution = HDPI;
                     }
-                    var d = parentBounds.height - HEIGHT * s;
-                    game.renderer.resize(WIDTH, HEIGHT + d / s)
+                    var d = parentBounds.height - HEIGHT * s * game.renderer.resolution;
+                    game.renderer.resize(WIDTH, HEIGHT + d / (s * game.renderer.resolution))
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
