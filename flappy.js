@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 174;
+var VERSION = 179;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -1155,7 +1155,6 @@ function init() {
             var lastScale = 0;
             game.scale.setResizeCallback(function (scale, parentBounds) {
                 var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
-                var pH = parentBounds.height;
                 var HDPI = (window.devicePixelRatio || 1);
                 if (HDPI * s != lastScale) {
                     lastScale = HDPI * s;
@@ -1166,9 +1165,6 @@ function init() {
                     }
                     game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
-
-                    var d = pH - HEIGHT * s;
-                    document.getElementById('underground').style.height = Math.floor(d) + 'px';
                 }
                 scale.reflowCanvas();
 
@@ -1177,12 +1173,6 @@ function init() {
                 game.state.states['menu'].reflow(s);
             });
             game.scale.refresh();
-
-            var underground = document.createElement('div');
-            underground.id = 'underground';
-            underground.style.backgroundColor = '#d3b78d';
-            document.getElementById('game').appendChild(underground);
-
         });
 
         game.state.add('preload', PreloadState, true);
