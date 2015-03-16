@@ -10,6 +10,7 @@ function init() {
 
     var COLLIDE_ENABLED = true,
         SERVER = 'http://flappyok.appspot.com/',
+        OK_PUBLIC_KEY = 'CBAJEHODEBABABABA',
 
         WIDTH = 150,
         HEIGHT = 224,
@@ -647,7 +648,7 @@ function init() {
                     price : PRODUCTS[product].price,
                     code : PRODUCTS[product].code
                 }
-                params.sig = okParams.session_secret_key;
+                params.sig = FAPI.Util.calcSignature(params, okParams.session_secret_key)
 
                 var form = document.createElement('form');
                 form.method = 'GET';
