@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 162;
+var VERSION = 164;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -636,7 +636,6 @@ function init() {
                     var d = window.atob(data);
                     var w = document.getElementById('okwidget');
                     w.innerHTML = d;
-                    w.style.display = 'block';
                 }
             });
 
@@ -1152,6 +1151,7 @@ function init() {
                 scale.reflowCanvas();
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
+                widget.style.display = 'block';
                 game.state.states['menu'].reflow(s, widget.offsetWidth);
             });
             game.scale.refresh();
