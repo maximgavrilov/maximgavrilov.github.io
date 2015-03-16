@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 164;
+var VERSION = 165;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -14,6 +14,7 @@ function init() {
         HEIGHT = 224,
         GR = 24,
         BG_COLOR = 0x95d5c4,
+        OK_WIDGET_WIDTH = 32,
 
         COLLIDE_ENABLED = true,
         DEBUG = false,
@@ -636,6 +637,7 @@ function init() {
                     var d = window.atob(data);
                     var w = document.getElementById('okwidget');
                     w.innerHTML = d;
+                    w.style.display = 'block';
                 }
             });
 
@@ -786,8 +788,8 @@ function init() {
 
         }
 
-        this.reflow = function (scale, widgetWidth) {
-            bankX = Math.ceil(widgetWidth / scale) + 6;
+        this.reflow = function (scale) {
+            bankX = Math.ceil(OK_WIDGET_WIDTH / scale) + 6;
             if (bank) {
                 bank.x = bankX;
             }
@@ -1151,8 +1153,7 @@ function init() {
                 scale.reflowCanvas();
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
-                widget.style.display = 'block';
-                game.state.states['menu'].reflow(s, widget.offsetWidth);
+                game.state.states['menu'].reflow(s);
             });
             game.scale.refresh();
         });
