@@ -1155,6 +1155,7 @@ function init() {
             var lastScale = 0;
             game.scale.setResizeCallback(function (scale, parentBounds) {
                 var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
+                var pH = parentBounds.height;
                 var HDPI = (window.devicePixelRatio || 1);
                 if (HDPI * s != lastScale) {
                     lastScale = HDPI * s;
@@ -1166,7 +1167,7 @@ function init() {
                     game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
 
-                    var d = parentBounds.height - HEIGHT * s;
+                    var d = pH - HEIGHT * s;
                     document.getElementById('underground').style.height = Math.floor(d) + 'px';
                 }
                 scale.reflowCanvas();
