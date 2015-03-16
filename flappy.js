@@ -1164,7 +1164,7 @@ function init() {
                         game.renderer.resolution = HDPI;
                     }
                     var d = parentBounds.height - HEIGHT * s;
-                    game.renderer.resize(WIDTH, HEIGHT + game.renderer.resolution / s)
+                    game.renderer.resize(WIDTH, HEIGHT + d / s)
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
