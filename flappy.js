@@ -39,9 +39,9 @@ function init() {
 
         processPurchase,
         PRODUCTS = {
-            'bird1' : { name : 'Попугай', price : 250, code : 'bird1' },
-            'bird2' : { name : 'Кит', price : 250, code : 'bird2' },
-            'health' : { name : 'Восстановить здоровье', price : 50, code : 'health' },
+            'bird1' : { name : 'Попугай', price : 1, code : 'bird1' },
+            'bird2' : { name : 'Кит', price : 1, code : 'bird2' },
+            'health' : { name : 'Восстановить здоровье', price : 1, code : 'health' },
         },
 
         fsig,
