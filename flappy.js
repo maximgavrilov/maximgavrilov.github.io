@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 157;
+var VERSION = 158;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -8,13 +8,15 @@ PIXI.CanvasTinter.convertTintToImage = true;
 function init() {
     'use strict';
 
-    var COLLIDE_ENABLED = true,
-        SERVER = 'http://flappyok.appspot.com/',
+    var SERVER = 'http://flappyok.appspot.com/',
 
         WIDTH = 150,
         HEIGHT = 224,
         GR = 24,
         BG_COLOR = 0x95d5c4,
+
+        COLLIDE_ENABLED = true,
+        DEBUG = false,
 
         SPEED = 60,
         GRAVITY = 600,
@@ -667,8 +669,10 @@ function init() {
         }
 
         this.create = function () {
-            game.plugins.add(FPSPlugin);
-            game.plugins.add(VSyncPlugin);
+            if (DEBUG) {
+                game.plugins.add(FPSPlugin);
+                game.plugins.add(VSyncPlugin);
+            }
             game.plugins.add(UpdateHealthPlugin);
             registerFonts(game);
             created = true;
