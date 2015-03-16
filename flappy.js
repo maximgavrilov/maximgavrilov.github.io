@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 167;
+var VERSION = 166;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -968,12 +968,6 @@ function init() {
 
             globalGroup = game.add.group();
             globalGroup.add(game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png'));
-
-            game.add.graphics(0, HEIGHT);
-            box.beginFill(0xd3b78d, 1.0);
-            box.drawRect(0, 0, WIDTH, 1000);
-            box.endFill();
-
             walls = globalGroup.add(game.add.group());
             ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
 
@@ -1164,7 +1158,7 @@ function init() {
                     } else {
                         game.renderer.resolution = HDPI;
                     }
-                    game.renderer.resize(WIDTH, parentBounds.height)
+                    game.renderer.resize(WIDTH, HEIGHT)
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();

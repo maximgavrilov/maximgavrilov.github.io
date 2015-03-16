@@ -29,3 +29,8 @@ html, body {
 	margin: 0;
 	display: none;
 }
+
+#ground {
+	height: 100%;
+	color: #d3b78d;
+}
