@@ -1163,12 +1163,11 @@ function init() {
                     } else {
                         game.renderer.resolution = HDPI;
                     }
+                    scale.setUserScale(s, s);
                     var d = parentBounds.height - HEIGHT * s;
                     game.renderer.resize(WIDTH, HEIGHT + d / s)
-                    scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
-                scale.resetCanvas(WIDTH, game.renderer.height / game.renderer.resolution);
 
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
