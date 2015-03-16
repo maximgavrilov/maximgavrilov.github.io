@@ -10,7 +10,6 @@ function init() {
 
     var COLLIDE_ENABLED = true,
         SERVER = 'http://flappyok.appspot.com/',
-        OK_PUBLIC_KEY = 'CBAJEHODEBABABABA',
 
         WIDTH = 150,
         HEIGHT = 224,
@@ -725,16 +724,8 @@ function init() {
             var buy_health = add_button(game, 38, 137, 'btn_buy_health', function () {
             });
             var buy_bird = add_button(game, 38, 137, 'btn_buy_bird', function () {
+                buy_bird.inputEnabled = false;
                 processPurchase('bird' + birdType);
-                // TODO : buy bird
-                // buy.inputEnabled = false;
-                // purchase(game, BIRD_PRICES[birdType], function (result) {
-                //     buy.inputEnabled = true;
-                //     if (result) {
-                //         BIRD_PRICES[birdType] = 0;
-                //         updateBird();
-                //     }
-                // });
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
                 top.inputEnabled = false;
