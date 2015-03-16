@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 159;
+var VERSION = 160;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -673,7 +673,7 @@ function init() {
                 game.plugins.add(FPSPlugin);
                 game.plugins.add(VSyncPlugin);
             } else {
-                var element = document.getElementById('fps'));
+                var element = document.getElementById('fps');
                 element.parentNode.removeChild(element);
             }
             game.plugins.add(UpdateHealthPlugin);
