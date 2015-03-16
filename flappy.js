@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 155;
+var VERSION = 156;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -10,7 +10,7 @@ function init() {
 
     var COLLIDE_ENABLED = true,
         SERVER = 'http://flappyok.appspot.com/',
-        OK_PUBLIC_KEY = 'CBAJEHODEBABABABA';
+        OK_PUBLIC_KEY = 'CBAJEHODEBABABABA',
 
         WIDTH = 150,
         HEIGHT = 224,
