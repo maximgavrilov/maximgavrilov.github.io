@@ -1158,10 +1158,12 @@ function init() {
                     } else {
                         game.renderer.resolution = HDPI;
                     }
-                    game.renderer.resize(WIDTH, HEIGHT)
+                    var d = parentBounds.height - HEIGHT * s;
+                    game.renderer.resize(WIDTH, HEIGHT + d / s)
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
+
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
                 game.state.states['menu'].reflow(s);
