@@ -662,7 +662,7 @@ function init() {
                         form.appendChild(el);
                     }
                 }
-                // document.body.appendChild(form);
+                document.body.appendChild(form);
                 form.submit();
             }
         }
