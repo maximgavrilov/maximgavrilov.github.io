@@ -932,7 +932,7 @@ function init() {
 
             bird.bodyGravity = false;
 
-            game.add.tween(game.stage.children[0])
+            game.add.tween(game.stage)
             .to({ x : 10, y : 10},  0.05 * SEC, Phaser.Easing.Linear.None)
             .to({ x : -10, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
             .to({ x : -10, y : -10},  0.05 * SEC, Phaser.Easing.Linear.None)
