@@ -892,7 +892,7 @@ function init() {
     var GameState = function (game) {
         var bird, ground, walls, score;
         var sc;
-        var globalGroup = game.add.group();
+        var globalGroup;
 
         function emitWall() {
             var maxX = -1;
@@ -967,6 +967,7 @@ function init() {
             game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
             var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+            globalGroup = game.add.group();
             globalGroup.add(game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png'));
             walls = globalGroup.add(game.add.group());
             ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
