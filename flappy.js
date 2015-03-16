@@ -941,7 +941,7 @@ function init() {
             // // .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
             // .start();
 
-            globalGroup.x = 10;
+            globalGroup.x = 100;
 
             var blink = add_color_box(game, 0xffffff);
             blink.alpha = 0;
