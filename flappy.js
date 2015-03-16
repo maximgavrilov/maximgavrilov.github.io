@@ -934,9 +934,10 @@ function init() {
 
             game.add.tween(globalGroup)
             .to({ x : 1, y : 1},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : -1, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
             .to({ x : -1, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : 0, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            .to({ x : 1, y : 1},  0.05 * SEC, Phaser.Easing.Linear.None)
             .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
             .start();
 
