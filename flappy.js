@@ -650,9 +650,9 @@ function init() {
                 }
                 params.sig = FAPI.Util.calcSignature(params, OK_PUBLIC_KEY)
 
-                var form = document.createElement("form");
-                form.method = "POST";
-                form.action = "http://m.odnoklassniki.ru/api/show_payment";
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = 'http://m.odnoklassniki.ru/api/show_payment';
                 for (var k in params) {
                     if (params.hasOwnProperty(k)) {
                         var el = document.createElement('input');
