@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 161;
+var VERSION = 162;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -636,7 +636,7 @@ function init() {
                     var d = window.atob(data);
                     var w = document.getElementById('okwidget');
                     w.innerHTML = d;
-                    w.display = 'block';
+                    w.style.display = 'block';
                 }
             });
 
