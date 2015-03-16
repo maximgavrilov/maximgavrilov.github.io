@@ -932,13 +932,15 @@ function init() {
 
             bird.bodyGravity = false;
 
-            game.add.tween(game.stage)
-            .to({ x : 10, y : 10},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : -10, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .to({ x : -10, y : -10},  0.05 * SEC, Phaser.Easing.Linear.None)
-            // .to({ x : 0, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
-            // .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
-            .start();
+            // game.add.tween(game.stage.children[0])
+            // .to({ x : 10, y : 10},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // .to({ x : -10, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // .to({ x : -10, y : -10},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // // .to({ x : 0, y : -1},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // // .to({ x : 0, y : 0},  0.05 * SEC, Phaser.Easing.Linear.None)
+            // .start();
+
+            game.stage.children[0].x = 10;
 
             var blink = add_color_box(game, 0xffffff);
             blink.alpha = 0;
