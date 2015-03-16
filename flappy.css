@@ -26,6 +26,5 @@ html, body {
 #okwidget {
 	position: fixed;
 	padding: 0;
-	margin: 0;
 	display: none;
 }
