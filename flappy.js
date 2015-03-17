@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 192;
+var VERSION = 193;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -990,7 +990,7 @@ function init() {
 
             var underground = globalGroup.add(game.add.image(0, HEIGHT, 'gui', 'underground.png'));
             underground.width = WIDTH + 1;
-            underground.height = 2 * HEIGHT;
+            underground.height = 2000;
 
             bird = globalGroup.add(game.add.existing(new Bird(game, birdType, 45, 125)));
 
