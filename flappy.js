@@ -1075,7 +1075,7 @@ function init() {
         }
 
         this.create = function () {
-            game.add.text(game.world.centerX, game.world.centerY, _msg, { font: "20px Arial", fill: "#ff0044", align: "center" });
+            game.add.text(0, game.world.centerY, _msg, { font: "10px Arial", fill: "#ff0044", align: "center" });
         }
     }
 
