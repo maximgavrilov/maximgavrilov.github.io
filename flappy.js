@@ -1030,7 +1030,7 @@ function init() {
 
                 if (bird.velocityY <= -100) {
                     bird.angle = -20;
-                } else if (bird.velocityY < 0)
+                } else if (bird.velocityY < 0) {
                     bird.angle = -20 * Math.min(1.0, -bird.velocityY / 100);
                 } else if (bird.velocityY > 0) {
                     bird.angle = 90 * Math.min(1.0, bird.velocityY / 600);
