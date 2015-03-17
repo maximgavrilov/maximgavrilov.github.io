@@ -42,7 +42,7 @@ function init() {
         processPurchase,
         PRODUCTS = {
             'bird1' : { name : 'Попугай', price : 1, code : 'bird1' },
-            'bird2' : { name : 'Кит', price : 1, code : 'bird2' },
+            'bird2' : { name : 'Снегирь', price : 1, code : 'bird2' },
             'health' : { name : 'Восстановить здоровье', price : 1, code : 'health' },
         },
 
@@ -1195,7 +1195,10 @@ function init() {
                     } else {
                         game.renderer.resolution = HDPI;
                     }
-                    game.renderer.resize(WIDTH, HEIGHT)
+                    var d = parentBounds.height - s * HEIGHT;
+                    game.height = HEIGHT + d;
+                    game.stage.bounds.height = HEIGHT + d;
+                    game.renderer.resize(WIDTH, HEIGHT + d)
                     scale.setUserScale(s, s);
                 }
                 scale.reflowCanvas();
