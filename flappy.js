@@ -368,7 +368,7 @@ function init() {
                 this.angle = FLAP_ANGLE;
                 this.animations.play('fly');
             } else {
-                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL) / 70);
+                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL) / 100);
                 this.animations.play('notfly');
             }
         }
