@@ -961,7 +961,7 @@ function init() {
             ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
 
             var underground = globalGroup.add(game.add.graphics(0, HEIGHT));
-            underground.beginFill(0xff0000, 1.0);
+            underground.beginFill(0xd3b78d, 1.0);
             underground.drawRect(0, 0, WIDTH, 10000);
             underground.endFill();
 
