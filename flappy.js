@@ -103,7 +103,7 @@ function init() {
         if (!condition) {
             message = message || "Assertion failed";
             if (game) {
-                game.state.play('error', true, false, message);
+                game.state.start('error', true, false, message);
             }
             if (Error !== undefined) {
                 throw new Error(message);
