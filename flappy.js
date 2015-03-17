@@ -36,7 +36,7 @@ function init() {
         TOUR_PRICE = 1,
         RISE_PRICE = 250,
 
-        MAX_HEALTH_VALUE = 50,
+        MAX_HEALTH_VALUE = 20,
         HEALTH_UPDATE_SEC = 5 * 60,
         birdType = 0,
         onHealthChanged = new Phaser.Signal(),
