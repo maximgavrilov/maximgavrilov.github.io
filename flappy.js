@@ -625,7 +625,6 @@ function init() {
                     var d = window.atob(data);
                     var w = document.getElementById('okwidget');
                     w.innerHTML = d;
-                    w.style.display = 'block';
                 }
             });
 
@@ -676,6 +675,9 @@ function init() {
             if (created && friendsGot && logged) {
                 var el = document.getElementById('preloader');
                 el.parentNode.removeChild(el);
+
+                document.getElementById('okwidget').style.display = 'block';
+
 
                 game.state.start('menu');
             }
