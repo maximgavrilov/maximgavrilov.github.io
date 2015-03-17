@@ -1197,7 +1197,7 @@ function init() {
                     }
                     var d = parentBounds.height - s * HEIGHT;
                     game.height = HEIGHT + d;
-                    game.stage.bounds.height = HEIGHT + d;
+                    // game.stage.bounds.height = HEIGHT + d;
                     game.renderer.resize(WIDTH, HEIGHT + d)
                     scale.setUserScale(s, s);
                 }
