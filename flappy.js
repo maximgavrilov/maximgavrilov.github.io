@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 187;
+var VERSION = 188;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -44,9 +44,9 @@ function init() {
 
         processPurchase,
         PRODUCTS = {
-            'bird1' : { name : 'Попугай', price : 1, code : 'bird1' },
-            'bird2' : { name : 'Снегирь', price : 1, code : 'bird2' },
-            'health' : { name : 'Восстановить здоровье', price : 1, code : 'health' },
+            'health' : { name : 'Восстановить здоровье', price : 10, code : 'health' },
+            'bird1' : { name : 'Попугай', price : 50, code : 'bird1' },
+            'bird2' : { name : 'Снегирь', price : 100, code : 'bird2' }
         },
 
         fsig,
