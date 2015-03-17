@@ -1154,7 +1154,7 @@ function init() {
                 }
             }
 
-            http.open('GET', SERVER + 'error?' + p.join('&'), true);
+            http.open('GET', SERVER + 'error?' + req.join('&'), true);
             http.send();
 
             if (errHandler) {
