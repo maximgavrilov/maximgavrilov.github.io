@@ -28,7 +28,7 @@ function init() {
         BIRD_R = 6,
 
         SEC = Phaser.Timer.SECOND,
-        FLAP_ANGLE = -20,
+        FLAP_ANGLE = -15,
         FLAP_TIME = 0.05 * SEC,
 
         TOUR_PRICE = 1,
