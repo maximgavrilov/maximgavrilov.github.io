@@ -15,6 +15,8 @@ function init() {
         GR = 24,
         BG_COLOR = 0x95d5c4,
         OK_WIDGET_WIDTH = 32,
+        HDPI = (window.devicePixelRatio || 1),
+        globalScale = 1,
 
         COLLIDE_ENABLED = true,
         DEBUG = false,
@@ -779,13 +781,18 @@ function init() {
                 }
             }
 
-            updateBird();
-
-            onResized.add(function (w, h, s, hdpi) {
-                bankX = Math.ceil(hdpi * OK_WIDGET_WIDTH / s) + 6;
+            function updateScale() {
+                bankX = Math.ceil(HDPI * OK_WIDGET_WIDTH / globalScale) + 6;
                 if (bank) {
                     bank.x = bankX;
                 }
+            }
+
+            updateBird();
+            updateScale();
+
+            onResized.add(function (w, h, s) {
+                updateScale();
             }, this);
 
             var _health = health;
@@ -1198,7 +1205,6 @@ function init() {
             var lastScale = 0;
             game.scale.setResizeCallback(function (scale, parentBounds) {
                 var s = Math.min(parentBounds.width / WIDTH, parentBounds.height / HEIGHT);
-                var HDPI = (window.devicePixelRatio || 1);
                 if (HDPI * s != lastScale) {
                     lastScale = HDPI * s;
                     if (game.renderType == Phaser.WEBGL) {
@@ -1210,13 +1216,14 @@ function init() {
                     game.height = HEIGHT + d;
                     game.renderer.resize(WIDTH, HEIGHT + d)
                     scale.setUserScale(s, s);
+                    globalScale = s;
                 }
                 scale.reflowCanvas();
 
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
 
-                onResized.dispatch(game.width, game.height, s, HDPI);
+                onResized.dispatch(game.width, game.height, s);
             });
             game.scale.refresh();
         });
