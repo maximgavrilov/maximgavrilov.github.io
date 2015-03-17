@@ -38,6 +38,7 @@ function init() {
         HEALTH_UPDATE_SEC = 5 * 60,
         birdType = 0,
         onHealthChanged = new Phaser.Signal(),
+        onResized = new Phaser.Signal(),
 
         processPurchase,
         PRODUCTS = {
@@ -769,13 +770,26 @@ function init() {
             }
 
             updateBird();
+
+            onResized.add(function (w, h, s) {
+                bankX = Math.ceil(OK_WIDGET_WIDTH / s) + 6;
+                if (bank) {
+                    bank.x = bankX;
+                }
+            }, this);
+
+            var _health = health;
+            onHealthChanged.add(function (health, next_health_update) {
+                if (_health != health) {
+                    _health = health;
+                    updateBird();
+                }
+            }, this);
         }
 
-        this.reflow = function (scale) {
-            bankX = Math.ceil(OK_WIDGET_WIDTH / scale) + 6;
-            if (bank) {
-                bank.x = bankX;
-            }
+        this.shutdown = function () {
+            onResized.removeAll(this);
+            onHealthChanged.removeAll(this);
         }
     }
 
@@ -818,17 +832,8 @@ function init() {
                 lines.push([
                     new AlignText(game, 30, 55 + 20 * l, 'top', 8, 'right'),
                     new AlignText(game, 45, 55 + 20 * l, 'top', 8, 'left'),
-                    link = new AlignText(game, 80, 55 + 20 * l, 'top', 8, 'left'),
-                    ]);
-                // link.inputEnabled = true;
-                // link.events.onInputDown.add(function (link) {
-                //     for (l = 0; l < NUM_LINES; l++) {
-                //         if (lines[l][2] === link) {
-                //           var win = window.open('http://m.ok.ru/profile/' + topResults[idx + l].uid, '_blank');
-                //           win.focus();
-                //         }
-                //     }
-                // }, link);
+                    link = new AlignText(game, 80, 55 + 20 * l, 'top', 8, 'left')
+                ]);
             }
 
             var down = add_button(game, 64, 153, 'btn_down', function () {
@@ -1012,6 +1017,9 @@ function init() {
 
             flapKey.onDown.addOnce(start, this);
             this.input.onDown.addOnce(start, this);
+            onResized.add(function (w, h, s) {
+
+            }, this);
         }
 
         this.update = function () {
@@ -1073,6 +1081,8 @@ function init() {
 
         this.shutdown = function() {
             game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+            this.input.onDown.removeAll(this);
+            onResized.removeAll(this);
         }
     }
 
@@ -1197,7 +1207,6 @@ function init() {
                     }
                     var d = parentBounds.height - s * HEIGHT;
                     game.height = HEIGHT + d;
-                    // game.stage.bounds.height = HEIGHT + d;
                     game.renderer.resize(WIDTH, HEIGHT + d)
                     scale.setUserScale(s, s);
                 }
@@ -1205,7 +1214,8 @@ function init() {
 
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
-                game.state.states['menu'].reflow(s);
+
+                onResized.dispatch(game.width, game.height, s);
             });
             game.scale.refresh();
         });
