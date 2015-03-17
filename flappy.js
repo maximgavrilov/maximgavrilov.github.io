@@ -1131,13 +1131,34 @@ function init() {
 
     (function () {
         var errHandler = window.onerror;
-        window.onerror = function (errorMsg, url, lineNumber) {
+        window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
             var http = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-            http.open('GET', SERVER + 'error?line=' + lineNumber + '&msg=' + escape(encodeURI(errorMsg)) + '&rnd=' + ((1000000 * Math.random()) | 0), true);
+            var p = {
+                errorMsg : errorMsg,
+                url : url,
+                lineNumber : lineNumber,
+                column : column
+            }
+            if (errorObj !== undefined){
+                p.stack = errorObj.stack;
+            }
+            if (viewerId) {
+                p.uid = viewerId;
+            }
+            p.rnd = ((1000000 * Math.random()) | 0);
+
+            var req = [];
+            for (var k in p) {
+                if (p.hasOwnProperty(k)) {
+                    req.push(k + '=' + escape(encodeURI(p[k])));
+                }
+            }
+
+            http.open('GET', SERVER + 'error?' + p.join('&'), true);
             http.send();
 
             if (errHandler) {
-                return errHandler(errorMsg, url, lineNumber);
+                return errHandler(errorMsg, url, lineNumber, column, errorObj);
             }
             return false;
         }
