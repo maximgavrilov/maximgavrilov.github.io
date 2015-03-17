@@ -579,7 +579,6 @@ function init() {
             var okParams = FAPI.Util.getRequestParameters();
             viewerId = okParams['logged_user_id'];
 
-            assert(game, false, 'Ошибко');
             FAPI.Client.call({
                 method: 'users.getCurrentUser',
                 fields: 'NAME'
@@ -673,6 +672,7 @@ function init() {
 
         function checkInit() {
             if (created && friendsGot && logged) {
+                assert(game, false, 'Ошибко');
                 game.state.start('menu');
             }
         }
