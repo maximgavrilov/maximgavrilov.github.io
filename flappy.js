@@ -674,7 +674,6 @@ function init() {
 
         function checkInit() {
             if (created && friendsGot && logged) {
-                assert(game, false);
                 game.state.start('menu');
             }
         }
