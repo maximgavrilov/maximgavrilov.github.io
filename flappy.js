@@ -674,6 +674,9 @@ function init() {
 
         function checkInit() {
             if (created && friendsGot && logged) {
+                var el = document.getElementById('preloader');
+                el.parentNode.removeChild(el);
+
                 game.state.start('menu');
             }
         }

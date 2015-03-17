@@ -38,3 +38,9 @@ html, body {
 	background-color: red;
 	display: none;
 }
+
+#preloader {
+	position: absolute;;
+	width: 100%;
+	text-align: center;;
+}
