@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 181;
+var VERSION = 183;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -683,6 +683,8 @@ function init() {
         var bank, bankX = 6;
 
         this.create = function () {
+            ga('send', 'pageview', '/menu');
+
             game.add.image(22, 37, 'gui', 'logo.png');
 
             bank = new Bank(game);
@@ -777,6 +779,8 @@ function init() {
 
     var TopState = function (game) {
         this.create = function () {
+            ga('send', 'pageview', '/top');
+
             var NUM_LINES = 5;
             var top = topResults.concat();
             top.sort(function (a, b) { return b.score - a.score });
@@ -939,6 +943,8 @@ function init() {
         }
 
         this.create = function () {
+            ga('send', 'pageview', '/game');
+
             game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
             var flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -1076,6 +1082,8 @@ function init() {
         }
 
         this.create = function () {
+            ga('send', 'pageview', '/error');
+
             var div = document.getElementById('error');
             div.innerHTML = _msg;
             div.style.display = 'block';
