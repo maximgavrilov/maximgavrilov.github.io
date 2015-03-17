@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 180;
+var VERSION = 181;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -917,6 +917,7 @@ function init() {
             }
 
             bird.bodyGravity = false;
+            bird.die();
 
             game.add.tween(globalGroup)
             .to({ x : 1, y : 1},  0.05 * SEC, Phaser.Easing.Linear.None)
@@ -932,8 +933,8 @@ function init() {
             blink.alpha = 0;
             game.add.tween(blink).to({alpha : 0.9}, 0.2 * SEC, undefined, true, 0, 0, true).onComplete.addOnce(function () {
                 score.visible = false;
+
                 bird.bodyGravity = true;
-                bird.die();
 
                 blink.destroy();
                 blink = null;
@@ -1034,7 +1035,6 @@ function init() {
 
             if (gravState) {
                 if (bird.y + BIRD_R >= ground.y) {
-                    bird.allowGravity = false;
                     bird.x = bird.x;
                     bird.y = ground.y - BIRD_R;
                     bird.bodyGravity = false;
