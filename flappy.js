@@ -364,11 +364,11 @@ function init() {
         }
 
         this.updateAngle = function (e) {
-            if (this.velocityY <= FLAP_VEL) {
+            if (this.velocityY <= FLAP_VEL - 20) {
                 this.angle = FLAP_ANGLE;
                 this.animations.play('fly');
             } else {
-                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL) / 200);
+                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL + 20) / 200);
                 this.animations.play('notfly');
             }
         }
