@@ -1075,7 +1075,9 @@ function init() {
         }
 
         this.create = function () {
-            game.add.text(0, game.world.centerY, _msg, { font: "10px Arial", fill: "#ff0044", align: "center" });
+            var div = document.getElementById('error');
+            div.innerHTML = _msg;
+            div.style.display = 'block';
         }
     }
 

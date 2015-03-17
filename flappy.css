@@ -36,4 +36,5 @@ html, body {
 	text-align: center;
 	color: black;
 	background-color: red;
+	display: none;
 }
