@@ -1222,7 +1222,7 @@ function init() {
                     } else {
                         game.renderer.resolution = HDPI;
                     }
-                    var h = HEIGHT + (parentBounds.height - HDPI * s * HEIGHT) / s;
+                    var h = HEIGHT + (parentBounds.height - s * HEIGHT) / s;
                     game.height = h;
                     game.renderer.resize(WIDTH, h)
                     scale.setUserScale(s, s);
