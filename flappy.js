@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 179;
+var VERSION = 180;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -356,8 +356,7 @@ function init() {
         this.die = function () {
             this.animations.stop();
             this.animations.play('dead');
-            this.velocityY = 0;
-            // game.add.tween(this).to({ angle : 90 }, 0.15 * SEC).start();
+            this.velocityY = Math.min(0, this.velocityY);
         }
     }
     Bird.prototype = Object.create(Phaser.Sprite.prototype);
@@ -777,15 +776,6 @@ function init() {
             }
 
             updateBird();
-
-            var _health = health;
-            onHealthChanged.add(function (health, next_health_update) {
-                if (_health != health) {
-                    _health = health;
-                    updateBird();
-                }
-            }, this);
-
         }
 
         this.reflow = function (scale) {
@@ -793,10 +783,6 @@ function init() {
             if (bank) {
                 bank.x = bankX;
             }
-        }
-
-        this.destory = function () {
-            onHealthChanged.removeAll(this);
         }
     }
 
