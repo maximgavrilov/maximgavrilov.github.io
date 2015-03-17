@@ -336,6 +336,7 @@ function init() {
         this.anchor.setTo(0.5, 0.5);
         this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
         this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
+        this.animations.add('notfly', ['bird' + type + '_2.png'], 6, true);
         this.animations.add('dead', ['bird' + type + '_2.png'], 6, true);
         this.animations.play('demo');
 
@@ -347,7 +348,6 @@ function init() {
         this.hatch = function () {
             this.bodyGravity = true;
             this.animations.stop();
-            this.animations.play('fly');
         }
 
         this.flap = function () {
@@ -1030,10 +1030,13 @@ function init() {
 
                 if (bird.velocityY <= -100) {
                     bird.angle = -20;
+                    bird.animations.play('fly');
                 } else if (bird.velocityY < 0) {
                     bird.angle = -20 * Math.min(1.0, -bird.velocityY / 100);
+                    bird.animations.play('notfly');
                 } else if (bird.velocityY > 0) {
                     bird.angle = 90 * Math.min(1.0, bird.velocityY / 600);
+                    bird.animations.play('notfly');
                 }
             }
 
