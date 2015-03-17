@@ -673,9 +673,6 @@ function init() {
 
         function checkInit() {
             if (created && friendsGot && logged) {
-                var el = document.getElementById('preloader');
-                el.parentNode.removeChild(el);
-
                 document.getElementById('okwidget').style.display = 'block';
 
 
