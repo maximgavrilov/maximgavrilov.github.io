@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 186;
+var VERSION = 187;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -740,8 +740,12 @@ function init() {
                 buy_health.inputEnabled = false;
                 processPurchase('health');
             });
-            var buy_bird = add_button(game, 38, 137, 'btn_buy_bird', function () {
-                buy_bird.inputEnabled = false;
+            var buy_bird1 = add_button(game, 38, 137, 'btn_buy_bird1', function () {
+                buy_bird1.inputEnabled = false;
+                processPurchase('bird' + birdType);
+            });
+            var buy_bird2 = add_button(game, 38, 137, 'btn_buy_bird2', function () {
+                buy_bird2.inputEnabled = false;
                 processPurchase('bird' + birdType);
             });
             var top = add_button(game, 38, 174, 'btn_top', function () {
@@ -763,7 +767,8 @@ function init() {
                 game.add.existing(bird);
 
                 play.visible = false;
-                buy_bird.visible = false;
+                buy_bird1.visible = false;
+                buy_bird2.visible = false;
                 buy_health.visible = false;
                 lock.visible = false;
                 nolife.visible = false;
@@ -776,8 +781,14 @@ function init() {
                         buy_health.visible = true;
                     }
                 } else {
-                    buy_bird.visible = true;
                     lock.visible = true;
+                    if (birdType === 1) {
+                        buy_bird1.visible = true;
+                    } else if (birdType === 2) {
+                        buy_bird2.visible = true;
+                    } else {
+                        assert(game, false, 'Unknown locked bird type = ' + birdType);
+                    }
                 }
             }
 
