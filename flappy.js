@@ -1067,7 +1067,7 @@ function init() {
         }
     }
 
-    var ErrorState = function () {
+    var ErrorState = function (game) {
         var _msg = '';
 
         this.init = function (msg) {
