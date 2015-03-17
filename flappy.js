@@ -28,7 +28,7 @@ function init() {
         BIRD_R = 6,
 
         SEC = Phaser.Timer.SECOND,
-        FLAP_ANGLE = -45,
+        FLAP_ANGLE = -20,
         FLAP_TIME = 0.05 * SEC,
 
         TOUR_PRICE = 1,
@@ -365,10 +365,10 @@ function init() {
 
         this.updateAngle = function (e) {
             if (this.velocityY <= FLAP_VEL) {
-                this.angle = -20;
+                this.angle = FLAP_ANGLE;
                 this.animations.play('fly');
             } else {
-                this.angle = Math.min(90, this.angle + 180 * e);
+                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL) / 300);
                 this.animations.play('notfly');
             }
         }
