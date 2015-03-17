@@ -103,7 +103,7 @@ function init() {
         if (!condition) {
             message = message || "Assertion failed";
             if (game) {
-                game.state.start('error', true, false, message);
+                game.state.start('error', true, false, 'Произошла ошибка');
             }
             if (Error !== undefined) {
                 throw new Error(message);
@@ -672,7 +672,7 @@ function init() {
 
         function checkInit() {
             if (created && friendsGot && logged) {
-                assert(game, false, 'Ошибко');
+                assert(game, false);
                 game.state.start('menu');
             }
         }
