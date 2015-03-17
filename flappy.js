@@ -1031,7 +1031,7 @@ function init() {
                 if (bird.velocityY <= 0) {
                     bird.angle = FLAP_ANGLE * Math.min(1.0, -bird.velocityY / 100);
                 } else if (bird.velocityY > 0) {
-                    bird.angle = 90 * Math.min(1.0, bird.velocityY / 200);
+                    bird.angle = 90 * Math.min(1.0, bird.velocityY / 600);
                 }
             }
 
