@@ -364,7 +364,7 @@ function init() {
         }
 
         this.updateAngle = function (e) {
-            if (this.velocityY <= 0) {
+            if (this.velocityY <= -FLAP_VEL) {
                 this.angle = -20;
                 this.animations.play('fly');
             } else {
