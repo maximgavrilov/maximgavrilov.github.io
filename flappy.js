@@ -986,11 +986,12 @@ function init() {
             globalGroup = game.add.group();
             globalGroup.add(game.add.image(0, HEIGHT - GR - game.cache.getFrameByName('gui', 'bg.png').height, 'gui', 'bg.png'));
             walls = globalGroup.add(game.add.group());
-            ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
 
-            var underground = globalGroup.add(game.add.image(0, HEIGHT, 'gui', 'underground.png'));
+            var underground = globalGroup.add(game.add.image(0, HEIGHT - 2, 'gui', 'underground.png'));
             underground.width = WIDTH + 1;
             underground.height = 2000;
+
+            ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
 
             bird = globalGroup.add(game.add.existing(new Bird(game, birdType, 45, 125)));
 
