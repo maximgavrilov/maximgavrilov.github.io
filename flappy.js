@@ -782,7 +782,7 @@ function init() {
             }
 
             function updateScale() {
-                bankX = Math.ceil(HDPI * OK_WIDGET_WIDTH / globalScale) + 6;
+                bankX = Math.ceil(OK_WIDGET_WIDTH / globalScale) + 6;
                 if (bank) {
                     bank.x = bankX;
                 }
