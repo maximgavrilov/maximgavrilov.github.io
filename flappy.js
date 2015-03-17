@@ -334,8 +334,8 @@ function init() {
     var Bird = function (game, type, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'gui');
         this.anchor.setTo(0.5, 0.5);
-        this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 18, true);
-        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 18, true);
+        this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 12, true);
+        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 12, true);
         this.animations.add('notfly', ['bird' + type + '_2.png'], 1, true);
         this.animations.add('dead', ['bird' + type + '_2.png'], 1, true);
         this.animations.play('demo');
