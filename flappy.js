@@ -469,7 +469,7 @@ function init() {
         this.add(result);
 
         var buttons = game.add.group();
-        buttons.add(add_button(game, 38, 154, 'btn_menu', function () {
+        buttons.add(add_button(game, 38, 137, 'btn_menu', function () {
             hide_to_state(game, function () { game.state.start('menu'); });
         }));
         this.add(buttons);
