@@ -363,7 +363,7 @@ function init() {
             this.velocityY = Math.max(0, this.velocityY);
         }
 
-        this.updateAngle = function () {
+        this.updateAngle = function (e) {
             if (this.velocityY <= -50) {
                 this.angle = -20;
                 this.animations.play('fly');
