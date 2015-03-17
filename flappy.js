@@ -781,8 +781,8 @@ function init() {
 
             updateBird();
 
-            onResized.add(function (w, h, s) {
-                bankX = Math.ceil(OK_WIDGET_WIDTH / s) + 6;
+            onResized.add(function (w, h, s, hdpi) {
+                bankX = Math.ceil(OK_WIDGET_WIDTH / (s * hdpi)) + 6;
                 if (bank) {
                     bank.x = bankX;
                 }
@@ -1216,7 +1216,7 @@ function init() {
                 var widget = document.getElementById('okwidget');
                 widget.style.marginLeft = scale.margin.x + 'px';
 
-                onResized.dispatch(game.width, game.height, s);
+                onResized.dispatch(game.width, game.height, s, HDPI);
             });
             game.scale.refresh();
         });
