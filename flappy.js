@@ -601,6 +601,8 @@ function init() {
                         logged = true;
                         checkInit();
                     });
+                } else {
+                    assert(game, false, 'user.getCurrentUser failed');
                 }
             });
             FAPI.Client.call({
@@ -1128,6 +1130,15 @@ function init() {
     }
 
     (function () {
+        var errHandler = window.onerror;
+        window.onerror = function (errorMsg, url, lineNumber) {
+            serverCall('error', { msg : message, line : lineNumber }, function () { });
+            if (errHandler) {
+                return errHandler(errorMsg, url, lineNumber);
+            }
+            return false;
+        }
+
         var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
         game.forceSingleUpdate = true;
         game.config.enableDebug = false;
