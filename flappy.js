@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 189;
+var VERSION = 190;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -19,7 +19,7 @@ function init() {
         globalScale = 1,
 
         COLLIDE_ENABLED = true,
-        DEBUG = false,
+        DEBUG = true,
 
         SPEED = 60,
         GRAVITY = 600,
