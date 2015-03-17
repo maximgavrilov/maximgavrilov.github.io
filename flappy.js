@@ -334,10 +334,10 @@ function init() {
     var Bird = function (game, type, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'gui');
         this.anchor.setTo(0.5, 0.5);
-        this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
-        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
-        this.animations.add('notfly', ['bird' + type + '_2.png'], 6, true);
-        this.animations.add('dead', ['bird' + type + '_2.png'], 6, true);
+        this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 18, true);
+        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 18, true);
+        this.animations.add('notfly', ['bird' + type + '_2.png'], 1, true);
+        this.animations.add('dead', ['bird' + type + '_2.png'], 1, true);
         this.animations.play('demo');
 
         this.smoothed = false;
@@ -361,6 +361,16 @@ function init() {
             this.animations.stop();
             this.animations.play('dead');
             this.velocityY = Math.max(0, this.velocityY);
+        }
+
+        this.updateAngle = function () {
+            if (this.velocityY <= -100) {
+                this.angle = -20;
+                this.animations.play('fly');
+            } else {
+                this.angle = Math.min(90, this.angle + 90 * e);
+                this.animations.play('notfly');
+            }
         }
     }
     Bird.prototype = Object.create(Phaser.Sprite.prototype);
@@ -1027,17 +1037,7 @@ function init() {
             if (gravState) {
                 bird.y += bird.velocityY * e + GRAVITY * e * e / 2;
                 bird.velocityY += GRAVITY * e;
-
-                if (bird.velocityY <= -100) {
-                    bird.angle = -20;
-                    bird.animations.play('fly');
-                } else if (bird.velocityY < 0) {
-                    bird.angle = -20 * Math.min(1.0, -bird.velocityY / 100);
-                    bird.animations.play('notfly');
-                } else if (bird.velocityY > 0) {
-                    bird.angle = 90 * Math.min(1.0, bird.velocityY / 600);
-                    bird.animations.play('notfly');
-                }
+                bird.updateAngle(e);
             }
 
             if (gravState) {
