@@ -476,7 +476,7 @@ function init() {
         this.add(buttons);
 
         game.add.tween(title).from({ y : 10, alpha : 0}, 0.2 * SEC, undefined, true, 0.5 * SEC);
-        game.add.tween(result).from({ y : HEIGHT }, 0.4 * SEC, undefined, true, 0.8 * SEC);
+        game.add.tween(result).from({ y : game.height }, 0.4 * SEC, undefined, true, 0.8 * SEC);
         game.add.tween(score).to({ value : score_}, 0.5 * SEC, undefined, true, 1.5 * SEC);
         game.add.tween(buttons).from({ alpha : 0 }, 0.2 * SEC, undefined, true, 1.5 * SEC);
     }
