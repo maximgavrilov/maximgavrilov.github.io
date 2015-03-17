@@ -453,7 +453,7 @@ function init() {
 
         var result = game.add.group();
         result.x = 19;
-        result.y = 29;
+        result.y = 39;
         result.add(game.add.image(0, 0, 'gui', 'result_bg_tmp.png'));
         result.add(game.add.image(14, 13, 'gui', 'medal_' + medal_ + '.png'));
         result.add(game.add.image(77, 14, 'gui', 'txt_points.png'));
