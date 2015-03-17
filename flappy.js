@@ -988,10 +988,9 @@ function init() {
             walls = globalGroup.add(game.add.group());
             ground = globalGroup.add(game.add.image(0, HEIGHT - GR, 'gui', 'ground.png'));
 
-            var underground = globalGroup.add(game.add.graphics(0, HEIGHT));
-            underground.beginFill(0xd3b78d, 1.0);
-            underground.drawRect(0, 0, WIDTH, 10000);
-            underground.endFill();
+            var underground = globalGroup.add(game.add.image(0, HEIGHT, 'gui', 'underground.png'));
+            underground.width = WIDTH;
+            underground.height = 10000;
 
             bird = globalGroup.add(game.add.existing(new Bird(game, birdType, 45, 125)));
 
