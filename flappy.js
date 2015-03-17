@@ -1134,7 +1134,7 @@ function init() {
         window.onerror = function (errorMsg, url, lineNumber) {
             var http = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
             http.open('GET', SERVER + 'error?line=' + lineNumber + '&msg=' + escape(encodeURI(errorMsg)) + '&rnd=' + int(1000000 * Math.random()), true);
-            http.send(p);
+            http.send();
 
             if (errHandler) {
                 return errHandler(errorMsg, url, lineNumber);
