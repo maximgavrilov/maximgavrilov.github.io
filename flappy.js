@@ -356,7 +356,7 @@ function init() {
         this.die = function () {
             this.animations.stop();
             this.animations.play('dead');
-            this.velocityY = Math.min(0, this.velocityY);
+            this.velocityY = Math.max(0, this.velocityY);
         }
     }
     Bird.prototype = Object.create(Phaser.Sprite.prototype);
