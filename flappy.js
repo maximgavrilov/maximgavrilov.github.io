@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 183;
+var VERSION = 184;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -548,8 +548,8 @@ function init() {
 
             if (health < MAX_HEALTH_VALUE) {
                 var up = _time - time()
-                var min = '' + Math.floor(up / 60);
-                var sec = '' + Math.floor(up % 60);
+                var min = '' + Math.ceil(up / 60);
+                var sec = '' + Math.ceil(up % 60);
                 if (sec.length < 2) sec = '0' + sec;
                 ttime.text = min + ':' + sec;
                 ttime.visible = true;
