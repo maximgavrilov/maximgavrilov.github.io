@@ -99,9 +99,12 @@ function init() {
         return new Date() / 1000;
     }
 
-    function assert(condition, message) {
+    function assert(game, condition, message) {
         if (!condition) {
             message = message || "Assertion failed";
+            if (game) {
+                game.state.play('error', true, false, message);
+            }
             if (Error !== undefined) {
                 throw new Error(message);
             }
@@ -377,22 +380,6 @@ function init() {
         var _inputEnbaled = false;
         var _inputRect;
 
-        // function calcInputRect() {
-
-        // }
-
-        // Object.defineProperty(this, 'inputEnabled', {
-        //     get: function () {
-        //         return _inputEnbaled;
-        //     },
-
-        //     set: function (value) {
-        //         if (_inputEnbaled != value) {
-
-        //         }
-        //     }
-        // });
-
         Object.defineProperty(this, 'left', {
             get: function () {
                 if (needUpdate) {
@@ -592,12 +579,13 @@ function init() {
             var okParams = FAPI.Util.getRequestParameters();
             viewerId = okParams['logged_user_id'];
 
+            assert(game, false, 'Ошибко');
             FAPI.Client.call({
                 method: 'users.getCurrentUser',
                 fields: 'NAME'
             }, function (status, data, err) {
                 if (status === 'ok') {
-                    assert(viewerId === data.uid);
+                    assert(game, viewerId === data.uid);
                     viewerName = data.name;
 
                     okParams['name'] = viewerName;
@@ -641,7 +629,7 @@ function init() {
             });
 
             processPurchase = function (product) {
-                assert(PRODUCTS[product]);
+                assert(game, PRODUCTS[product]);
 
                 var params = {
                     application_key : okParams.application_key,
@@ -799,7 +787,7 @@ function init() {
                     break;
                 }
             }
-            assert(idx !== undefined);
+            assert(game, idx !== undefined);
             if (idx >= 0 && idx < NUM_LINES) {
                 idx = 0;
             } else if (idx >= top.length - NUM_LINES) {
@@ -1079,6 +1067,18 @@ function init() {
         }
     }
 
+    var ErrorState = function () {
+        var _msg = '';
+
+        this.init = function (msg) {
+            _msg = msg;
+        }
+
+        this.create = function () {
+            game.add.text(game.world.centerX, game.world.centerY, _msg, { font: "20px Arial", fill: "#ff0044", align: "center" });
+        }
+    }
+
     function FPSPlugin(game) {
         var fpsSpan = document.getElementById('fps');
         var gameDiv = document.getElementById('game');
@@ -1165,5 +1165,6 @@ function init() {
         game.state.add('menu', MenuState);
         game.state.add('game', GameState);
         game.state.add('top', TopState);
+        game.state.add('error', ErrorState);
     })()
 }
