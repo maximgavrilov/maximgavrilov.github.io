@@ -368,7 +368,7 @@ function init() {
                 this.angle = -20;
                 this.animations.play('fly');
             } else {
-                this.angle = Math.min(90, this.angle + 90 * e);
+                this.angle = Math.min(90, this.angle + 180 * e);
                 this.animations.play('notfly');
             }
         }
