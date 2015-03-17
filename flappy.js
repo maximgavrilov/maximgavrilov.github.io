@@ -223,7 +223,7 @@ function init() {
     function add_color_box(game, color) {
         var box = game.add.graphics(0, 0);
         box.beginFill(color, 1.0);
-        box.drawRect(0, 0, WIDTH, HEIGHT);
+        box.drawRect(0, 0, game.width, game.height);
         box.endFill();
         return box;
     }
@@ -1017,9 +1017,6 @@ function init() {
 
             flapKey.onDown.addOnce(start, this);
             this.input.onDown.addOnce(start, this);
-            onResized.add(function (w, h, s) {
-
-            }, this);
         }
 
         this.update = function () {
@@ -1082,7 +1079,6 @@ function init() {
         this.shutdown = function() {
             game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
             this.input.onDown.removeAll(this);
-            onResized.removeAll(this);
         }
     }
 
