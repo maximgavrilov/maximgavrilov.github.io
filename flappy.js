@@ -1,6 +1,6 @@
 /*global PIXI, Phaser */
 
-var VERSION = 191;
+var VERSION = 192;
 
 PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 PIXI.CanvasTinter.convertTintToImage = true;
@@ -1223,8 +1223,8 @@ function init() {
                         game.renderer.resolution = HDPI;
                     }
                     var d = parentBounds.height - s * HEIGHT;
-                    game.height = HEIGHT + d;
-                    game.renderer.resize(WIDTH, HEIGHT + d)
+                    game.height = HEIGHT + d / HDPI;
+                    game.renderer.resize(WIDTH, HEIGHT + d / HDPI)
                     scale.setUserScale(s, s);
                     globalScale = s;
                 }
