@@ -782,7 +782,7 @@ function init() {
             updateBird();
 
             onResized.add(function (w, h, s, hdpi) {
-                bankX = Math.ceil(OK_WIDGET_WIDTH / (s * hdpi)) + 6;
+                bankX = Math.ceil(hdpi * OK_WIDGET_WIDTH / s) + 6;
                 if (bank) {
                     bank.x = bankX;
                 }
