@@ -334,8 +334,8 @@ function init() {
     var Bird = function (game, type, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'gui');
         this.anchor.setTo(0.5, 0.5);
-        this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
-        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 6, true);
+        this.animations.add('demo', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 10, true);
+        this.animations.add('fly', ['bird' + type + '_1.png', 'bird' + type + '_2.png', 'bird' + type + '_3.png', 'bird' + type + '_2.png'], 10, true);
         this.animations.add('notfly', ['bird' + type + '_2.png'], 1, true);
         this.animations.add('dead', ['bird' + type + '_2.png'], 1, true);
         this.animations.play('demo');
@@ -364,11 +364,11 @@ function init() {
         }
 
         this.updateAngle = function (e) {
-            if (this.velocityY <= FLAP_VEL - 20) {
+            if (this.velocityY <= FLAP_VEL - 40) {
                 this.angle = FLAP_ANGLE;
                 this.animations.play('fly');
             } else {
-                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL + 20) / 200);
+                this.angle = FLAP_ANGLE + (90 - FLAP_ANGLE) * Math.min(1.0, (this.velocityY - FLAP_VEL + 40) / 200);
                 this.animations.play('notfly');
             }
         }
